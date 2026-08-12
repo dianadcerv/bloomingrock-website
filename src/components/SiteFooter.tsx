@@ -15,6 +15,9 @@ export function SiteFooter() {
         </nav>
         <p>© {new Date().getFullYear()} BloomingRock Solutions LLC</p>
       </div>
+      <p className="site-footer__credo">
+        Built by Humans Using AI to Further Human Achievements
+      </p>
     </footer>
   );
 }

@@ -758,6 +758,14 @@ img {
   color: var(--sage-300);
 }
 
+.site-footer__credo {
+  max-width: 52rem;
+  margin: 1.15rem auto 0;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--stone-500);
+}
+
 /* —— Reveal on scroll (lightweight) —— */
 .reveal {
   opacity: 0;
