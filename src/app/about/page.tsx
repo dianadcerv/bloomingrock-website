@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { RevealObserver } from "@/components/RevealObserver";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { CONTACT_EMAIL, CONTACT_HREF } from "@/lib/contact";
+import { LOOK_PATH } from "@/lib/contact";
 
 export const metadata: Metadata = {
   title: "About | BloomingRock Solutions",
@@ -38,9 +39,9 @@ export default function AboutPage() {
               AI that actually gets used — set up around how you already work.
             </p>
             <div className="hero__actions">
-              <a className="btn btn--primary" href={CONTACT_HREF}>
+              <Link className="btn btn--primary" href={LOOK_PATH}>
                 Book a free 15-minute look
-              </a>
+              </Link>
             </div>
           </div>
         </section>
@@ -93,14 +94,9 @@ export default function AboutPage() {
               Fifteen minutes. Tell me what a typical week looks like. I’ll tell
               you whether there’s a quick fix worth doing.
             </p>
-            <a className="btn btn--solid-light" href={CONTACT_HREF}>
+            <Link className="btn btn--solid-light" href={LOOK_PATH}>
               Book a free 15-minute look
-            </a>
-            <div>
-              <a className="cta-email" href={`mailto:${CONTACT_EMAIL}`}>
-                {CONTACT_EMAIL}
-              </a>
-            </div>
+            </Link>
           </div>
         </section>
       </main>

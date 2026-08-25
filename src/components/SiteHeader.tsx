@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
-import { CONTACT_HREF } from "@/lib/contact";
+import { LOOK_PATH } from "@/lib/contact";
 
 export function SiteHeader({
   onDark = false,
   current,
 }: {
   onDark?: boolean;
-  current?: "home" | "capabilities" | "about";
+  current?: "home" | "capabilities" | "about" | "look";
 }) {
   return (
     <header className={`site-header${onDark ? " site-header--on-dark" : ""}`}>
@@ -27,9 +27,12 @@ export function SiteHeader({
         >
           About
         </Link>
-        <a className={`btn ${onDark ? "btn--ghost" : "btn--solid-light"}`} href={CONTACT_HREF}>
+        <Link
+          className={`btn ${onDark ? "btn--ghost" : "btn--solid-light"}`}
+          href={LOOK_PATH}
+        >
           Book a look
-        </a>
+        </Link>
       </nav>
     </header>
   );

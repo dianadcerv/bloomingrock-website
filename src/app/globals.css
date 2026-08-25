@@ -274,6 +274,12 @@ img {
   background: var(--lichen);
 }
 
+.btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+  transform: none;
+}
+
 /* —— Sections —— */
 .section {
   padding: 4.5rem 1.5rem;
@@ -505,6 +511,125 @@ img {
 
 .cta-email:hover {
   border-bottom-color: var(--lichen);
+}
+
+.page-hero--look {
+  min-height: min(58vh, 32rem);
+}
+
+.look-panel {
+  max-width: 40rem;
+}
+
+.look-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.look-form__eyebrow {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lichen);
+}
+
+.look-form__title {
+  margin: 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.7rem, 3vw, 2.15rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--stone-900);
+}
+
+.look-form__lead {
+  margin: 0 0 0.35rem;
+  color: var(--stone-700);
+  font-size: 1.05rem;
+}
+
+.look-form__grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .look-form__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.look-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.look-field__label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--stone-900);
+}
+
+.look-field__optional {
+  font-weight: 500;
+  color: var(--stone-500);
+}
+
+.look-field__hint {
+  font-size: 0.85rem;
+  color: var(--stone-500);
+}
+
+.look-field__input {
+  width: 100%;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--stone-300);
+  border-radius: 2px;
+  background: var(--stone-50);
+  color: var(--stone-900);
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.look-field__input:focus {
+  outline: 2px solid var(--lichen);
+  outline-offset: 2px;
+  border-color: var(--lichen);
+}
+
+.look-field__input--area {
+  resize: vertical;
+  min-height: 7rem;
+}
+
+.look-form__error {
+  margin: 0;
+  color: var(--petal);
+  font-size: 0.95rem;
+}
+
+.look-form--success {
+  padding: 0.25rem 0 0.5rem;
+}
+
+.look-fallback {
+  margin: 1.75rem 0 0;
+  font-size: 0.95rem;
+  color: var(--stone-500);
+}
+
+.look-honeypot {
+  position: absolute;
+  left: -9999px;
+  height: 0;
+  overflow: hidden;
 }
 
 /* —— Site header —— */
