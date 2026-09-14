@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Book a 15-minute look | BloomingRock Solutions",
   description:
     "Request a free 15-minute look at where AI can save real time in your week — then get one workflow set up so it actually gets used.",
+  alternates: {
+    canonical: "/look",
+  },
 };
 
 export default function LookPage() {

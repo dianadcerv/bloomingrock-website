@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import { Fraunces, Manrope } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_OG_DESCRIPTION,
+  DEFAULT_OG_IMAGE,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/site";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -18,16 +25,36 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   title: "BloomingRock Solutions | AI that actually gets used",
-  description:
-    "Find one or two places where AI can save real time in your business — then get it set up so it actually gets used.",
-  metadataBase: new URL("https://www.bloomingrocksolutions.com"),
+  description: DEFAULT_DESCRIPTION,
+  metadataBase: new URL(SITE_URL),
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: "BloomingRock Solutions",
-    description:
-      "AI readiness audits and quick-win setup for small business owners.",
-    url: "https://www.bloomingrocksolutions.com",
-    siteName: "BloomingRock Solutions",
+    title: SITE_NAME,
+    description: DEFAULT_OG_DESCRIPTION,
+    url: SITE_URL,
+    siteName: SITE_NAME,
     type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "BloomingRock Solutions — AI that actually gets used",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description: DEFAULT_OG_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
   },
 };
 

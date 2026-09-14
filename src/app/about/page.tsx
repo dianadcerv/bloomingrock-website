@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "About | BloomingRock Solutions",
   description:
     "BloomingRock helps small business owners find one or two places where AI can save real time — then set it up around how they already work so it actually gets used.",
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 export default function AboutPage() {
