@@ -632,6 +632,10 @@ img {
   overflow: hidden;
 }
 
+.look-turnstile {
+  margin: 0.25rem 0 0.15rem;
+}
+
 /* —— Site header —— */
 .site-header {
   position: relative;

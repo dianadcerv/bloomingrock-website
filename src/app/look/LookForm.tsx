@@ -1,12 +1,19 @@
 "use client";
 
 import { useActionState } from "react";
+import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import { submitLookRequest, type LookFormState } from "./actions";
 
 const initialState: LookFormState = { ok: false };
 
-export function LookForm() {
+export function LookForm({
+  formToken,
+  turnstileSiteKey,
+}: {
+  formToken: string;
+  turnstileSiteKey?: string;
+}) {
   const [state, formAction, pending] = useActionState(
     submitLookRequest,
     initialState,
@@ -27,6 +34,7 @@ export function LookForm() {
 
   return (
     <form className="look-form" action={formAction}>
+      <input type="hidden" name="form_token" value={state.formToken ?? formToken} />
       <p className="look-form__eyebrow">Free 15-minute look</p>
       <h2 className="look-form__title">Tell me enough to prepare.</h2>
       <p className="look-form__lead">
@@ -105,6 +113,8 @@ export function LookForm() {
           placeholder="Follow-up, scheduling, inbox, reporting…"
         />
       </label>
+
+      {turnstileSiteKey ? <TurnstileWidget siteKey={turnstileSiteKey} /> : null}
 
       <div className="look-honeypot" aria-hidden="true">
         <label>
