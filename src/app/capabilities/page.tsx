@@ -10,6 +10,9 @@ export const metadata: Metadata = {
   title: "Capabilities | BloomingRock Solutions",
   description:
     "Where BloomingRock helps small business owners reclaim time — customer follow-up, scheduling, admin, and workflows that actually get used.",
+  alternates: {
+    canonical: "/capabilities",
+  },
 };
 
 const outcomes = [

@@ -4,12 +4,18 @@ import { RevealObserver } from "@/components/RevealObserver";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CONTACT_EMAIL } from "@/lib/contact";
+import { createFormToken } from "@/lib/look-security";
 import { LookForm } from "./LookForm";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Book a 15-minute look | BloomingRock Solutions",
   description:
     "Request a free 15-minute look at where AI can save real time in your week — then get one workflow set up so it actually gets used.",
+  alternates: {
+    canonical: "/look",
+  },
 };
 
 export default function LookPage() {
@@ -46,7 +52,10 @@ export default function LookPage() {
 
         <section className="section section--stone" id="look-form">
           <div className="section__inner look-panel reveal">
-            <LookForm />
+            <LookForm
+              formToken={createFormToken()}
+              turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+            />
             <p className="look-fallback">
               Prefer email?{" "}
               <a className="cta-email" href={`mailto:${CONTACT_EMAIL}`}>

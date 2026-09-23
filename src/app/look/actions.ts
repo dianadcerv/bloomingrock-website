@@ -1,15 +1,27 @@
 "use server";
 
 import { createHash } from "node:crypto";
+import { headers } from "next/headers";
 import { Resend } from "resend";
 import { CONTACT_EMAIL } from "@/lib/contact";
+import {
+  clientIp,
+  createFormToken,
+  isValidEmail,
+  lookEmailLimiter,
+  lookIpLimiter,
+  normalizeWebsite,
+  sanitizeMultiline,
+  sanitizeOneLine,
+  verifyFormToken,
+  verifyTurnstile,
+} from "@/lib/look-security";
 
 export type LookFormState = {
   ok: boolean;
   error?: string;
+  formToken?: string;
 };
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function trim(value: FormDataEntryValue | null) {
   return typeof value === "string" ? value.trim() : "";
@@ -24,42 +36,82 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#39;");
 }
 
-function normalizeWebsite(value: string) {
-  if (!value) return "";
-  if (/^https?:\/\//i.test(value)) return value;
-  return `https://${value}`;
+function websiteHref(url: string) {
+  return escapeHtml(url);
 }
 
 export async function submitLookRequest(
   _prev: LookFormState,
   formData: FormData,
 ): Promise<LookFormState> {
+  const submittedToken = trim(formData.get("form_token"));
+  const tokenStillValid = verifyFormToken(submittedToken);
+  const nextToken = tokenStillValid ? submittedToken : createFormToken();
+
   if (trim(formData.get("company_fax"))) {
     return { ok: true };
   }
 
-  const name = trim(formData.get("name"));
-  const email = trim(formData.get("email"));
-  const business = trim(formData.get("business"));
-  const website = normalizeWebsite(trim(formData.get("website")));
-  const week = trim(formData.get("week"));
+  const ip = clientIp(await headers());
+
+  if (!tokenStillValid) {
+    return {
+      ok: false,
+      formToken: nextToken,
+      error: "That request expired. Refresh the page and try once more.",
+    };
+  }
+
+  const turnstileToken = trim(formData.get("cf-turnstile-response"));
+  if (!(await verifyTurnstile(turnstileToken, ip))) {
+    return {
+      ok: false,
+      formToken: nextToken,
+      error: "Please confirm you’re human and try again.",
+    };
+  }
+
+  const name = sanitizeOneLine(trim(formData.get("name")));
+  const email = sanitizeOneLine(trim(formData.get("email")));
+  const business = sanitizeOneLine(trim(formData.get("business")));
+  const week = sanitizeMultiline(trim(formData.get("week")));
+  const websiteResult = normalizeWebsite(trim(formData.get("website")));
 
   if (name.length < 2 || name.length > 80) {
-    return { ok: false, error: "Please add your name." };
+    return { ok: false, formToken: nextToken, error: "Please add your name." };
   }
-  if (!EMAIL_PATTERN.test(email) || email.length > 120) {
-    return { ok: false, error: "Please add a work email I can reply to." };
+  if (!isValidEmail(email)) {
+    return {
+      ok: false,
+      formToken: nextToken,
+      error: "Please add a work email I can reply to.",
+    };
   }
   if (business.length < 2 || business.length > 120) {
-    return { ok: false, error: "Please add the business name." };
+    return { ok: false, formToken: nextToken, error: "Please add the business name." };
   }
-  if (website && website.length > 200) {
-    return { ok: false, error: "That website looks too long — a homepage URL is enough." };
+  if (!websiteResult.ok || websiteResult.url.length > 200) {
+    return {
+      ok: false,
+      formToken: nextToken,
+      error: "Please use a regular website address (example.com).",
+    };
   }
   if (week.length < 8 || week.length > 800) {
     return {
       ok: false,
+      formToken: nextToken,
       error: "A sentence or two about where the week gets eaten up helps me prepare.",
+    };
+  }
+
+  const website = websiteResult.url;
+  const emailKey = email.toLowerCase();
+  if (!lookIpLimiter.consume(`ip:${ip}`) || !lookEmailLimiter.consume(`email:${emailKey}`)) {
+    return {
+      ok: false,
+      formToken: nextToken,
+      error: "Please wait a few minutes before sending another request.",
     };
   }
 
@@ -67,6 +119,7 @@ export async function submitLookRequest(
   if (!apiKey) {
     return {
       ok: false,
+      formToken: nextToken,
       error: "The form isn’t connected yet. Email me directly and I’ll get you on the calendar.",
     };
   }
@@ -96,7 +149,7 @@ export async function submitLookRequest(
         <p style="margin:0 0 8px"><strong>Business:</strong> ${escapeHtml(business)}</p>
         <p style="margin:0 0 16px"><strong>Website:</strong> ${
           website
-            ? `<a href="${escapeHtml(website)}">${escapeHtml(website)}</a>`
+            ? `<a href="${websiteHref(website)}">${escapeHtml(website)}</a>`
             : "Not given"
         }</p>
         <p style="margin:0 0 6px"><strong>Where the week gets eaten up:</strong></p>
@@ -115,6 +168,7 @@ export async function submitLookRequest(
   if (error) {
     return {
       ok: false,
+      formToken: nextToken,
       error: "Something went sideways sending that. Try once more, or email me directly.",
     };
   }
