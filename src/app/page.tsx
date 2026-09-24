@@ -95,7 +95,11 @@ export default function Home() {
             <h2 className="section__title">Audit + Quick Win + Handoff</h2>
             <p className="section__lead">
               One focused engagement. Clear deliverables. Something working when
-              we’re done — not a slide deck of possibilities.
+              we’re done — not a slide deck of possibilities.{" "}
+              <Link className="text-link" href="/make-ai-stick">
+                See how we make AI stick
+              </Link>
+              .
             </p>
 
             <ol className="offer-list">

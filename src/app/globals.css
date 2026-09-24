@@ -790,6 +790,42 @@ img {
   color: var(--stone-700);
 }
 
+.text-link {
+  font-weight: 600;
+  color: var(--moss-700);
+  text-decoration: underline;
+  text-decoration-color: rgba(47, 74, 60, 0.35);
+  text-underline-offset: 0.2em;
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.text-link:hover {
+  color: var(--lichen);
+  text-decoration-color: var(--lichen-soft);
+}
+
+.faq-list {
+  margin: 2rem 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.faq-item__question {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--stone-900);
+}
+
+.faq-item__answer {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: var(--stone-700);
+}
+
 /* —— Scope lists —— */
 .scope-grid {
   margin: 2.25rem 0 0;
