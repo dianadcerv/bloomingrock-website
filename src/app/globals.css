@@ -816,6 +816,50 @@ img {
   color: var(--stone-700);
 }
 
+.about-credential {
+  margin-top: 0.25rem;
+}
+
+.about-credential__link {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  max-width: 100%;
+  color: var(--stone-700);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.about-credential__link:hover {
+  color: var(--moss-700);
+}
+
+.about-credential__badge {
+  width: 7.5rem;
+  height: auto;
+}
+
+.about-credential__label {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--stone-500);
+  text-decoration: underline;
+  text-decoration-color: rgba(47, 74, 60, 0.25);
+  text-underline-offset: 0.18em;
+}
+
+.about-credential__link:hover .about-credential__label {
+  color: var(--moss-700);
+  text-decoration-color: rgba(47, 74, 60, 0.45);
+}
+
+@media (max-width: 640px) {
+  .about-credential__badge {
+    width: 6rem;
+  }
+}
+
 .text-link {
   font-weight: 600;
   color: var(--moss-700);
