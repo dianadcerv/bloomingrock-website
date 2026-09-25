@@ -7,47 +7,57 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { LOOK_PATH } from "@/lib/contact";
 import { SITE_NAME, SITE_URL } from "@/lib/site";
 
+const PAGE_TITLE = "Make AI Stick in Your Small Business | BloomingRock Solutions";
+const PAGE_DESCRIPTION =
+  "Most AI setups end up unused. I look at how you work, set up one fix in tools you already use, and hand it off so your team can run it.";
+
 export const metadata: Metadata = {
-  title:
-    "Make AI Stick for Small Business: Audit, Quick Win & Handoff | BloomingRock Solutions",
-  description:
-    "Generic AI setups gather dust. BloomingRock packages a workflow audit, one quick-win wired into how you already work, and a 30-minute handoff so your team can run it, not a slide deck.",
+  title: PAGE_TITLE,
+  description: PAGE_DESCRIPTION,
   alternates: {
     canonical: "/make-ai-stick",
+  },
+  openGraph: {
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
+  },
+  twitter: {
+    title: PAGE_TITLE,
+    description: PAGE_DESCRIPTION,
   },
 };
 
 const ANSWER_READY =
-  "AI sticks in a small business when it is wired into one real workflow your team already runs, not when everyone gets a chatbot login or sits through another workshop. A practical path is: audit how work moves in that process and name one to three time-savers; implement a single quick win inside the tools you already use and test it against a normal week; then do a short handoff so the team can run it without calling someone for every click. BloomingRock Solutions offers that as one focused engagement (Audit + Quick Win + Handoff), built for busy owners who need something working when you're done, not a slide deck of possibilities. Start with a free 15-minute first look to see whether a quick fix is even worth doing.";
+  "AI sticks in a small business when it's built into one workflow your team already runs. Handing everyone a chatbot login or sending them to another workshop doesn't do it. Here's the path I use. First, I look at how work moves through that one process and name one to three places it could save time. Next, I set up one quick win inside the tools you already use and test it during a normal week. Then I walk your team through it so they can run it without calling someone for every click. BloomingRock Solutions does all three as one focused package: Audit, Quick Win, and Handoff. It's built for busy owners who want something working at the end, not a slide deck of ideas. The first step is a free 15-minute look to see if a quick fix is even worth doing.";
 
 const SHOP_EXAMPLE =
-  "Say you run a 20-person fab shop and a request for a custom job comes in. The details are spread across an email thread, a PDF spec, two drawing revisions, and a note from a phone call. Before anyone can price it, someone has to read all of it and pull out what matters: material, quantities, tolerances, finish, and what the customer changed since last time. In a lot of small shops that someone is the owner, and that's why quotes sit for days. We set up one tool that gathers those details into a single summary your estimator checks and prices from. A person still reviews every quote. Your team just stops spending hours digging for the information.";
+  "Say you run a 20-person fab shop and a request for a custom job comes in. The details are spread across an email thread, a PDF spec, two drawing revisions, and a note from a phone call. Before anyone can price it, someone has to read all of it and pull out what matters: material, quantities, tolerances, finish, and what the customer changed since last time. In a lot of small shops that someone is the owner, and that's why quotes sit for days. I set up one tool that gathers those details into a single summary your estimator checks and prices from. A person still reviews every quote. Your team just stops spending hours digging for the information.";
 
 const faqItems = [
   {
     question: "Can AI help a small shop quote custom jobs faster?",
     answer:
-      "Yes. We set up one tool that gathers the details scattered across emails, PDF specs, and drawings into a single summary your estimator checks and prices from, and a person still reviews every quote.",
+      "Yes. I set up one tool that gathers the details scattered across emails, PDF specs, and drawings into a single summary your estimator checks and prices from, and a person still reviews every quote.",
   },
   {
-    question: "Can we start with ChatGPT we already have?",
+    question: "Can we start with the ChatGPT we already have?",
     answer:
-      "Often, yes. The point is not which logo is on the login screen. It is whether AI is wired into a workflow your team already runs, inside tools they already open. If what you have can do the job, we start there.",
+      "Often, yes. What matters isn't which logo is on the login screen. It's whether AI fits into work your team already does, in tools they already open. If what you have can do the job, we start there.",
   },
   {
     question: "Do we need new software?",
     answer:
-      "Not by default. Quick win implementation happens inside how you already operate: the inbox, calendar, CRM, spreadsheets, or chat tool your week already lives in. New apps only come up if nothing you have can support the workflow in scope.",
+      "Usually not. I set up the quick win inside the tools your week already runs on: your inbox, calendar, CRM, spreadsheets, or chat. New apps only come up if nothing you have can handle the job.",
   },
   {
     question: "Will my non-technical team be able to run it?",
     answer:
-      "That is the bar. We pick one workflow, set it up carefully, test it against a normal week, then walk through it in a 30-minute handoff so your owner and team know who runs it, where it lives, and when to ask for help.",
+      "That's the whole point. I pick one process, set it up carefully, and test it during a normal week. Then we walk through it in a 30-minute handoff so you and your team know who runs it, where it lives, and when to ask for help.",
   },
   {
     question: "Is this training?",
     answer:
-      "No. This is a focused engagement: audit, one working quick win, and handoff so the team can run it. You are not buying a course, a workshop series, or a slide deck of possibilities.",
+      "No. You get an audit, one quick win that works, and a handoff so your team can run it. You're not buying a course, a workshop series, or a slide deck of ideas.",
   },
 ];
 
@@ -70,7 +80,7 @@ const serviceJsonLd = {
   name: "Audit + Quick Win + Handoff",
   alternateName: "Make AI Stick for Small Business",
   description:
-    "A focused engagement for busy small business owners: workflow audit, hands-on implementation of one AI quick win inside existing tools, and a 30-minute handoff so the team can run it without ongoing dependency.",
+    "A focused project for busy small business owners: a workflow audit, hands-on setup of one AI quick win inside the tools they already use, and a 30-minute handoff so the team can run it on their own.",
   provider: {
     "@type": "Organization",
     name: SITE_NAME,
@@ -124,9 +134,10 @@ export default function MakeAiStickPage() {
               AI that actually gets used, for busy owners
             </h1>
             <p className="page-hero__support">
-              Wire AI into one real workflow, not another login nobody opens.
-              Audit, one quick win inside tools you already use, and a short
-              handoff so your team owns it.
+              I help you put AI to work on one real task your team already does,
+              not another login nobody opens. I look at how the work gets done, set
+              up one quick win in the tools you already use, and show your team
+              how to run it.
             </p>
             <div className="hero__actions">
               <Link className="btn btn--primary" href={LOOK_PATH}>
@@ -182,26 +193,27 @@ export default function MakeAiStickPage() {
           <div className="section__inner reveal">
             <p className="section__eyebrow">Why setups gather dust</p>
             <h2 className="section__title">
-              Generic AI setups fail in the real week, not in the demo
+              AI setups that shine in the demo often fade in a normal week
             </h2>
             <div className="about-copy">
               <p>
-                If you have tried a subscription, a workshop, or a tip list and
-                watched it fade, you are not alone. The tools are rarely the
-                problem. What fails is the wiring: nothing connects to the
-                process your team already runs Monday through Friday.
+                If you&apos;ve tried an AI subscription, a workshop, or a list
+                of tips and watched it fade, you&apos;re not alone. The tool
+                usually isn&apos;t the problem. The problem is that it never got
+                connected to the work your team already does Monday through
+                Friday.
               </p>
               <p>
-                You get another tab, another copy-paste loop, or a chatbot login
-                that only one person remembers. Workshop theater feels productive
-                for an afternoon, then everyone goes back to the old path because
-                nobody owns maintenance. There is no clear place the workflow
-                lives, and no simple rule for when to use it.
+                You end up with another tab, more copy and paste, or a chatbot
+                login only one person remembers. A workshop feels productive for
+                an afternoon. Then everyone goes back to the old way, because
+                nobody owns keeping it going. There&apos;s no set place where it
+                lives and no simple rule for when to use it.
               </p>
               <p>
                 Small manufacturers, trades, and family-run shops feel this
-                quickly. Your week is already full. AI only helps when it sits
-                inside work people were going to do anyway, in software they
+                fast. Your week&apos;s already full. AI only helps when it fits
+                into work people were already going to do, in software they
                 already open.
               </p>
             </div>
@@ -210,30 +222,30 @@ export default function MakeAiStickPage() {
 
         <section className="section section--moss" id="what-stick-means">
           <div className="section__inner reveal">
-            <p className="section__eyebrow">What we mean</p>
+            <p className="section__eyebrow">What I mean</p>
             <h2 className="section__title">What &ldquo;make AI stick&rdquo; means here</h2>
             <p className="section__lead">
-              A workflow audit, one wired quick win inside your existing tools,
-              and a short handoff so your team can run it. One focused engagement,
-              not a slide deck and not generic training.
+              I look at how one process works, set up one quick win inside the
+              tools you already have, and show your team how to run it. It&apos;s
+              one focused project, not a slide deck and not generic training.
             </p>
             <div className="about-copy">
               <h3 className="offer-list__title" style={{ marginTop: "0.5rem" }}>
                 Not licenses, workshops, or tip lists
               </h3>
               <p>
-                More seats on an AI product does not fix a process nobody mapped.
-                A tip list gives ideas without setup, testing, or ownership. A
-                workshop can energize the room and still leave Monday unchanged.
-                Here, one workflow ships, tested against a normal week, with a
-                clear handoff.
+                Buying more seats on an AI tool won&apos;t fix a process nobody
+                has looked at closely. A tip list gives you ideas but no setup,
+                no testing, and no owner. A workshop can get the room excited and
+                still leave Monday exactly the same. Here, one process gets set
+                up, tested in a normal week, and handed off clearly.
               </p>
               <p>
-                Training asks everyone to learn a new habit in the abstract.
-                This engagement picks one process, wires AI into it, and leaves
-                your team with something they can run on Tuesday. That is the
-                difference between AI that actually gets used and AI that lives
-                in a folder.
+                Training asks everyone to pick up a new habit without a real task
+                to use it on. I pick one process, set AI up inside it, and leave
+                your team with something they can use on Tuesday. That&apos;s the
+                difference between AI that gets used and AI that sits in a
+                folder.
               </p>
             </div>
           </div>
@@ -243,11 +255,11 @@ export default function MakeAiStickPage() {
 
         <section className="section section--stone" id="engagement">
           <div className="section__inner section__inner--wide reveal">
-            <p className="section__eyebrow">The engagement</p>
+            <p className="section__eyebrow">The work</p>
             <h2 className="section__title">Audit + Quick Win + Handoff</h2>
             <p className="section__lead">
-              What you get is concrete. What you do not get is a transformation
-              roadmap or open-ended support disguised as strategy.
+              Here&apos;s exactly what you get. You won&apos;t get a big AI
+              roadmap or open-ended support dressed up as strategy.
             </p>
 
             <ol className="offer-list">
@@ -258,10 +270,10 @@ export default function MakeAiStickPage() {
                 <div>
                   <h3 className="offer-list__title">Workflow audit</h3>
                   <p className="offer-list__body">
-                    A clear look at the process in scope, plus a written summary
-                    of one to three places AI can save real time in that workflow.
-                    Not a forty-slide transformation roadmap or an ROI-scorecard
-                    pitch. Just enough clarity to pick one win worth building.
+                    I take a close look at the process we picked and write up one
+                    to three places AI can save real time there. No forty-slide
+                    roadmap and no scorecard of promised savings. Just enough to
+                    pick one fix worth building.
                   </p>
                   {/* TODO(Diana): Add sample anonymized audit summary (structure + redacted example) when ready. */}
                 </div>
@@ -271,12 +283,12 @@ export default function MakeAiStickPage() {
                   02
                 </span>
                 <div>
-                  <h3 className="offer-list__title">Quick win implementation</h3>
+                  <h3 className="offer-list__title">Quick win setup</h3>
                   <p className="offer-list__body">
-                    Hands-on setup of one selected workflow, tested and confirmed
-                    around how you already operate. One win ships inside your real
-                    week; everything else waits. This is not a tip-list quick win
-                    you still have to figure out alone after the call.
+                    I set up the one process we picked, test it, and make sure it
+                    fits how you already work. One fix goes live in your real
+                    week, and everything else waits. You won&apos;t be left with a
+                    tip to figure out on your own after the call.
                   </p>
                   {/* TODO(Diana): Name tools/stack examples you are comfortable listing on the page (e.g. Google Workspace, Microsoft 365, specific CRMs). */}
                 </div>
@@ -288,10 +300,10 @@ export default function MakeAiStickPage() {
                 <div>
                   <h3 className="offer-list__title">30-minute handoff</h3>
                   <p className="offer-list__body">
-                    A walkthrough with you and the people who will run it: what
-                    the workflow does, who owns it day to day, where it lives, and
-                    when to escalate. After that, your team runs it without calling
-                    for every click.
+                    I walk through it with you and the people who&apos;ll run it:
+                    what it does, who owns it day to day, where it lives, and
+                    when to ask for help. After that, your team runs it without
+                    calling someone for every click.
                   </p>
                   {/* TODO(Diana): Spell out what is covered in the 30-minute handoff beyond these basics (checklist, recording, written recap, etc.). */}
                 </div>
@@ -302,19 +314,19 @@ export default function MakeAiStickPage() {
               <div className="scope-block">
                 <h3 className="scope-block__title">What you get</h3>
                 <ul className="scope-list scope-list--in">
-                  <li>Workflow audit with written summary (1–3 opportunities)</li>
-                  <li>One selected quick win built and tested in your tools</li>
-                  <li>30-minute handoff for owner and team</li>
-                  <li>Plain-language notes on ownership and escalation</li>
+                  <li>Workflow audit with a written summary (1–3 ideas)</li>
+                  <li>One quick win built and tested in your tools</li>
+                  <li>30-minute handoff for you and your team</li>
+                  <li>Plain notes on who owns it and when to ask for help</li>
                 </ul>
               </div>
               <div className="scope-block">
                 <h3 className="scope-block__title">What you don&apos;t get</h3>
                 <ul className="scope-list scope-list--out">
-                  <li>Company-wide AI rollout or unlimited workflows</li>
-                  <li>Training-as-the-product workshops or slide decks</li>
-                  <li>Ongoing retainer or on-call for every new idea</li>
-                  <li>Shop-floor robotics or enterprise transformation work</li>
+                  <li>A company-wide AI rollout or unlimited projects</li>
+                  <li>Workshops or slide decks sold as the product</li>
+                  <li>An ongoing retainer or on-call help for every new idea</li>
+                  <li>Shop-floor robotics or big enterprise projects</li>
                 </ul>
               </div>
             </div>
@@ -324,29 +336,27 @@ export default function MakeAiStickPage() {
         <section className="section section--moss" id="path">
           <div className="section__inner section__inner--wide reveal">
             <p className="section__eyebrow">The path</p>
-            <h2 className="section__title">
-              From first conversation to working workflow
-            </h2>
+            <h2 className="section__title">From first call to something that works</h2>
             <p className="section__lead">
-              Low pressure, clear next steps. You always know what happens next.
+              No pressure, and you&apos;ll always know what happens next.
             </p>
 
             <ol className="steps">
               <li>
                 <span className="steps__label">01</span>
-                <h3 className="steps__title">Discovery</h3>
+                <h3 className="steps__title">Talk</h3>
                 <p className="steps__body">
                   A short call about where your week gets repetitive or eaten up.
-                  You describe a typical week; I listen for one process worth
-                  scoping.
+                  You tell me what a typical week looks like, and I listen for
+                  one process worth tackling.
                 </p>
               </li>
               <li>
                 <span className="steps__label">02</span>
-                <h3 className="steps__title">Scope</h3>
+                <h3 className="steps__title">Plan</h3>
                 <p className="steps__body">
-                  A simple scoping document with the plan, timeline, and
-                  investment for the audit, quick win, and handoff.
+                  I send a simple plan with the timeline and cost for the audit,
+                  quick win, and handoff.
                 </p>
                 {/* TODO(Diana): Confirm pricing/investment ranges and typical timeline length for scoping doc (not shown on this page until approved). */}
               </li>
@@ -354,17 +364,17 @@ export default function MakeAiStickPage() {
                 <span className="steps__label">03</span>
                 <h3 className="steps__title">Build</h3>
                 <p className="steps__body">
-                  Run the workflow audit, pick the best quick win, and set it up
-                  carefully inside how you already work. Test it against a normal
-                  week before we call it done.
+                  I look closely at the process, pick the best quick win, and set
+                  it up carefully inside how you already work. We test it during a
+                  normal week before calling it done.
                 </p>
               </li>
               <li>
                 <span className="steps__label">04</span>
                 <h3 className="steps__title">Handoff</h3>
                 <p className="steps__body">
-                  Walk through it together. Then it is yours to run: your team
-                  knows the steps, the owner, and when to reach out.
+                  We walk through it together. Then it&apos;s yours: your team
+                  knows the steps, who owns it, and when to reach out.
                 </p>
               </li>
             </ol>
@@ -376,41 +386,44 @@ export default function MakeAiStickPage() {
         <section className="section section--stone" id="who-for">
           <div className="section__inner section__inner--wide reveal">
             <p className="section__eyebrow">Fit</p>
-            <h2 className="section__title">Who this is for (and who it is not)</h2>
+            <h2 className="section__title">Who this is for (and who it&apos;s not)</h2>
             <p className="section__lead">
-              Built for busy owners of small manufacturers, trades, and
-              family-run shops who want one thing working in the real week.
+              For busy owners of small manufacturers, trades, and family-run shops
+              who want one thing working in a normal week.
             </p>
 
             <div className="scope-grid">
               <div className="scope-block">
                 <h3 className="scope-block__title">Good fit</h3>
                 <ul className="scope-list scope-list--in">
-                  <li>Repetitive work that eats the week</li>
-                  <li>Willing to start with one workflow, not ten</li>
-                  <li>A team that will touch the result after handoff</li>
-                  <li>You already believe AI could help; you need it wired in</li>
+                  <li>Repetitive work is eating your week</li>
+                  <li>You&apos;re okay starting with one process, not ten</li>
+                  <li>Your team will use what we build after the handoff</li>
+                  <li>
+                    You already think AI could help and just need it set up
+                  </li>
                 </ul>
               </div>
               <div className="scope-block">
                 <h3 className="scope-block__title">Not a fit</h3>
                 <ul className="scope-list scope-list--out">
-                  <li>&ldquo;Do AI company-wide this quarter&rdquo;</li>
-                  <li>Enterprise transformation retainers</li>
-                  <li>Shop-floor robotics or heavy OT projects</li>
+                  <li>&ldquo;Do AI across the whole company this quarter&rdquo;</li>
+                  <li>Big enterprise retainers</li>
+                  <li>Shop-floor robotics or heavy machine-control projects</li>
                   <li>People who only want a course or certificate</li>
                 </ul>
               </div>
             </div>
 
-            {/* TODO(Diana): Add founder photo/bio blurb and preferred wording for one-woman practice + subcontractors model. */}
+            {/* TODO(Diana): Add founder photo/bio blurb when ready. */}
             {/* TODO(Diana): Add testimonials or anonymized case studies when available. */}
 
             <div className="about-copy" style={{ marginTop: "2rem" }}>
               <p>
-                BloomingRock meets you where you are: one focused engagement,
-                something working when we are done. I lead the work and bring in
-                trusted help when a job needs extra hands.
+                I meet you where you are. It&apos;s one focused project, and
+                you&apos;ll have something working when we&apos;re done. I lead
+                the work myself and bring in people I trust when a job needs
+                extra hands.
               </p>
             </div>
           </div>
@@ -420,25 +433,25 @@ export default function MakeAiStickPage() {
           <div className="section__inner reveal">
             <p className="section__eyebrow">How this compares</p>
             <h2 className="section__title">
-              Different from DIY and from big-firm AI
+              Different from doing it yourself and from big-firm AI
             </h2>
             <div className="about-copy">
               <p>
-                DIY can work when someone inside the business owns integration,
-                training, and tuning over time. Many busy owners simply do not have
-                that bandwidth, and that is an honest constraint, not a character
-                flaw. Without ownership, even good tools drift.
+                Doing it yourself can work if someone in the business owns
+                setting it up, teaching the team, and adjusting it over time. A
+                lot of busy owners just don&apos;t have that time, and
+                that&apos;s okay. Without an owner, even good tools drift.
               </p>
               <p>
-                Big-firm AI programs are the wrong size for most small shops.
-                You do not need a quarter-long transformation narrative to fix
-                follow-up, scheduling, or admin that repeats every week. You need
-                one workflow wired correctly, with a handoff your team can run.
+                Big-firm AI programs are the wrong size for most small shops. You
+                don&apos;t need a months-long overhaul to fix follow-ups,
+                scheduling, or admin that repeats every week. You need one
+                process set up right, with a handoff your team can run.
               </p>
               <p>
-                BloomingRock is sized for that: audit, one quick win, handoff.
-                Focused setup so AI actually gets used, not training sold as the
-                product.
+                BloomingRock is built for that size of job: an audit, one quick
+                win, and a handoff. I set it up so AI actually gets used.
+                I&apos;m not selling training.
               </p>
             </div>
           </div>
@@ -470,9 +483,9 @@ export default function MakeAiStickPage() {
               15-minute first look, no charge
             </h2>
             <p className="section__lead">
-              Fifteen minutes. Tell me what a typical week looks like. I will
-              give you an honest read on whether a quick fix is worth doing. No
-              guarantees, no hard sell.
+              Give me fifteen minutes and tell me what a typical week looks like.
+              I&apos;ll tell you honestly whether a quick fix is worth doing. No
+              guarantees and no hard sell.
             </p>
             <Link className="btn btn--solid-light" href={LOOK_PATH}>
               Book a free 15-minute look

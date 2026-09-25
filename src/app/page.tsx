@@ -94,10 +94,10 @@ export default function Home() {
             <p className="section__eyebrow">The offering</p>
             <h2 className="section__title">Audit + Quick Win + Handoff</h2>
             <p className="section__lead">
-              One focused engagement. Clear deliverables. Something working when
-              we’re done — not a slide deck of possibilities.{" "}
+              One focused project with a clear list of what you get. Something
+              working when we&apos;re done, not a slide deck of ideas.{" "}
               <Link className="text-link" href="/make-ai-stick">
-                See how we make AI stick
+                See how I make AI stick
               </Link>
               .
             </p>
