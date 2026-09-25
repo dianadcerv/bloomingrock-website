@@ -20,6 +20,9 @@ export const metadata: Metadata = {
 const ANSWER_READY =
   "AI sticks in a small business when it is wired into one real workflow your team already runs, not when everyone gets a chatbot login or sits through another workshop. A practical path is: audit how work moves in that process and name one to three time-savers; implement a single quick win inside the tools you already use and test it against a normal week; then do a short handoff so the team can run it without calling someone for every click. BloomingRock Solutions offers that as one focused engagement (Audit + Quick Win + Handoff), built for busy owners who need something working when you're done, not a slide deck of possibilities. Start with a free 15-minute first look to see whether a quick fix is even worth doing.";
 
+const SHOP_EXAMPLE =
+  "Say you run a 20-person fab shop and a request for a custom job comes in. The details are spread across an email thread, a PDF spec, two drawing revisions, and a note from a phone call. Before anyone can price it, someone has to read all of it and pull out what matters: material, quantities, tolerances, finish, and what the customer changed since last time. In most small shops that someone is the owner, and it's why quotes sit for days. We set up one tool that gathers those details into a single summary your estimator checks and prices from. A person still reviews every quote. Your team just stops spending hours digging for the information first.";
+
 const faqItems = [
   {
     question: "Can we start with ChatGPT we already have?",
@@ -143,6 +146,22 @@ export default function MakeAiStickPage() {
             <div className="about-copy">
               <p>{ANSWER_READY}</p>
             </div>
+          </div>
+        </section>
+
+        <section
+          className="section section--moss"
+          id="shop-example"
+          aria-labelledby="shop-example-heading"
+        >
+          <div className="section__inner reveal">
+            <h2 className="section__title" id="shop-example-heading">
+              What this looks like in a shop
+            </h2>
+            <div className="about-copy">
+              <p>{SHOP_EXAMPLE}</p>
+            </div>
+            {/* TODO(Diana): Confirm shop size and example details against what you're hearing in customer interviews. */}
             <p className="section__lead" style={{ marginTop: "1.5rem" }}>
               <Link className="text-link" href={LOOK_PATH}>
                 Book a free 15-minute first look
