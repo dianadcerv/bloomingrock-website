@@ -351,6 +351,32 @@ img {
   color: rgba(236, 234, 228, 0.88);
 }
 
+.section--moss .about-copy p {
+  color: rgba(236, 234, 228, 0.88);
+}
+
+.section--moss .about-copy .offer-list__title {
+  color: var(--stone-50);
+}
+
+.section--moss .faq-item__question {
+  color: var(--stone-50);
+}
+
+.section--moss .faq-item__answer {
+  color: rgba(236, 234, 228, 0.82);
+}
+
+.section--moss .text-link {
+  color: var(--stone-50);
+  text-decoration-color: rgba(246, 245, 241, 0.45);
+}
+
+.section--moss .text-link:hover {
+  color: var(--stone-50);
+  text-decoration-color: var(--sage-300);
+}
+
 .divider {
   height: 1px;
   border: 0;
