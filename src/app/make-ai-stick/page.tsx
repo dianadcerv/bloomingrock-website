@@ -25,6 +25,11 @@ const SHOP_EXAMPLE =
 
 const faqItems = [
   {
+    question: "Can AI help a small shop quote custom jobs faster?",
+    answer:
+      "Yes. We set up one tool that gathers the details scattered across emails, PDF specs, and drawings into a single summary your estimator checks and prices from, and a person still reviews every quote.",
+  },
+  {
     question: "Can we start with ChatGPT we already have?",
     answer:
       "Often, yes. The point is not which logo is on the login screen. It is whether AI is wired into a workflow your team already runs, inside tools they already open. If what you have can do the job, we start there.",
