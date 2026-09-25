@@ -90,7 +90,7 @@ const serviceJsonLd = {
     "@type": "Audience",
     audienceType: "Small business owners",
   },
-  serviceType: "AI workflow audit and implementation",
+  serviceType: "AI workflow audit and setup",
   offers: {
     "@type": "Offer",
     availability: "https://schema.org/InStock",
