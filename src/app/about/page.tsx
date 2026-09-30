@@ -81,6 +81,25 @@ export default function AboutPage() {
                 business owners who need results without another project that
                 never finishes.
               </p>
+              <div className="about-credential">
+                <a
+                  className="about-credential__link"
+                  href="https://www.credly.com/badges/c06e0b61-f404-4d6f-88cb-b84a3cb9303d/public_url"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Image
+                    className="about-credential__badge"
+                    src="/badges/asis-member.png"
+                    alt="ASIS International Member badge"
+                    width={120}
+                    height={120}
+                  />
+                  <span className="about-credential__label">
+                    ASIS International member. Verify on Credly.
+                  </span>
+                </a>
+              </div>
             </div>
           </div>
         </section>
