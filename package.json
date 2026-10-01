@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test src/lib/look-security.test.ts"
+    "test": "node --experimental-strip-types --test src/lib/look-security.test.ts src/lib/portal/*.test.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

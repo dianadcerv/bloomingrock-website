@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { LOOK_PATH } from "@/lib/contact";
+import { getPublicLoginHref } from "@/lib/portal/hosts";
 
 export function SiteHeader({
   onDark = false,
@@ -9,6 +10,8 @@ export function SiteHeader({
   onDark?: boolean;
   current?: "home" | "capabilities" | "about" | "look";
 }) {
+  const loginHref = getPublicLoginHref();
+
   return (
     <header className={`site-header${onDark ? " site-header--on-dark" : ""}`}>
       <Link href="/" className="site-header__brand" aria-label="BloomingRock home">
@@ -26,6 +29,9 @@ export function SiteHeader({
           className={`site-header__link${current === "about" ? " is-active" : ""}`}
         >
           About
+        </Link>
+        <Link href={loginHref} className="site-header__link">
+          Login
         </Link>
         <Link
           className={`btn ${onDark ? "btn--ghost" : "btn--solid-light"}`}
