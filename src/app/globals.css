@@ -377,6 +377,14 @@ img {
   text-decoration-color: var(--sage-300);
 }
 
+.section--moss .scope-list li {
+  color: rgba(236, 234, 228, 0.88);
+}
+
+.section--moss .scope-list--out li::before {
+  background: rgba(246, 245, 241, 0.45);
+}
+
 .divider {
   height: 1px;
   border: 0;
