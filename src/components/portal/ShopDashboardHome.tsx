@@ -71,7 +71,7 @@ export function ShopDashboardHome({
         </div>
         <div className="portal-dashboard-nav-row">
           {navModules.map((mod) => (
-            <ModuleCard key={mod.href + mod.title} {...mod} />
+            <ModuleCard key={mod.href + mod.title} variant="nav" {...mod} />
           ))}
         </div>
       </section>

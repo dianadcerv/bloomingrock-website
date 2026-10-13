@@ -5,14 +5,20 @@ export function ModuleCard({
   eyebrow,
   title,
   body,
+  variant = "default",
 }: {
   href: string;
   eyebrow: string;
   title: string;
   body: string;
+  variant?: "default" | "nav";
 }) {
   return (
-    <Link href={href} className="portal-card">
+    <Link
+      href={href}
+      className={variant === "nav" ? "portal-card portal-card--nav" : "portal-card"}
+      aria-label={`${eyebrow}: ${title}`}
+    >
       <p className="portal-card__eyebrow">{eyebrow}</p>
       <h2 className="portal-card__title">{title}</h2>
       <p className="portal-card__body">{body}</p>
