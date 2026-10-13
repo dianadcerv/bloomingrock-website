@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { DraftNotice, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireRole } from "@/lib/portal/auth";
-import { getJob, JOBS } from "@/lib/portal/demo-data";
+import { requireJobForShop } from "@/lib/portal/auth";
+import { JOBS } from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = { title: "Knowledge" };
 
@@ -13,11 +12,9 @@ export default async function KnowledgePage({
 }: {
   params: Promise<{ jobId: string }>;
 }) {
-  const session = await requireRole("shop");
   const { jobId } = await params;
-  const job = getJob(jobId);
-  if (!job) notFound();
-  const other = JOBS.find((item) => item.id !== job.id);
+  const { session, job } = await requireJobForShop(jobId);
+  const other = JOBS.find((item) => item.id !== job.id && item.id === "machine-guard");
 
   return (
     <PortalShell session={session} current="/jobs">

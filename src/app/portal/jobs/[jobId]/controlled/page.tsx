@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { DraftNotice } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireRole } from "@/lib/portal/auth";
-import { getJob } from "@/lib/portal/demo-data";
+import { requireJobForShop } from "@/lib/portal/auth";
 
 export const metadata: Metadata = { title: "Controlled job" };
 
@@ -13,10 +11,8 @@ export default async function ControlledJobPage({
 }: {
   params: Promise<{ jobId: string }>;
 }) {
-  const session = await requireRole("shop");
   const { jobId } = await params;
-  const job = getJob(jobId);
-  if (!job) notFound();
+  const { session, job } = await requireJobForShop(jobId);
 
   return (
     <PortalShell session={session} current="/documents">

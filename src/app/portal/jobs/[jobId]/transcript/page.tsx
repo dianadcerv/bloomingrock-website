@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { DraftNotice, OpenQuestion } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireRole } from "@/lib/portal/auth";
-import { DEMO_TRANSCRIPT, getJob } from "@/lib/portal/demo-data";
+import { requireJobForShop } from "@/lib/portal/auth";
+import { DEMO_TRANSCRIPT } from "@/lib/portal/demo-data";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "Transcript upload" };
@@ -14,10 +13,8 @@ export default async function TranscriptPage({
 }: {
   params: Promise<{ jobId: string }>;
 }) {
-  const session = await requireRole("shop");
   const { jobId } = await params;
-  const job = getJob(jobId);
-  if (!job) notFound();
+  const { session, job } = await requireJobForShop(jobId);
 
   return (
     <PortalShell session={session} current="/jobs">

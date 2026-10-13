@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { PrintButton } from "@/components/portal/PrintButton";
 import { DraftNotice, OpenQuestion } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireSession } from "@/lib/portal/auth";
-import { DEMO_CUSTOMER, DEMO_PROJECT, DEMO_SHOP, getJob } from "@/lib/portal/demo-data";
+import { requireJob } from "@/lib/portal/auth";
+import {
+  DEMO_SHOP,
+  getCustomerForJob,
+  getProjectForJob,
+} from "@/lib/portal/demo-data";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "PDF preview" };
@@ -15,10 +18,10 @@ export default async function PdfPage({
 }: {
   params: Promise<{ jobId: string }>;
 }) {
-  const session = await requireSession();
   const { jobId } = await params;
-  const job = getJob(jobId);
-  if (!job) notFound();
+  const { session, job } = await requireJob(jobId);
+  const customer = getCustomerForJob(job);
+  const project = getProjectForJob(job);
 
   return (
     <PortalShell session={session} current="/documents">
@@ -31,7 +34,7 @@ export default async function PdfPage({
       <article className="portal-letter portal-shop-doc">
         <p className="portal-shop-doc__name">{DEMO_SHOP.legal}</p>
         <h2>
-          {DEMO_CUSTOMER.name} — {DEMO_PROJECT.name} — {job.name}
+          {customer?.name ?? "Customer"} — {project?.name ?? "Project"} — {job.name}
         </h2>
         <p>
           Requirements summary for review. Conflicts and missing items are listed. No prices.
@@ -48,7 +51,7 @@ export default async function PdfPage({
       <div className="portal-letter">
         <p className="look-field__hint">Drafted email</p>
         <pre>
-          {`Hi Jordan — attached is a requirements PDF for the ${job.name}. Please review the open items. Nothing in this message is a quote.`}
+          {`Hi ${customer?.contact?.split(" ")[0] ?? "there"} — attached is a requirements PDF for the ${job.name}. Please review the open items. Nothing in this message is a quote.`}
         </pre>
         <button className="btn btn--primary" type="button" disabled>
           Send (disabled in demo)

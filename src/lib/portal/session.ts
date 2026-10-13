@@ -68,6 +68,13 @@ export const DEMO_USERS: readonly PortalUser[] = [
     org: "Meridian Food Plants",
     title: "Plant engineer",
   },
+  {
+    email: "alex@harborview.demo",
+    role: "buyer",
+    name: "Alex Rivera",
+    org: "Harborview Logistics",
+    title: "Facilities manager",
+  },
 ] as const;
 
 export function normalizeEmail(value: string) {

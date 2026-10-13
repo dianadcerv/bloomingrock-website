@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireSession } from "@/lib/portal/auth";
-import { getJob } from "@/lib/portal/demo-data";
+import { requireJob } from "@/lib/portal/auth";
 
 export const metadata: Metadata = { title: "Workflow" };
 
@@ -13,10 +11,8 @@ export default async function WorkflowPage({
 }: {
   params: Promise<{ jobId: string }>;
 }) {
-  const session = await requireSession();
   const { jobId } = await params;
-  const job = getJob(jobId);
-  if (!job) notFound();
+  const { session, job } = await requireJob(jobId);
 
   return (
     <PortalShell session={session} current="/workflows">

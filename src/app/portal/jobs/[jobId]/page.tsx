@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { OpenQuestion, StatusPill, SuggestionBadge } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireSession } from "@/lib/portal/auth";
+import { requireJob } from "@/lib/portal/auth";
 import {
   checkStatusLabel,
-  getJob,
   getSource,
   type CheckStatus,
 } from "@/lib/portal/demo-data";
@@ -27,10 +25,8 @@ export default async function JobWorkspacePage({
 }: {
   params: Promise<{ jobId: string }>;
 }) {
-  const session = await requireSession();
   const { jobId } = await params;
-  const job = getJob(jobId);
-  if (!job) notFound();
+  const { session, job } = await requireJob(jobId);
 
   return (
     <PortalShell session={session} current="/jobs">

@@ -15,6 +15,7 @@ describe("demo users", () => {
   it("maps shop and buyer emails", () => {
     assert.equal(findDemoUser("Maya@Northridge.demo")?.role, "shop");
     assert.equal(findDemoUser("jordan@meridian.demo")?.role, "buyer");
+    assert.equal(findDemoUser("alex@harborview.demo")?.role, "buyer");
     assert.equal(findDemoUser("nobody@example.com"), null);
   });
 });

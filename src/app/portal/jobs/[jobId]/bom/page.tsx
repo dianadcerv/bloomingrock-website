@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { PrintButton } from "@/components/portal/PrintButton";
 import { DraftNotice, OpenQuestion } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireSession } from "@/lib/portal/auth";
-import { getJob } from "@/lib/portal/demo-data";
+import { requireJob } from "@/lib/portal/auth";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "BOM" };
@@ -15,10 +13,8 @@ export default async function BomPage({
 }: {
   params: Promise<{ jobId: string }>;
 }) {
-  const session = await requireSession();
   const { jobId } = await params;
-  const job = getJob(jobId);
-  if (!job) notFound();
+  const { session, job } = await requireJob(jobId);
 
   const csv = [
     "group,description,qty,material,vendor,vendor_part,notes",

@@ -141,6 +141,16 @@ export const DEMO_CUSTOMER: DemoCustomer = {
   projectIds: ["line-3"],
 };
 
+export const DEMO_CUSTOMER_HARBORVIEW: DemoCustomer = {
+  id: "harborview",
+  name: "Harborview Logistics",
+  contact: "Alex Rivera",
+  email: "alex@harborview.demo",
+  projectIds: ["warehouse-b"],
+};
+
+export const DEMO_CUSTOMERS: DemoCustomer[] = [DEMO_CUSTOMER, DEMO_CUSTOMER_HARBORVIEW];
+
 export const DEMO_PROJECT: DemoProject = {
   id: "line-3",
   name: "Line 3 upgrade",
@@ -148,6 +158,16 @@ export const DEMO_PROJECT: DemoProject = {
   site: "Line 3, Rockford plant",
   jobIds: ["access-platform", "machine-guard"],
 };
+
+export const DEMO_PROJECT_WAREHOUSE_B: DemoProject = {
+  id: "warehouse-b",
+  name: "Warehouse B expansion",
+  customerId: DEMO_CUSTOMER_HARBORVIEW.id,
+  site: "Harborview dock yard, Joliet IL",
+  jobIds: ["warehouse-b-stair"],
+};
+
+export const DEMO_PROJECTS: DemoProject[] = [DEMO_PROJECT, DEMO_PROJECT_WAREHOUSE_B];
 
 const ACCESS_SOURCES: DemoSource[] = [
   {
@@ -466,6 +486,164 @@ export const JOBS: DemoJob[] = [
     ],
     controlledProposal: true,
   },
+  {
+    id: "warehouse-b-stair",
+    name: "Exterior steel stair",
+    projectId: "warehouse-b",
+    status: "ready-for-signoff",
+    revision: 0,
+    summary:
+      "Three-flight exterior stair to a new mezzanine door. Checklist mostly filled; engineer review and sign-off are next — no width conflict on this job.",
+    sources: [
+      {
+        id: "hv-email-1",
+        kind: "email",
+        title: "Exterior stair for Warehouse B mezzanine",
+        from: "Alex Rivera <alex@harborview.demo>",
+        summary: "Requests a galvanized exterior stair, 11 ft rise, landing at mezzanine door.",
+        status: "reviewed",
+        readByApp: true,
+        quote: "…11'-0\" total rise, landing aligned with the new mezz door…",
+      },
+      {
+        id: "hv-pdf-1",
+        kind: "pdf",
+        title: "Anchor bolt plan",
+        from: "Alex Rivera",
+        summary: "Foundation plan with bolt locations. OCR pulled embed pattern — needs review.",
+        status: "needs-review",
+        readByApp: true,
+      },
+    ],
+    checklist: [
+      {
+        id: "rise",
+        label: "Total rise",
+        status: "complete",
+        reviewState: "needs-review",
+        value: "11 ft",
+        sourceIds: ["hv-email-1"],
+        note: "AI suggestion from email — person has not confirmed.",
+      },
+      {
+        id: "width",
+        label: "Stair clear width",
+        status: "complete",
+        reviewState: "needs-review",
+        value: "44 in.",
+        sourceIds: ["hv-email-1"],
+      },
+      {
+        id: "finish",
+        label: "Finish",
+        status: "complete",
+        reviewState: "needs-review",
+        value: "Hot-dip galvanize",
+        sourceIds: ["hv-email-1"],
+      },
+      {
+        id: "load",
+        label: "Live load",
+        status: "missing",
+        reviewState: "needs-review",
+        sourceIds: [],
+      },
+    ],
+    conflicts: [],
+    questions: [
+      {
+        id: "q-hv-load",
+        prompt: "Confirm live load for the exterior stair (100 psf assumed in draft).",
+        askedOf: "customer",
+        owner: "Maya Chen (estimator)",
+        draft:
+          "Alex — please confirm live load for the Warehouse B exterior stair. We have 100 psf as a placeholder from a similar job.",
+        sent: false,
+      },
+    ],
+    workflow: [
+      { id: "intake", label: "Intake sources", kind: "minimum", done: true },
+      { id: "checklist", label: "Fill the requirements checklist", kind: "minimum", done: true },
+      { id: "eng-review", label: "Engineering review", kind: "minimum", done: false },
+      { id: "signoff", label: "Customer + engineer sign-off", kind: "minimum", done: false },
+    ],
+    bom: [
+      {
+        id: "hv-b1",
+        group: "Structure",
+        description: "Stair stringers, W12×26",
+        qty: "2",
+        material: "A992 steel",
+        vendor: "Demo Metals Supply",
+        vendorPart: "W12×26-24",
+        notes: "No prices",
+      },
+      {
+        id: "hv-b2",
+        group: "Stairs",
+        description: "Checkered plate treads",
+        qty: "18",
+        material: "A36 plate",
+        vendor: "Northridge (in-house)",
+        vendorPart: "—",
+        notes: "Galv. after fab",
+      },
+      {
+        id: "hv-b3",
+        group: "Landing",
+        description: "Landing plate and angle frame",
+        qty: "1",
+        material: "A36 plate",
+        vendor: "Northridge (in-house)",
+        vendorPart: "—",
+        notes: "At mezz door elevation",
+      },
+      {
+        id: "hv-b4",
+        group: "Rails",
+        description: "Exterior handrail and guard",
+        qty: "48 lf",
+        material: "Galv. pipe",
+        vendor: "Northridge (in-house)",
+        vendorPart: "—",
+        notes: "42 in. suggested",
+      },
+      {
+        id: "hv-b5",
+        group: "Anchors",
+        description: "Anchor bolts per foundation plan",
+        qty: "12",
+        material: "Galv. anchors",
+        vendor: "Demo Fastener House",
+        vendorPart: "AB-34-HDG",
+        notes: "From OCR — needs review",
+      },
+    ],
+    knowledge: [],
+    auditLog: [
+      {
+        id: "hv-a1",
+        at: "2026-10-11 08:30 CT",
+        who: "Maya Chen",
+        action: "Confirmed inbox match",
+        detail: "Message in-4 attached to Exterior steel stair.",
+      },
+      {
+        id: "hv-a2",
+        at: "2026-10-11 08:45 CT",
+        who: "App (demo)",
+        action: "OCR + draft values",
+        detail: "Pulled rise, width, and finish from email; anchor count from PDF — all marked needs review.",
+      },
+      {
+        id: "hv-a3",
+        at: "2026-10-12 15:20 CT",
+        who: "Maya Chen",
+        action: "Checklist review",
+        detail: "Marked ready for sign-off pending live load confirmation and engineering review.",
+      },
+    ],
+  },
 ];
 
 export const INBOX_ITEMS: InboxItem[] = [
@@ -519,6 +697,39 @@ export const INBOX_ITEMS: InboxItem[] = [
     bodyPreview: "Following up with mezzanine photos from Thursday's walkthrough.",
     attachments: ["line3-mezzanine-photos.pdf", "mezzanine-reference.dxf"],
   },
+  {
+    id: "in-4",
+    subject: "Exterior stair for Warehouse B mezzanine",
+    from: "Alex Rivera · Harborview Logistics",
+    suggested: {
+      customer: DEMO_CUSTOMER_HARBORVIEW.name,
+      customerId: DEMO_CUSTOMER_HARBORVIEW.id,
+      projectId: DEMO_PROJECT_WAREHOUSE_B.id,
+      project: DEMO_PROJECT_WAREHOUSE_B.name,
+      jobIds: ["warehouse-b-stair"],
+      jobs: ["Exterior steel stair"],
+    },
+    snippet: "Need a galvanized exterior stair to the new mezzanine door…",
+    bodyPreview:
+      "Hi Maya — for Warehouse B expansion we need an exterior steel stair, 11 ft rise to the mezz door. Galvanized.",
+    attachments: ["warehouse-b-stair-sketch.pdf"],
+  },
+  {
+    id: "in-5",
+    subject: "Anchor bolt plan for the stair",
+    from: "Alex Rivera · Harborview Logistics",
+    suggested: {
+      customer: DEMO_CUSTOMER_HARBORVIEW.name,
+      customerId: DEMO_CUSTOMER_HARBORVIEW.id,
+      projectId: DEMO_PROJECT_WAREHOUSE_B.id,
+      project: DEMO_PROJECT_WAREHOUSE_B.name,
+      jobIds: ["warehouse-b-stair"],
+      jobs: ["Exterior steel stair"],
+    },
+    snippet: "Foundation plan with bolt locations for your stair…",
+    bodyPreview: "Attached anchor bolt plan for the Warehouse B exterior stair footing.",
+    attachments: ["anchor-bolt-plan.pdf"],
+  },
 ];
 
 export const DEMO_TRANSCRIPT = {
@@ -539,13 +750,35 @@ export function getInboxItem(id: string) {
 }
 
 export function getCustomer(id: string) {
-  if (id === DEMO_CUSTOMER.id) return DEMO_CUSTOMER;
-  return null;
+  return DEMO_CUSTOMERS.find((customer) => customer.id === id) ?? null;
 }
 
 export function getProject(id: string) {
-  if (id === DEMO_PROJECT.id) return DEMO_PROJECT;
-  return null;
+  return DEMO_PROJECTS.find((project) => project.id === id) ?? null;
+}
+
+export function getCustomerForJob(job: DemoJob) {
+  const project = getProject(job.projectId);
+  if (!project) return null;
+  return getCustomer(project.customerId);
+}
+
+export function getProjectForJob(job: DemoJob) {
+  return getProject(job.projectId);
+}
+
+export function inboxItemsByCustomer() {
+  const groups = new Map<string, InboxItem[]>();
+  for (const item of INBOX_ITEMS) {
+    const id = item.suggested.customerId;
+    const list = groups.get(id) ?? [];
+    list.push(item);
+    groups.set(id, list);
+  }
+  return DEMO_CUSTOMERS.map((customer) => ({
+    customer,
+    items: groups.get(customer.id) ?? [],
+  })).filter((group) => group.items.length > 0);
 }
 
 export function getSource(job: DemoJob, sourceId: string) {

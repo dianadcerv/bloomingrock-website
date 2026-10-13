@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
 import { ModuleCard, PageIntro } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
+import { buyerCustomerIdForEmail } from "@/lib/portal/access";
 import { requireSession } from "@/lib/portal/auth";
-import { DEMO_CUSTOMER, DEMO_PROJECT, JOBS } from "@/lib/portal/demo-data";
+import {
+  DEMO_CUSTOMER,
+  DEMO_CUSTOMER_HARBORVIEW,
+  DEMO_PROJECT,
+  DEMO_PROJECT_WAREHOUSE_B,
+  INBOX_ITEMS,
+  getJob,
+} from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -10,62 +18,90 @@ export const metadata: Metadata = {
 
 export default async function DashboardPage() {
   const session = await requireSession();
-  const platform = JOBS[0];
-  const guard = JOBS[1];
+  const platform = getJob("access-platform");
+  const guard = getJob("machine-guard");
+  const harborStair = getJob("warehouse-b-stair");
+
+  const meridianInbox = INBOX_ITEMS.filter((i) => i.suggested.customerId === "meridian").length;
+  const harborInbox = INBOX_ITEMS.filter((i) => i.suggested.customerId === "harborview").length;
 
   const shopModules = [
     {
       href: "/inbox",
       eyebrow: "Inbox",
-      title: "3 messages need a match",
-      body: "Suggested customer: Meridian Food Plants. Confirm, reassign, or forward before filing.",
+      title: `${INBOX_ITEMS.length} messages · 2 customers`,
+      body: `Meridian (${meridianInbox}) and Harborview (${harborInbox}). Review matches before filing.`,
     },
     {
-      href: "/customers",
-      eyebrow: "Customers",
-      title: DEMO_CUSTOMER.name,
-      body: "Customer → project → job. Phase 1 records are manual; inbox only suggests matches.",
+      href: `/customers/${DEMO_CUSTOMER.id}`,
+      eyebrow: "Meridian Food Plants",
+      title: DEMO_PROJECT.name,
+      body: `${platform?.name}: ${platform?.status === "conflict" ? "width conflict" : "in progress"}. ${guard?.name}: waiting on customer.`,
+    },
+    {
+      href: `/customers/${DEMO_CUSTOMER_HARBORVIEW.id}`,
+      eyebrow: "Harborview Logistics",
+      title: DEMO_PROJECT_WAREHOUSE_B.name,
+      body: `${harborStair?.name}: ready for sign-off (different stage than Line 3 platform).`,
     },
     {
       href: "/jobs",
-      eyebrow: "Jobs / projects",
-      title: `${DEMO_PROJECT.name} · 2 jobs`,
-      body: `${platform.name} has a width conflict. ${guard.name} is waiting on an opening size.`,
-    },
-    {
-      href: "/workflows",
-      eyebrow: "Workflows",
-      title: "Minimum vs ideal vs added steps",
-      body: "Access platform still needs conflict resolution and engineering review.",
+      eyebrow: "Jobs",
+      title: "Grouped by customer",
+      body: "Switch between Meridian and Harborview projects from one list.",
     },
     {
       href: "/documents",
       eyebrow: "Sign-off / documents",
       title: "Drafts only — nothing sent",
-      body: "Sign-off, work order, BOM, and PDF are ready to preview. A person still sends.",
+      body: "Per-job sign-off, work order, BOM, and PDF. Open from each job.",
     },
   ];
 
-  const buyerModules = [
-    {
-      href: "/jobs",
-      eyebrow: "Jobs",
-      title: `${DEMO_PROJECT.name} at your plant`,
-      body: "The access platform has an open question on width. The machine guard is waiting on size.",
-    },
-    {
-      href: "/documents",
-      eyebrow: "Documents / sign-off",
-      title: "Nothing is waiting on your signature yet",
-      body: "When Northridge is ready, you’ll review the requirements here and sign with a one-time code.",
-    },
-    {
-      href: "/requests",
-      eyebrow: "Requests",
-      title: "2 questions still in draft",
-      body: "Northridge has not sent them. You’ll see width, load rating, finish, and anchoring.",
-    },
-  ];
+  const buyerCustomerId = buyerCustomerIdForEmail(session.email);
+  const isMeridian = buyerCustomerId === DEMO_CUSTOMER.id;
+
+  const buyerModules = isMeridian
+    ? [
+        {
+          href: "/jobs",
+          eyebrow: "Jobs",
+          title: `${DEMO_PROJECT.name} at your plant`,
+          body: "The access platform has an open question on width. The machine guard is waiting on size.",
+        },
+        {
+          href: "/documents",
+          eyebrow: "Documents / sign-off",
+          title: "Nothing is waiting on your signature yet",
+          body: "When Northridge is ready, you’ll review the requirements here and sign with a one-time code.",
+        },
+        {
+          href: "/requests",
+          eyebrow: "Requests",
+          title: "2 questions still in draft",
+          body: "Northridge has not sent them. You’ll see width, load rating, finish, and anchoring.",
+        },
+      ]
+    : [
+        {
+          href: "/jobs",
+          eyebrow: "Jobs",
+          title: DEMO_PROJECT_WAREHOUSE_B.name,
+          body: "Exterior steel stair is ready for sign-off pending live load and engineering review.",
+        },
+        {
+          href: "/jobs/warehouse-b-stair/sign-off",
+          eyebrow: "Sign-off",
+          title: "Review requirements when invited",
+          body: "Secure link and one-time code — demo only.",
+        },
+        {
+          href: "/requests",
+          eyebrow: "Requests",
+          title: "1 question in draft",
+          body: "Live load confirmation — not sent yet.",
+        },
+      ];
 
   const modules = session.role === "shop" ? shopModules : buyerModules;
 
@@ -74,13 +110,13 @@ export default async function DashboardPage() {
       <PageIntro eyebrow={session.org} title={`Hello, ${session.name.split(" ")[0]}`}>
         <p>
           {session.role === "shop"
-            ? "Shop-user home — not admin. Each window opens a working section."
-            : "Customer home. You only see jobs, documents, and requests meant for you."}
+            ? "Shop-user home — switch customers from the cards below or the Customers nav."
+            : `Customer home for ${session.org}. You only see this customer’s jobs and documents.`}
         </p>
       </PageIntro>
       <div className="portal-grid">
         {modules.map((mod) => (
-          <ModuleCard key={mod.href} {...mod} />
+          <ModuleCard key={mod.href + mod.title} {...mod} />
         ))}
       </div>
     </PortalShell>

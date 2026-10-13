@@ -3,42 +3,47 @@ import Link from "next/link";
 import { PageIntro, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireRole } from "@/lib/portal/auth";
-import { INBOX_ITEMS } from "@/lib/portal/demo-data";
+import { inboxItemsByCustomer } from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = { title: "Inbox" };
 
 export default async function InboxPage() {
   const session = await requireRole("shop");
+  const groups = inboxItemsByCustomer();
 
   return (
     <PortalShell session={session} current="/inbox">
       <PageIntro eyebrow="Shop home" title="Inbox">
         <p>
-          Suggested customer and job matches. Anyone with inbox access can confirm, reassign,
-          or forward before anything is filed.
+          Grouped by suggested customer. Confirm, reassign, or forward before anything is
+          filed.
         </p>
       </PageIntro>
-      <ul className="portal-list">
-        {INBOX_ITEMS.map((item) => (
-          <li key={item.id} className="portal-list__item">
-            <div>
-              <p className="portal-list__kicker">{item.from}</p>
-              <h2>{item.subject}</h2>
-              <p>{item.snippet}</p>
-              <p className="portal-list__meta">
-                Suggested: {item.suggested.customer} → {item.suggested.project} →{" "}
-                {item.suggested.jobs.join(" + ")}
-              </p>
-            </div>
-            <div className="portal-list__actions">
-              <StatusPill tone="draft">Needs confirm</StatusPill>
-              <Link className="btn btn--primary" href={`/inbox/${item.id}`}>
-                Review match
-              </Link>
-            </div>
-          </li>
-        ))}
-      </ul>
+      {groups.map(({ customer, items }) => (
+        <section key={customer.id} className="portal-inbox-group">
+          <h2>{customer.name}</h2>
+          <ul className="portal-list">
+            {items.map((item) => (
+              <li key={item.id} className="portal-list__item">
+                <div>
+                  <p className="portal-list__kicker">{item.from}</p>
+                  <h3>{item.subject}</h3>
+                  <p>{item.snippet}</p>
+                  <p className="portal-list__meta">
+                    Suggested: {item.suggested.project} → {item.suggested.jobs.join(" + ")}
+                  </p>
+                </div>
+                <div className="portal-list__actions">
+                  <StatusPill tone="draft">Needs confirm</StatusPill>
+                  <Link className="btn btn--primary" href={`/inbox/${item.id}`}>
+                    Review match
+                  </Link>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </PortalShell>
   );
 }

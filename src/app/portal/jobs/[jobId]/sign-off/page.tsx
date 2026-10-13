@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
 import {
   DraftNotice,
@@ -8,13 +7,12 @@ import {
   SuggestionBadge,
 } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireSession } from "@/lib/portal/auth";
+import { requireJob } from "@/lib/portal/auth";
 import {
   checkStatusLabel,
-  DEMO_CUSTOMER,
-  DEMO_PROJECT,
   DEMO_SHOP,
-  getJob,
+  getCustomerForJob,
+  getProjectForJob,
   getSource,
   type CheckStatus,
 } from "@/lib/portal/demo-data";
@@ -34,11 +32,11 @@ export default async function SignOffPage({
 }: {
   params: Promise<{ jobId: string }>;
 }) {
-  const session = await requireSession();
   const { jobId } = await params;
-  const job = getJob(jobId);
-  if (!job) notFound();
+  const { session, job } = await requireJob(jobId);
   const buyer = session.role === "buyer";
+  const customer = getCustomerForJob(job);
+  const project = getProjectForJob(job);
 
   const assumed = job.checklist.filter((c) => c.status === "assumed");
 
@@ -82,7 +80,7 @@ export default async function SignOffPage({
         <header>
           <h2>Job Requirements Sign-off</h2>
           <p>
-            {DEMO_CUSTOMER.name} · {DEMO_PROJECT.name} · {job.name}
+            {customer?.name ?? "Customer"} · {project?.name ?? "Project"} · {job.name}
           </p>
           <p className="look-field__hint">
             Revision {job.revision} · {new Date().toLocaleDateString("en-US")} · {DEMO_SHOP.name}
@@ -179,7 +177,9 @@ export default async function SignOffPage({
         <section className="portal-section">
           <h3>Sign-offs</h3>
           <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.signOffLegal}</OpenQuestion>
-          <p>Customer: {DEMO_CUSTOMER.contact} — not signed (demo blocked by open items).</p>
+          <p>
+            Customer: {customer?.contact ?? "—"} — not signed (demo blocked by open items).
+          </p>
           <p>Engineer: Maya Chen — not signed.</p>
           {buyer ? (
             <button className="btn btn--primary" type="button" disabled>

@@ -1,22 +1,25 @@
 import Link from "next/link";
+import { CustomerProjectSwitcher } from "@/components/portal/CustomerProjectSwitcher";
 import { StatusPill } from "@/components/portal/PortalUi";
 import {
-  DEMO_CUSTOMER,
-  DEMO_PROJECT,
+  getCustomerForJob,
+  getProjectForJob,
   jobStatusLabel,
   type DemoJob,
 } from "@/lib/portal/demo-data";
 
-function JobBreadcrumb() {
+function JobBreadcrumb({ job }: { job: DemoJob }) {
+  const project = getProjectForJob(job);
+  const customer = getCustomerForJob(job);
+  if (!project || !customer) return null;
+
   return (
     <nav className="portal-breadcrumb" aria-label="Customer and project">
       <Link href="/customers">Customers</Link>
       <span aria-hidden="true">/</span>
-      <Link href={`/customers/${DEMO_CUSTOMER.id}`}>{DEMO_CUSTOMER.name}</Link>
+      <Link href={`/customers/${customer.id}`}>{customer.name}</Link>
       <span aria-hidden="true">/</span>
-      <Link href={`/customers/${DEMO_CUSTOMER.id}/projects/${DEMO_PROJECT.id}`}>
-        {DEMO_PROJECT.name}
-      </Link>
+      <Link href={`/customers/${customer.id}/projects/${project.id}`}>{project.name}</Link>
       <span aria-hidden="true">/</span>
       <span>Job</span>
     </nav>
@@ -39,6 +42,9 @@ export function JobHeader({
   current: string;
   role?: "shop" | "buyer";
 }) {
+  const project = getProjectForJob(job);
+  const customer = getCustomerForJob(job);
+
   const links = [
     { href: `/jobs/${job.id}`, label: "Workspace" },
     ...(role === "shop"
@@ -59,9 +65,10 @@ export function JobHeader({
 
   return (
     <div className="job-head">
-      <JobBreadcrumb />
+      <JobBreadcrumb job={job} />
+      <CustomerProjectSwitcher job={job} role={role} />
       <p className="portal-intro__eyebrow">
-        {DEMO_CUSTOMER.name} · {DEMO_PROJECT.name}
+        {customer?.name ?? "Customer"} · {project?.name ?? "Project"}
       </p>
       <div className="job-head__title-row">
         <h1 className="portal-intro__title">{job.name}</h1>

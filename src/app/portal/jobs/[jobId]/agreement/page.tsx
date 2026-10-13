@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { PrintButton } from "@/components/portal/PrintButton";
 import { DraftNotice, OpenQuestion } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireSession } from "@/lib/portal/auth";
-import { DEMO_CUSTOMER, DEMO_PROJECT, DEMO_SHOP, getJob } from "@/lib/portal/demo-data";
+import { requireJob } from "@/lib/portal/auth";
+import {
+  DEMO_SHOP,
+  getCustomerForJob,
+  getProjectForJob,
+} from "@/lib/portal/demo-data";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "Work order" };
@@ -15,10 +18,10 @@ export default async function AgreementPage({
 }: {
   params: Promise<{ jobId: string }>;
 }) {
-  const session = await requireSession();
   const { jobId } = await params;
-  const job = getJob(jobId);
-  if (!job) notFound();
+  const { session, job } = await requireJob(jobId);
+  const customer = getCustomerForJob(job);
+  const project = getProjectForJob(job);
 
   return (
     <PortalShell session={session} current="/documents">
@@ -37,7 +40,7 @@ export default async function AgreementPage({
         <p className="portal-shop-doc__name">{DEMO_SHOP.legal}</p>
         <h2>Work order agreement</h2>
         <p>
-          {DEMO_CUSTOMER.name} · {DEMO_PROJECT.name} · {job.name}
+          {customer?.name ?? "Customer"} · {project?.name ?? "Project"} · {job.name}
         </p>
         <p>
           PLACEHOLDER — no invented terms or legal language. Real layout waits on a shop example
