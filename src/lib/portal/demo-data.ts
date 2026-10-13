@@ -74,6 +74,7 @@ export type WorkflowStep = {
   outputs?: string;
   notes?: string;
   fromKnowledgeId?: string;
+  provenance?: ProvenanceMark[];
 };
 
 export type AuditEntry = {
@@ -450,6 +451,9 @@ export const JOBS: DemoJob[] = [
         done: false,
         ownerRole: "Estimator",
         notes: "Added from team experience — color-coded.",
+        provenance: [
+          { type: "institutional", addedBy: "Maya Chen", addedAt: "Oct 6, 2026" },
+        ],
       },
       {
         id: "eng-review",

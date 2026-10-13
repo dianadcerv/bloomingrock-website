@@ -185,7 +185,7 @@ export const CATEGORY_WORKFLOW_SUGGESTIONS: CategoryWorkflowSuggestion[] = [
     id: "cat-sug-walk",
     categoryId: "access-platforms",
     categoryLabel: "Access platforms",
-    fromCommentId: "c-walk-seed",
+    fromCommentId: "sc-ap-2",
     jobId: "access-platform",
     jobName: "Industrial access platform",
     summary: "Site walk to confirm dimensions appears often in platform job comments.",
@@ -221,9 +221,61 @@ export function notificationRecipientsForChange(change: WorkflowChangeProposal):
   return [...emails];
 }
 
-function buildNotifications(): DashboardNotification[] {
+export type WorkflowStepComment = {
+  id: string;
+  stepId: string;
+  at: string;
+  authorName: string;
+  authorEmail: string;
+  body: string;
+};
+
+/** Seed comments on workflow steps (both sides can reply in the UI). */
+export const WORKFLOW_STEP_COMMENT_SEEDS: Record<
+  string,
+  Record<string, WorkflowStepComment[]>
+> = {
+  "access-platform": {
+    checklist: [
+      {
+        id: "sc-ap-1",
+        stepId: "checklist",
+        at: "Oct 9, 2026 10:00 AM CT",
+        authorName: "Maya Chen",
+        authorEmail: "maya@northridge.demo",
+        body: "Width is still open — we'll align with Meridian once the email thread is confirmed.",
+      },
+    ],
+    "site-walk": [
+      {
+        id: "sc-ap-2",
+        stepId: "site-walk",
+        at: "Oct 8, 2026 3:00 PM CT",
+        authorName: "Jordan Hale",
+        authorEmail: "jordan@meridian.demo",
+        body: "We can walk Line 3 Tuesday if that helps confirm clear width.",
+      },
+    ],
+  },
+  "machine-guard": {
+    checklist: [
+      {
+        id: "sc-mg-1",
+        stepId: "checklist",
+        at: "Oct 10, 2026 9:30 AM CT",
+        authorName: "Jordan Hale",
+        authorEmail: "jordan@meridian.demo",
+        body: "Opening size is the blocker — EHS thread is separate from this checklist line.",
+      },
+    ],
+  },
+};
+
+export function buildNotificationsFromProposals(
+  proposals: WorkflowChangeProposal[],
+): DashboardNotification[] {
   const items: DashboardNotification[] = [];
-  for (const change of WORKFLOW_CHANGE_PROPOSALS) {
+  for (const change of proposals) {
     if (change.status !== "pending" && change.status !== "rejected-in-discussion") continue;
     const job = getJob(change.jobId);
     if (!job) continue;
@@ -257,7 +309,7 @@ function buildNotifications(): DashboardNotification[] {
   return items;
 }
 
-const ALL_NOTIFICATIONS = buildNotifications();
+const ALL_NOTIFICATIONS = buildNotificationsFromProposals(WORKFLOW_CHANGE_PROPOSALS);
 
 export function getDashboardNotificationsForEmail(email: string) {
   const normalized = normalizeEmail(email);
@@ -276,4 +328,56 @@ export function proposalsForJob(jobId: string) {
 
 export function categorySuggestions(categoryId: string) {
   return CATEGORY_WORKFLOW_SUGGESTIONS.filter((c) => c.categoryId === categoryId);
+}
+
+/** Dashboard “waiting on you” rows from workflow threads (server / seed data). */
+export function getWorkflowWaitingAttention(
+  email: string,
+  proposals: WorkflowChangeProposal[] = WORKFLOW_CHANGE_PROPOSALS,
+) {
+  const normalized = normalizeEmail(email);
+  const rows: {
+    id: string;
+    urgency: number;
+    title: string;
+    detail: string;
+    statusLabel: string;
+    tone: "draft" | "conflict" | "assumed";
+    actionLabel: string;
+    href: string;
+  }[] = [];
+  for (const change of proposals) {
+    const recipients = notificationRecipientsForChange(change);
+    if (!recipients.some((r) => normalizeEmail(r) === normalized)) continue;
+    if (change.status === "pending") {
+      const approver = pendingApproverEmail(change);
+      if (approver && normalizeEmail(approver) === normalized) {
+        rows.push({
+          id: `wf-approve-${change.id}`,
+          urgency: 0,
+          title: "Approve workflow change",
+          detail:
+            change.kind === "add-step"
+              ? `Add step: ${change.stepLabel}`
+              : `Remove step: ${change.targetStepLabel ?? "step"}`,
+          statusLabel: change.isNew ? "NEW · pending" : "Pending approval",
+          tone: "assumed",
+          actionLabel: "Review workflow",
+          href: `/jobs/${change.jobId}/workflow#change-${change.id}`,
+        });
+      }
+    } else if (change.status === "rejected-in-discussion") {
+      rows.push({
+        id: `wf-discuss-${change.id}`,
+        urgency: 1,
+        title: "Rejected, in discussion",
+        detail: `${change.stepLabel || change.targetStepLabel} — reply on the open thread`,
+        statusLabel: "In discussion",
+        tone: "conflict",
+        actionLabel: "Open thread",
+        href: `/jobs/${change.jobId}/workflow#change-${change.id}`,
+      });
+    }
+  }
+  return rows.sort((a, b) => a.urgency - b.urgency);
 }

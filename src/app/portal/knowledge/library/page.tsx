@@ -21,7 +21,21 @@ export default async function KnowledgeLibraryPage() {
         </p>
       </PageIntro>
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.knowledgeApproval}</OpenQuestion>
-      <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.workflowEditPermissions}</OpenQuestion>
+      <section className="portal-section">
+        <h2>Project categories</h2>
+        <p className="look-field__hint">
+          Workflow comments collect as SUGGESTED template adjustments per category. Accepting a
+          suggestion does not change live jobs — template editing is Phase 2.
+        </p>
+        <ul className="portal-inline-actions">
+          <Link className="btn btn--primary" href="/knowledge/categories/access-platforms">
+            Access platforms
+          </Link>
+          <Link className="btn btn--quiet portal-btn-quiet" href="/knowledge/categories/exterior-stairs">
+            Exterior stairs
+          </Link>
+        </ul>
+      </section>
       <p className="look-field__hint">
         {EXPERT_KNOWLEDGE_TIPS.length} tips in demo data. Add more from any job&apos;s{" "}
         <Link href="/jobs/access-platform/knowledge">Knowledge</Link> tab.

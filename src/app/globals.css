@@ -2379,6 +2379,44 @@ img {
   color: var(--lichen);
 }
 
+.portal-wf-propose {
+  margin-block: 1rem 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--portal-border, #d4d0c8);
+  border-radius: 0.5rem;
+  background: var(--portal-surface-muted, #f7f5f0);
+}
+
+.portal-wf-propose__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.portal-step--pending-add {
+  outline: 2px dashed var(--lichen, #7a9e6a);
+  outline-offset: 2px;
+}
+
+.portal-step--pending-remove {
+  opacity: 0.75;
+  text-decoration: line-through;
+  text-decoration-color: var(--portal-muted, #6b6560);
+}
+
+.portal-step-comments {
+  width: 100%;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.portal-workflow-job {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 .portal-wf-change__reject,
 .portal-wf-change__reply {
   margin-top: 1rem;

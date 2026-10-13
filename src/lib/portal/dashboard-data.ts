@@ -11,6 +11,7 @@ import {
   jobStatusLabel,
   jobStatusPillTone,
 } from "./demo-data";
+import { getWorkflowWaitingAttention } from "./workflow-changes";
 
 export type SummaryTile = {
   id: string;
@@ -106,12 +107,27 @@ export function getShopSummaryTiles(): SummaryTile[] {
   ];
 }
 
-export function getShopAttentionItems(limit?: number): AttentionRow[] {
+export function getShopAttentionItems(
+  limit?: number,
+  shopEmail = "maya@northridge.demo",
+): AttentionRow[] {
   const platform = JOBS.find((j) => j.id === "access-platform")!;
   const guard = JOBS.find((j) => j.id === "machine-guard")!;
   const stair = JOBS.find((j) => j.id === "warehouse-b-stair")!;
 
+  const workflowRows: AttentionRow[] = getWorkflowWaitingAttention(shopEmail).map((wf) => ({
+    id: wf.id,
+    urgency: wf.urgency,
+    title: wf.title,
+    detail: wf.detail,
+    statusLabel: wf.statusLabel,
+    tone: wf.tone,
+    actionLabel: wf.actionLabel,
+    href: wf.href,
+  }));
+
   const rows: AttentionRow[] = [
+    ...workflowRows,
     {
       id: "att-in-1",
       urgency: 1,
@@ -269,6 +285,19 @@ export function getCustomerSummaryTiles(session: PortalSession): SummaryTile[] {
 export function getCustomerWaitingItems(session: PortalSession): AttentionRow[] {
   const jobs = jobsForSession(session);
   const rows: AttentionRow[] = [];
+
+  for (const wf of getWorkflowWaitingAttention(session.email)) {
+    rows.push({
+      id: wf.id,
+      urgency: wf.urgency,
+      title: wf.title,
+      detail: wf.detail,
+      statusLabel: wf.statusLabel,
+      tone: wf.tone,
+      actionLabel: wf.actionLabel,
+      href: wf.href,
+    });
+  }
 
   for (const job of jobs) {
     if (job.status === "waiting-on-customer") {

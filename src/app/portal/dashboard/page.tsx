@@ -61,6 +61,7 @@ export default async function DashboardPage() {
       <PortalShell session={session} current="/dashboard">
         <ShopDashboardHome
           firstName={firstName}
+          email={session.email}
           notifications={getDashboardNotificationsForEmail(session.email)}
           summaryTiles={getShopSummaryTiles()}
           attention={getShopAttentionItems(7)}
@@ -77,6 +78,7 @@ export default async function DashboardPage() {
       <CustomerDashboardHome
         firstName={firstName}
         org={session.org}
+        email={session.email}
         notifications={getDashboardNotificationsForEmail(session.email)}
         summaryTiles={getCustomerSummaryTiles(session)}
         waiting={getCustomerWaitingItems(session)}

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { OpenQuestion, PageIntro, StatusPill } from "@/components/portal/PortalUi";
+import { CategorySuggestionsClient } from "@/components/portal/CategorySuggestionsClient";
+import { OpenQuestion, PageIntro } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireRole } from "@/lib/portal/auth";
 import { categorySuggestions } from "@/lib/portal/workflow-changes";
@@ -42,25 +43,7 @@ export default async function KnowledgeCategoryPage({
         </p>
       </PageIntro>
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.templateVsJobScope}</OpenQuestion>
-      <ul className="portal-list">
-        {suggestions.map((sug) => (
-          <li key={sug.id} className="portal-list__item">
-            <div>
-              <p className="portal-list__kicker">
-                From {sug.jobName} · comment thread
-              </p>
-              <h2>{sug.suggestedStepLabel}</h2>
-              <p>{sug.summary}</p>
-            </div>
-            <div className="portal-list__actions">
-              <StatusPill tone="assumed">SUGGESTED</StatusPill>
-              <Link className="btn btn--quiet portal-btn-quiet" href={`/jobs/${sug.jobId}/workflow`}>
-                View job thread
-              </Link>
-            </div>
-          </li>
-        ))}
-      </ul>
+      <CategorySuggestionsClient suggestions={suggestions} />
       <p>
         <Link href="/knowledge/library">← Knowledge library</Link>
       </p>

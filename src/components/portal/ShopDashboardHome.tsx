@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { DashboardNotifications } from "@/components/portal/DashboardNotifications";
+import { DashboardNotificationsLive } from "@/components/portal/DashboardNotificationsLive";
 import { ModuleCard, OpenQuestion, StatusPill } from "@/components/portal/PortalUi";
 import { SummaryMetricTile } from "@/components/portal/SummaryMetricTile";
 import type { DashboardNotification } from "@/lib/portal/workflow-changes";
@@ -39,6 +39,7 @@ function WipMobileList({ jobs }: { jobs: WorkJobRow[] }) {
 
 export function ShopDashboardHome({
   firstName,
+  email,
   notifications,
   summaryTiles,
   attention,
@@ -47,6 +48,7 @@ export function ShopDashboardHome({
   navModules,
 }: {
   firstName: string;
+  email: string;
   notifications: DashboardNotification[];
   summaryTiles: SummaryTile[];
   attention: AttentionRow[];
@@ -87,7 +89,7 @@ export function ShopDashboardHome({
 
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.statusNames}</OpenQuestion>
 
-      <DashboardNotifications items={notifications} />
+      <DashboardNotificationsLive email={email} initialItems={notifications} />
 
       <section className="portal-dashboard__section" aria-labelledby="dash-glance-heading">
         <h2 id="dash-glance-heading" className="portal-dashboard__mini-head">
