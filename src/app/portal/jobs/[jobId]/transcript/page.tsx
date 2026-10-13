@@ -76,7 +76,8 @@ export default async function TranscriptPage({
         <p className="look-field__hint">From file: {DEMO_TRANSCRIPT.fileName}</p>
         <pre>{DEMO_TRANSCRIPT.text}</pre>
         <p>
-          Extracted values would land on the checklist as <strong>AI suggestions · needs review</strong>.
+          Extracted values land on the checklist with a source label; inferred values get{" "}
+          <strong>Interpretation, needs review</strong>.
         </p>
       </section>
     </PortalShell>

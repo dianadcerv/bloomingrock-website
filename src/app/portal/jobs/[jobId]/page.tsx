@@ -1,24 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { JobHeader } from "@/components/portal/JobHeader";
-import { OpenQuestion, StatusPill, SuggestionBadge } from "@/components/portal/PortalUi";
+import { ChecklistSection } from "@/components/portal/ChecklistSection";
+import { SourcesSection } from "@/components/portal/SourcesSection";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
-import {
-  checkStatusLabel,
-  getSource,
-  type CheckStatus,
-} from "@/lib/portal/demo-data";
-import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
+import { getSource } from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = { title: "Job workspace" };
-
-function checkTone(status: CheckStatus) {
-  if (status === "conflict") return "conflict" as const;
-  if (status === "missing") return "missing" as const;
-  if (status === "assumed") return "assumed" as const;
-  return "ok" as const;
-}
 
 export default async function JobWorkspacePage({
   params,
@@ -32,64 +21,9 @@ export default async function JobWorkspacePage({
     <PortalShell session={session} current="/jobs">
       <JobHeader job={job} current={`/jobs/${job.id}`} role={session.role} />
 
-      <section className="portal-section">
-        <h2>Sources (reading order)</h2>
-        <ul className="portal-plain">
-          {job.sources.map((source) => (
-            <li key={source.id}>
-              <strong>{source.title}</strong>
-              <span>
-                {" "}
-                · {source.kind} · {source.from}
-              </span>
-              <p>{source.summary}</p>
-              {source.quote ? (
-                <p className="look-field__hint">Quoted: “{source.quote}”</p>
-              ) : null}
-              {source.readByApp === false ? (
-                <p className="look-field__hint">Stored only — not read in this demo.</p>
-              ) : source.status === "needs-review" ? (
-                <SuggestionBadge />
-              ) : null}
-            </li>
-          ))}
-        </ul>
-        {session.role === "shop" ? (
-          <p>
-            <Link href={`/jobs/${job.id}/sources`}>Add a source</Link>
-            {" · "}
-            <Link href={`/jobs/${job.id}/transcript`}>Transcript / recording upload</Link>
-          </p>
-        ) : null}
-      </section>
+      <SourcesSection job={job} showShopLinks={session.role === "shop"} />
 
-      <section className="portal-section">
-        <h2>Requirements checklist</h2>
-        <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.statusNames}</OpenQuestion>
-        <ul className="portal-plain">
-          {job.checklist.map((item) => (
-            <li key={item.id} className="portal-check">
-              <StatusPill tone={checkTone(item.status)}>
-                {checkStatusLabel(item.status)}
-              </StatusPill>
-              <div>
-                <strong>{item.label}</strong>
-                {item.value ? <p>Value (suggested): {item.value}</p> : null}
-                {item.reviewState === "needs-review" ? <SuggestionBadge /> : null}
-                {item.note ? <p>{item.note}</p> : null}
-                <p className="look-field__hint">
-                  Sources:{" "}
-                  {item.sourceIds.length
-                    ? item.sourceIds
-                        .map((id) => getSource(job, id)?.title ?? id)
-                        .join(", ")
-                    : "none yet"}
-                </p>
-              </div>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <ChecklistSection job={job} />
 
       {job.conflicts.length ? (
         <section className="portal-section">

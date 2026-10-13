@@ -20,7 +20,7 @@ export type ExpertKnowledgeTip = {
   history: KnowledgeHistoryEntry[];
   /** When set, accepting adds this workflow step label on the target job. */
   suggestStepLabel?: string;
-  /** When set, accepting adds this checklist line (AI suggestion · needs review). */
+  /** When set, accepting adds this checklist line (institutional knowledge). */
   suggestChecklistLabel?: string;
 };
 

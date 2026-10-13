@@ -1,11 +1,7 @@
 import type { Metadata } from "next";
 import { JobHeader } from "@/components/portal/JobHeader";
-import {
-  DraftNotice,
-  OpenQuestion,
-  StatusPill,
-  SuggestionBadge,
-} from "@/components/portal/PortalUi";
+import { ProvenanceLegend, ProvenanceMarks } from "@/components/portal/ProvenanceMarkers";
+import { DraftNotice, OpenQuestion, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
 import {
@@ -121,27 +117,39 @@ export default async function SignOffPage({
 
         <section className="portal-section">
           <h3>Requirements checklist</h3>
+          <ProvenanceLegend />
           <ul className="portal-plain">
-            {job.checklist.map((item) => (
-              <li key={item.id} className="portal-check">
-                <StatusPill tone={checkTone(item.status)}>
-                  {checkStatusLabel(item.status)}
-                </StatusPill>
-                <div>
-                  <strong>{item.label}</strong>
-                  {item.value ? <p>{item.value}</p> : null}
-                  {item.reviewState === "needs-review" ? <SuggestionBadge /> : null}
-                  <p className="look-field__hint">
-                    Sources:{" "}
-                    {item.sourceIds.length
-                      ? item.sourceIds
-                          .map((id) => getSource(job, id)?.title ?? id)
-                          .join(", ")
-                      : "—"}
-                  </p>
-                </div>
-              </li>
-            ))}
+            {job.checklist.map((item, index) => {
+              const firstInterp = job.checklist.findIndex((c) =>
+                c.provenance?.some((m) => m.type === "interpretation"),
+              );
+              return (
+                <li key={item.id} className="portal-check">
+                  <StatusPill tone={checkTone(item.status)}>
+                    {checkStatusLabel(item.status)}
+                  </StatusPill>
+                  <div>
+                    <strong>{item.label}</strong>
+                    {item.value ? <p>{item.value}</p> : null}
+                    {item.provenance?.length ? (
+                      <ProvenanceMarks
+                        marks={item.provenance}
+                        jobId={job.id}
+                        showInterpretationOpenQuestion={index === firstInterp}
+                      />
+                    ) : null}
+                    <p className="look-field__hint">
+                      Sources:{" "}
+                      {item.sourceIds.length
+                        ? item.sourceIds
+                            .map((id) => getSource(job, id)?.title ?? id)
+                            .join(", ")
+                        : "—"}
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </section>
 

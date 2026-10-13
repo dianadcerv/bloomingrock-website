@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { PrintButton } from "@/components/portal/PrintButton";
+import { ProvenanceLegend, ProvenanceMarks } from "@/components/portal/ProvenanceMarkers";
 import { DraftNotice, OpenQuestion } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
@@ -32,6 +33,7 @@ export default async function BomPage({
       <DraftNotice>No prices. Engineer reviews and approves every line.</DraftNotice>
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.bomDraftVsHand}</OpenQuestion>
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.bomDownloadFormat}</OpenQuestion>
+      <ProvenanceLegend />
       <p className="portal-inline-actions">
         <a className="btn btn--primary" href={csvHref} download={`${job.id}-bom.csv`}>
           Download CSV
@@ -49,6 +51,7 @@ export default async function BomPage({
             <th>Vendor</th>
             <th>Vendor part #</th>
             <th>Notes</th>
+            <th>Provenance</th>
           </tr>
         </thead>
         <tbody>
@@ -61,6 +64,13 @@ export default async function BomPage({
               <td>{row.vendor}</td>
               <td>{row.vendorPart}</td>
               <td>{row.notes}</td>
+              <td>
+                {row.provenance?.length ? (
+                  <ProvenanceMarks marks={row.provenance} jobId={job.id} />
+                ) : (
+                  <span className="look-field__hint">Hand-entered (demo)</span>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

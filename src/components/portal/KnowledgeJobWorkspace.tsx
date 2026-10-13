@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { OpenQuestion, StatusPill, SuggestionBadge } from "@/components/portal/PortalUi";
+import {
+  InstitutionalKnowledgeMarker,
+  ProvenanceLegend,
+} from "@/components/portal/ProvenanceMarkers";
+import { OpenQuestion, StatusPill } from "@/components/portal/PortalUi";
 import type { AuditEntry, WorkflowStep } from "@/lib/portal/demo-data";
 import type { ExpertKnowledgeTip } from "@/lib/portal/expert-knowledge";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
@@ -126,6 +130,7 @@ export function KnowledgeJobWorkspace({
 
   return (
     <div className="portal-knowledge-workspace">
+      <ProvenanceLegend />
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.knowledgeApproval}</OpenQuestion>
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.templateVsJobScope}</OpenQuestion>
 
@@ -218,9 +223,11 @@ export function KnowledgeJobWorkspace({
         {visibleSuggestions.length ? (
           visibleSuggestions.map((tip) => (
             <article key={tip.id} className="portal-letter portal-suggestion">
-              <p className="portal-list__kicker">
-                From {tip.originJobName} · {tip.createdBy}
-              </p>
+              <p className="portal-list__kicker">From {tip.originJobName}</p>
+              <InstitutionalKnowledgeMarker
+                addedBy={tip.createdBy}
+                addedAt={tip.createdAt}
+              />
               <p>{tip.text}</p>
               <p className="portal-knowledge-tags">
                 {tip.tags.map((tag) => (
@@ -256,8 +263,8 @@ export function KnowledgeJobWorkspace({
         <section className="portal-section">
           <h2>Impact on this job (demo session)</h2>
           <p className="look-field__hint">
-            Accepting adds color-coded steps and checklist lines — still{" "}
-            <SuggestionBadge /> until a person confirms.
+            Accepting adds institutional knowledge to this job — a person still confirms on the
+            checklist.
           </p>
           <h3>Workflow steps added</h3>
           <ul className="portal-steps">
@@ -266,7 +273,7 @@ export function KnowledgeJobWorkspace({
               .map((a) => (
                 <li key={a.tipId} className="portal-step portal-step--knowledge">
                   <span>{a.workflowStep!.label}</span>
-                  <StatusPill tone="assumed">From knowledge</StatusPill>
+                  <InstitutionalKnowledgeMarker addedBy={actorName} addedAt="This session" />
                 </li>
               ))}
           </ul>
@@ -279,10 +286,9 @@ export function KnowledgeJobWorkspace({
               .filter((a) => a.checklistLabel)
               .map((a) => (
                 <li key={a.tipId} className="portal-check">
-                  <SuggestionBadge />
                   <div>
                     <strong>{a.checklistLabel}</strong>
-                    <p className="look-field__hint">Source: expert knowledge (accepted this session)</p>
+                    <InstitutionalKnowledgeMarker addedBy={actorName} addedAt="This session" />
                   </div>
                 </li>
               ))}

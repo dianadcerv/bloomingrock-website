@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import {
+  ExtractedProvenanceMarker,
+  ProvenanceLegend,
+} from "@/components/portal/ProvenanceMarkers";
 import { OpenQuestion, PageIntro, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireRole } from "@/lib/portal/auth";
@@ -27,6 +31,8 @@ export default async function InboxDetailPage({
         <p>{item.from}</p>
       </PageIntro>
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.ocrTool}</OpenQuestion>
+      <ProvenanceLegend />
+      <ExtractedProvenanceMarker label="Extracted from email (Oct 8)" />
       <article className="portal-letter">
         <p>{item.bodyPreview}</p>
         {item.attachments.length ? (

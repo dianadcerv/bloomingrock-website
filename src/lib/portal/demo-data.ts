@@ -1,3 +1,5 @@
+import type { ProvenanceMark } from "./provenance";
+
 export type SourceKind = "email" | "sketch" | "pdf" | "call" | "note" | "cad" | "zip";
 export type SourceStatus = "reviewed" | "needs-review" | "conflict";
 export type CheckStatus = "complete" | "missing" | "conflict" | "assumed";
@@ -29,6 +31,7 @@ export type DemoCheckItem = {
   value?: string;
   sourceIds: string[];
   note?: string;
+  provenance?: ProvenanceMark[];
 };
 
 export type DemoConflict = {
@@ -56,6 +59,7 @@ export type DemoBomRow = {
   vendor: string;
   vendorPart: string;
   notes: string;
+  provenance?: ProvenanceMark[];
 };
 
 export type WorkflowStepKind = "minimum" | "ideal" | "added" | "knowledge-added";
@@ -217,7 +221,7 @@ const ACCESS_SOURCES: DemoSource[] = [
     title: "Call notes + transcript (demo transcription)",
     from: "Maya Chen / Jordan Hale",
     summary:
-      "Jordan mentioned customer-side install and anchoring into existing concrete. Values below are AI suggestions — a person must review.",
+      "Jordan mentioned customer-side install and anchoring into existing concrete. Inferred checklist values need interpretation review.",
     status: "needs-review",
     readByApp: true,
     quote: "Jordan: we'll handle install ourselves if you deliver knocked down… anchor into the existing slab.",
@@ -283,7 +287,21 @@ export const JOBS: DemoJob[] = [
         reviewState: "needs-review",
         value: "48 in. vs 54 in.",
         sourceIds: ["email-1", "sketch-1"],
-        note: "AI suggestion — person must pick or ask customer.",
+        note: "Two extracted values conflict — person must pick or ask customer.",
+        provenance: [
+          {
+            type: "extracted",
+            label: "Extracted from email (Oct 8)",
+            sourceId: "email-1",
+            jobId: "access-platform",
+          },
+          {
+            type: "extracted",
+            label: "OCR from sketch PDF (Oct 8)",
+            sourceId: "sketch-1",
+            jobId: "access-platform",
+          },
+        ],
       },
       {
         id: "load",
@@ -304,9 +322,18 @@ export const JOBS: DemoJob[] = [
         label: "Who installs",
         status: "missing",
         reviewState: "needs-review",
-        value: "Customer install (from call — unconfirmed)",
+        value: "Customer install (inferred from call)",
         sourceIds: ["call-1"],
-        note: "Suggested from transcript; not confirmed in writing.",
+        note: "Not confirmed in writing.",
+        provenance: [
+          {
+            type: "extracted",
+            label: "From transcript: walkthrough-call.m4a",
+            sourceId: "call-1",
+            jobId: "access-platform",
+          },
+          { type: "interpretation" },
+        ],
       },
       {
         id: "anchor",
@@ -323,7 +350,14 @@ export const JOBS: DemoJob[] = [
         reviewState: "needs-review",
         value: "42 in.",
         sourceIds: [],
-        note: "Shop knowledge suggestion — person must confirm.",
+        note: "Team default for food-plant guards — person must confirm on this job.",
+        provenance: [
+          {
+            type: "institutional",
+            addedBy: "Maya Chen",
+            addedAt: "Oct 6, 2026",
+          },
+        ],
       },
       {
         id: "stair-angle",
@@ -332,7 +366,16 @@ export const JOBS: DemoJob[] = [
         reviewState: "needs-review",
         value: "37°",
         sourceIds: ["sketch-1"],
-        note: "Shop knowledge suggestion from sketch context.",
+        note: "Inferred from sketch geometry — not a labeled callout.",
+        provenance: [
+          {
+            type: "extracted",
+            label: "OCR from sketch PDF (Oct 8)",
+            sourceId: "sketch-1",
+            jobId: "access-platform",
+          },
+          { type: "interpretation" },
+        ],
       },
     ],
     conflicts: [
@@ -434,6 +477,14 @@ export const JOBS: DemoJob[] = [
         vendor: "Demo Metals Supply",
         vendorPart: "W8×31-20",
         notes: "Lengths TBD after width resolved",
+        provenance: [
+          {
+            type: "extracted",
+            label: "Extracted from email (Oct 8)",
+            sourceId: "email-1",
+            jobId: "access-platform",
+          },
+        ],
       },
       {
         id: "b2",

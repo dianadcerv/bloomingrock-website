@@ -30,6 +30,8 @@ export const PROTOTYPE_OPEN_QUESTIONS = {
   templateVsJobScope:
     "Do workflow edits change only this job, or the shop template? (Template editing is Phase 2 shop admin — not in this prototype.)",
   workflowVersioningRollback: "Versioning and rollback rules when steps are moved, edited, or removed.",
+  interpretationAccuracyHarness:
+    "What accuracy harness will we build around AI interpretations?",
 } as const;
 
 export const DEMO_SHOP_ROLES = [

@@ -71,6 +71,11 @@ export function OpenQuestion({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** @deprecated Use InterpretationMarker or ProvenanceMarks */
 export function SuggestionBadge() {
-  return <span className="portal-pill portal-pill--draft">AI suggestion · needs review</span>;
+  return (
+    <span className="portal-provenance portal-provenance--interpretation">
+      Interpretation, needs review
+    </span>
+  );
 }

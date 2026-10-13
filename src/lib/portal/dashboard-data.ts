@@ -135,7 +135,7 @@ export function getShopAttentionItems(limit?: number): AttentionRow[] {
     {
       id: "att-review-platform",
       urgency: 3,
-      title: "Review AI suggestions",
+      title: "Review interpretations",
       detail: `${platform.name}: ${platform.checklist.filter((c) => c.reviewState === "needs-review").length} checklist lines need a person`,
       statusLabel: "Needs review",
       tone: "assumed",

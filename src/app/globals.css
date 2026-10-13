@@ -2424,6 +2424,91 @@ img {
   line-height: 1.6;
 }
 
+.portal-provenance-legend {
+  margin: 0 0 var(--dash-gap-subsection, 1.75rem);
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--stone-300);
+  border-radius: 3px;
+  background: var(--stone-50);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.portal-provenance-legend__title {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--stone-600);
+}
+
+.portal-provenance-legend ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.portal-provenance-legend li + li {
+  margin-top: 0.35rem;
+}
+
+.portal-provenance-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  margin: 0.4rem 0;
+}
+
+.portal-provenance-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.portal-provenance {
+  display: inline-block;
+  padding: 0.12rem 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  border: 1px solid var(--stone-300);
+}
+
+.portal-provenance--institutional {
+  background: rgba(61, 107, 90, 0.12);
+  border-color: var(--lichen-soft);
+  color: var(--moss-800);
+  text-transform: none;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.portal-provenance--extracted {
+  background: var(--stone-100);
+  color: var(--stone-700);
+  text-transform: none;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.portal-provenance--interpretation {
+  background: rgba(176, 137, 134, 0.15);
+  border-color: var(--petal);
+  color: #6d4542;
+}
+
+.portal-provenance-link {
+  text-decoration: none;
+}
+
+.portal-provenance-link:hover .portal-provenance--extracted {
+  border-color: var(--lichen);
+}
+
 @media (max-width: 639px) {
   .portal-dashboard {
     --dash-gap-section: 3rem;
