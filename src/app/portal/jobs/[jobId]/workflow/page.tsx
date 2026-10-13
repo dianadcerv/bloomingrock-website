@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { DraftNotice } from "@/components/portal/PortalUi";
 import { WorkflowEditor, WorkflowReadOnly } from "@/components/portal/WorkflowEditor";
+import { WorkflowMutualPanel } from "@/components/portal/WorkflowMutualPanel";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
+import { proposalsForJob } from "@/lib/portal/workflow-changes";
 
 export const metadata: Metadata = { title: "Workflow" };
 
@@ -19,6 +21,11 @@ export default async function WorkflowPage({
   return (
     <PortalShell session={session} current="/workflows">
       <JobHeader job={job} current={`/jobs/${job.id}/workflow`} role={session.role} />
+      <WorkflowMutualPanel
+        jobId={job.id}
+        session={session}
+        initialProposals={proposalsForJob(job.id)}
+      />
       {shop ? (
         <>
           <DraftNotice>FAKE DATA — drag, edit, and add steps in this demo session only.</DraftNotice>

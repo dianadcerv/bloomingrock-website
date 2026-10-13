@@ -1,18 +1,22 @@
 import Link from "next/link";
+import { DashboardNotifications } from "@/components/portal/DashboardNotifications";
 import { OpenQuestion, StatusPill } from "@/components/portal/PortalUi";
 import { SummaryMetricTile } from "@/components/portal/SummaryMetricTile";
+import type { DashboardNotification } from "@/lib/portal/workflow-changes";
 import type { AttentionRow, SummaryTile, WorkJobRow } from "@/lib/portal/dashboard-data";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export function CustomerDashboardHome({
   firstName,
   org,
+  notifications,
   summaryTiles,
   waiting,
   jobs,
 }: {
   firstName: string;
   org: string;
+  notifications: DashboardNotification[];
   summaryTiles: SummaryTile[];
   waiting: AttentionRow[];
   jobs: WorkJobRow[];
@@ -26,6 +30,8 @@ export function CustomerDashboardHome({
       </header>
 
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.statusNames}</OpenQuestion>
+
+      <DashboardNotifications items={notifications} />
 
       <section className="portal-dashboard__section" aria-labelledby="customer-overview-heading">
         <h2 id="customer-overview-heading" className="portal-dashboard__mini-head">
