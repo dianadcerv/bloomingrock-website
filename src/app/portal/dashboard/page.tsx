@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ModuleCard, PageIntro } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireSession } from "@/lib/portal/auth";
-import { DEMO_PROJECT, JOBS } from "@/lib/portal/demo-data";
+import { DEMO_CUSTOMER, DEMO_PROJECT, JOBS } from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -18,7 +18,13 @@ export default async function DashboardPage() {
       href: "/inbox",
       eyebrow: "Inbox",
       title: "3 messages need a match",
-      body: "Suggested customer: Meridian Food Plants. Confirm the job before anything is filed.",
+      body: "Suggested customer: Meridian Food Plants. Confirm, reassign, or forward before filing.",
+    },
+    {
+      href: "/customers",
+      eyebrow: "Customers",
+      title: DEMO_CUSTOMER.name,
+      body: "Customer → project → job. Phase 1 records are manual; inbox only suggests matches.",
     },
     {
       href: "/jobs",

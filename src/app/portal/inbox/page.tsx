@@ -14,8 +14,8 @@ export default async function InboxPage() {
     <PortalShell session={session} current="/inbox">
       <PageIntro eyebrow="Shop home" title="Inbox">
         <p>
-          Suggested customer and job matches. A person confirms before anything
-          is filed.
+          Suggested customer and job matches. Anyone with inbox access can confirm, reassign,
+          or forward before anything is filed.
         </p>
       </PageIntro>
       <ul className="portal-list">
@@ -26,13 +26,14 @@ export default async function InboxPage() {
               <h2>{item.subject}</h2>
               <p>{item.snippet}</p>
               <p className="portal-list__meta">
-                Suggested: {item.suggested.customer} → {item.suggested.job}
+                Suggested: {item.suggested.customer} → {item.suggested.project} →{" "}
+                {item.suggested.jobs.join(" + ")}
               </p>
             </div>
             <div className="portal-list__actions">
               <StatusPill tone="draft">Needs confirm</StatusPill>
-              <Link className="btn btn--primary" href={`/jobs/${item.suggested.jobId}`}>
-                Confirm match
+              <Link className="btn btn--primary" href={`/inbox/${item.id}`}>
+                Review match
               </Link>
             </div>
           </li>

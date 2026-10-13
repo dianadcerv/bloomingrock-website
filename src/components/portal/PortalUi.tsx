@@ -56,3 +56,15 @@ export function PageIntro({
     </header>
   );
 }
+
+export function OpenQuestion({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="portal-open-q" role="note">
+      <strong>Open question</strong> — {children}
+    </p>
+  );
+}
+
+export function SuggestionBadge() {
+  return <span className="portal-pill portal-pill--draft">AI suggestion · needs review</span>;
+}

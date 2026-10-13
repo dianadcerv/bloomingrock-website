@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
+import { OpenQuestion, StatusPill, SuggestionBadge } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { StatusPill } from "@/components/portal/PortalUi";
 import { requireSession } from "@/lib/portal/auth";
 import {
   checkStatusLabel,
@@ -11,6 +11,7 @@ import {
   getSource,
   type CheckStatus,
 } from "@/lib/portal/demo-data";
+import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "Job workspace" };
 
@@ -36,7 +37,7 @@ export default async function JobWorkspacePage({
       <JobHeader job={job} current={`/jobs/${job.id}`} role={session.role} />
 
       <section className="portal-section">
-        <h2>Sources</h2>
+        <h2>Sources (reading order)</h2>
         <ul className="portal-plain">
           {job.sources.map((source) => (
             <li key={source.id}>
@@ -46,18 +47,29 @@ export default async function JobWorkspacePage({
                 · {source.kind} · {source.from}
               </span>
               <p>{source.summary}</p>
+              {source.quote ? (
+                <p className="look-field__hint">Quoted: “{source.quote}”</p>
+              ) : null}
+              {source.readByApp === false ? (
+                <p className="look-field__hint">Stored only — not read in this demo.</p>
+              ) : source.status === "needs-review" ? (
+                <SuggestionBadge />
+              ) : null}
             </li>
           ))}
         </ul>
         {session.role === "shop" ? (
           <p>
             <Link href={`/jobs/${job.id}/sources`}>Add a source</Link>
+            {" · "}
+            <Link href={`/jobs/${job.id}/transcript`}>Transcript / recording upload</Link>
           </p>
         ) : null}
       </section>
 
       <section className="portal-section">
         <h2>Requirements checklist</h2>
+        <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.statusNames}</OpenQuestion>
         <ul className="portal-plain">
           {job.checklist.map((item) => (
             <li key={item.id} className="portal-check">
@@ -66,6 +78,8 @@ export default async function JobWorkspacePage({
               </StatusPill>
               <div>
                 <strong>{item.label}</strong>
+                {item.value ? <p>Value (suggested): {item.value}</p> : null}
+                {item.reviewState === "needs-review" ? <SuggestionBadge /> : null}
                 {item.note ? <p>{item.note}</p> : null}
                 <p className="look-field__hint">
                   Sources:{" "}
@@ -101,10 +115,15 @@ export default async function JobWorkspacePage({
       ) : null}
 
       <section className="portal-section">
-        <h2>Open questions</h2>
+        <h2>Open questions (job)</h2>
         <ul className="portal-plain">
           {job.questions.map((question) => (
-            <li key={question.id}>{question.prompt}</li>
+            <li key={question.id}>
+              {question.prompt}
+              {question.owner ? (
+                <span className="look-field__hint"> Owner: {question.owner}</span>
+              ) : null}
+            </li>
           ))}
         </ul>
         {session.role === "shop" ? (
@@ -117,6 +136,22 @@ export default async function JobWorkspacePage({
           </p>
         )}
       </section>
+
+      {session.role === "shop" ? (
+        <section className="portal-section">
+          <h2>Recent activity</h2>
+          <ul className="portal-plain portal-audit">
+            {job.auditLog.slice(0, 3).map((entry) => (
+              <li key={entry.id}>
+                <time dateTime={entry.at}>{entry.at}</time> — {entry.action}: {entry.detail}
+              </li>
+            ))}
+          </ul>
+          <p>
+            <Link href={`/jobs/${job.id}/audit`}>Full audit log</Link>
+          </p>
+        </section>
+      ) : null}
     </PortalShell>
   );
 }

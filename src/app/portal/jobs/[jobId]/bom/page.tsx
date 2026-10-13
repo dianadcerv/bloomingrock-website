@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
-import { DraftNotice } from "@/components/portal/PortalUi";
+import { PrintButton } from "@/components/portal/PrintButton";
+import { DraftNotice, OpenQuestion } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireSession } from "@/lib/portal/auth";
 import { getJob } from "@/lib/portal/demo-data";
+import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "BOM" };
 
@@ -19,9 +21,11 @@ export default async function BomPage({
   if (!job) notFound();
 
   const csv = [
-    "group,item,qty,notes",
+    "group,description,qty,material,vendor,vendor_part,notes",
     ...job.bom.map((row) =>
-      [row.group, row.item, row.qty, row.notes].map((cell) => `"${cell}"`).join(","),
+      [row.group, row.description, row.qty, row.material, row.vendor, row.vendorPart, row.notes]
+        .map((cell) => `"${cell}"`)
+        .join(","),
     ),
   ].join("\n");
   const csvHref = `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`;
@@ -29,19 +33,25 @@ export default async function BomPage({
   return (
     <PortalShell session={session} current="/documents">
       <JobHeader job={job} current={`/jobs/${job.id}/bom`} role={session.role} />
-      <DraftNotice>No prices. A person reviews every line.</DraftNotice>
+      <DraftNotice>No prices. Engineer reviews and approves every line.</DraftNotice>
+      <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.bomDraftVsHand}</OpenQuestion>
+      <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.bomDownloadFormat}</OpenQuestion>
       <p className="portal-inline-actions">
         <a className="btn btn--primary" href={csvHref} download={`${job.id}-bom.csv`}>
           Download CSV
         </a>
-        <span className="look-field__hint">Excel/CSV · Print from the browser</span>
+        <PrintButton />
+        <span className="look-field__hint">Group/sort is a view option only — demo table is grouped.</span>
       </p>
       <table className="portal-table">
         <thead>
           <tr>
             <th>Group</th>
-            <th>Item</th>
+            <th>Description</th>
             <th>Qty</th>
+            <th>Material</th>
+            <th>Vendor</th>
+            <th>Vendor part #</th>
             <th>Notes</th>
           </tr>
         </thead>
@@ -49,8 +59,11 @@ export default async function BomPage({
           {job.bom.map((row) => (
             <tr key={row.id}>
               <td>{row.group}</td>
-              <td>{row.item}</td>
+              <td>{row.description}</td>
               <td>{row.qty}</td>
+              <td>{row.material}</td>
+              <td>{row.vendor}</td>
+              <td>{row.vendorPart}</td>
               <td>{row.notes}</td>
             </tr>
           ))}

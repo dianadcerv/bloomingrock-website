@@ -1,12 +1,33 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
-import { DraftNotice } from "@/components/portal/PortalUi";
+import {
+  DraftNotice,
+  OpenQuestion,
+  StatusPill,
+  SuggestionBadge,
+} from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireSession } from "@/lib/portal/auth";
-import { DEMO_CUSTOMER, DEMO_SHOP, getJob } from "@/lib/portal/demo-data";
+import {
+  checkStatusLabel,
+  DEMO_CUSTOMER,
+  DEMO_PROJECT,
+  DEMO_SHOP,
+  getJob,
+  getSource,
+  type CheckStatus,
+} from "@/lib/portal/demo-data";
+import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "Sign-off" };
+
+function checkTone(status: CheckStatus) {
+  if (status === "conflict") return "conflict" as const;
+  if (status === "missing") return "missing" as const;
+  if (status === "assumed") return "assumed" as const;
+  return "ok" as const;
+}
 
 export default async function SignOffPage({
   params,
@@ -19,15 +40,19 @@ export default async function SignOffPage({
   if (!job) notFound();
   const buyer = session.role === "buyer";
 
+  const assumed = job.checklist.filter((c) => c.status === "assumed");
+
   return (
     <PortalShell session={session} current="/documents">
       <JobHeader job={job} current={`/jobs/${job.id}/sign-off`} role={session.role} />
+
       {buyer ? (
         <>
           <p className="portal-auth__lead">
-            Review what {DEMO_SHOP.name} captured, then sign with the one-time
-            code from your email. Code email is still an open call (BLO-21).
+            Secure link entry — no customer account. Enter the one-time code from your email.
           </p>
+          <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.codeEmailOutgoing}</OpenQuestion>
+          <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.linkCodeExpiry}</OpenQuestion>
           <div className="portal-letter">
             <p className="look-field__hint">Demo code (not emailed)</p>
             <p className="portal-code">482917</p>
@@ -36,32 +61,133 @@ export default async function SignOffPage({
               <input className="look-field__input" defaultValue="482917" readOnly />
             </label>
             <button className="btn btn--primary" type="button" disabled>
-              Sign (demo)
+              Verify code (demo)
             </button>
           </div>
         </>
       ) : (
-        <>
-          <DraftNotice>
-            Internal view. The customer sees a shorter page. Link + code are
-            not sent in this prototype.
-          </DraftNotice>
-          <div className="portal-letter">
-            <h2>Job Requirements Sign-off</h2>
+        <DraftNotice>
+          Internal view. The app drafts the link email — a person sends. Nothing is sent in this
+          prototype.
+        </DraftNotice>
+      )}
+
+      <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.signOffPageLayout}</OpenQuestion>
+      <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.missingBlocksSign}</OpenQuestion>
+      <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.conflictsBlockSign}</OpenQuestion>
+      <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.revisionsResign}</OpenQuestion>
+      <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.changeRequestChannel}</OpenQuestion>
+
+      <article className="portal-letter">
+        <header>
+          <h2>Job Requirements Sign-off</h2>
+          <p>
+            {DEMO_CUSTOMER.name} · {DEMO_PROJECT.name} · {job.name}
+          </p>
+          <p className="look-field__hint">
+            Revision {job.revision} · {new Date().toLocaleDateString("en-US")} · {DEMO_SHOP.name}
+          </p>
+        </header>
+
+        {!buyer ? (
+          <>
             <p>
-              Customer: {DEMO_CUSTOMER.name}. Engineer: Maya Chen. Both must
-              sign. Width still conflicts, so this should not go out yet.
-            </p>
-            <p>
-              Sign-off link (placeholder): app.bloomingrocksolutions.com/jobs/
-              {job.id}/sign-off
+              Sign-off link (demo): /jobs/{job.id}/sign-off
             </p>
             <button className="btn btn--primary" type="button" disabled>
-              Prepare code email (demo)
+              Prepare link email (demo)
             </button>
-          </div>
-        </>
-      )}
+          </>
+        ) : null}
+
+        <section className="portal-section">
+          <h3>Conflicts first</h3>
+          {job.conflicts.length ? (
+            job.conflicts.map((conflict) => (
+              <div key={conflict.id} className="portal-conflict">
+                <p>
+                  <strong>{conflict.field}</strong>
+                </p>
+                <p>
+                  {getSource(job, conflict.left.sourceId)?.title}: {conflict.left.value}
+                </p>
+                <p>
+                  {getSource(job, conflict.right.sourceId)?.title}: {conflict.right.value}
+                </p>
+              </div>
+            ))
+          ) : (
+            <p>None on this job.</p>
+          )}
+        </section>
+
+        <section className="portal-section">
+          <h3>Requirements checklist</h3>
+          <ul className="portal-plain">
+            {job.checklist.map((item) => (
+              <li key={item.id} className="portal-check">
+                <StatusPill tone={checkTone(item.status)}>
+                  {checkStatusLabel(item.status)}
+                </StatusPill>
+                <div>
+                  <strong>{item.label}</strong>
+                  {item.value ? <p>{item.value}</p> : null}
+                  {item.reviewState === "needs-review" ? <SuggestionBadge /> : null}
+                  <p className="look-field__hint">
+                    Sources:{" "}
+                    {item.sourceIds.length
+                      ? item.sourceIds
+                          .map((id) => getSource(job, id)?.title ?? id)
+                          .join(", ")
+                      : "—"}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="portal-section">
+          <h3>Assumptions</h3>
+          <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.assumptionsOnPage}</OpenQuestion>
+          {assumed.length ? (
+            <ul>
+              {assumed.map((item) => (
+                <li key={item.id}>
+                  {item.label}: {item.value ?? "—"}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>None marked as shop assumptions.</p>
+          )}
+        </section>
+
+        <section className="portal-section">
+          <h3>Open questions</h3>
+          <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.openQuestionsOwners}</OpenQuestion>
+          <ul>
+            {job.questions.map((q) => (
+              <li key={q.id}>
+                {q.prompt}
+                {q.owner ? ` (${q.owner})` : ""}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section className="portal-section">
+          <h3>Sign-offs</h3>
+          <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.signOffLegal}</OpenQuestion>
+          <p>Customer: {DEMO_CUSTOMER.contact} — not signed (demo blocked by open items).</p>
+          <p>Engineer: Maya Chen — not signed.</p>
+          {buyer ? (
+            <button className="btn btn--primary" type="button" disabled>
+              I confirm this is correct (demo disabled)
+            </button>
+          ) : null}
+        </section>
+      </article>
     </PortalShell>
   );
 }

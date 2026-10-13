@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { JobHeader } from "@/components/portal/JobHeader";
-import { DraftNotice } from "@/components/portal/PortalUi";
+import { DraftNotice, OpenQuestion } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireRole } from "@/lib/portal/auth";
 import { getJob } from "@/lib/portal/demo-data";
+import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "Add source" };
 
@@ -24,6 +26,7 @@ export default async function AddSourcePage({
       <DraftNotice>
         FAKE DATA, DEMO ONLY — nothing is saved or sent from this screen.
       </DraftNotice>
+      <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.ocrTool}</OpenQuestion>
       <form className="portal-form" action="#">
         <label className="look-field">
           <span className="look-field__label">Confirm an email match</span>
@@ -33,24 +36,19 @@ export default async function AddSourcePage({
           </select>
         </label>
         <label className="look-field">
-          <span className="look-field__label">Upload a file</span>
+          <span className="look-field__label">Upload a file (PDF, image, Excel, CAD, ZIP…)</span>
           <input className="look-field__input" type="file" name="file" />
         </label>
+        <p className="look-field__hint">
+          Demo: PDFs and images would be read; CAD stored only; ZIP would list contents.
+        </p>
         <label className="look-field">
           <span className="look-field__label">Add a note</span>
           <textarea className="look-field__input look-field__input--area" name="note" rows={4} />
         </label>
-        <label className="look-field">
-          <span className="look-field__label">Upload a transcript</span>
-          <input className="look-field__input" type="file" name="transcript" />
-        </label>
-        <label className="portal-check-line">
-          <input type="checkbox" name="consent" required />
-          <span>
-            Everyone on this call agreed to be recorded. Illinois requires
-            all-party consent.
-          </span>
-        </label>
+        <p>
+          <Link href={`/jobs/${job.id}/transcript`}>Transcript or audio/video upload →</Link>
+        </p>
         <button className="btn btn--primary" type="button" disabled>
           Save (demo)
         </button>

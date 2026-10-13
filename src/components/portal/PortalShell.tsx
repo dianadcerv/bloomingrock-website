@@ -6,6 +6,7 @@ import type { PortalSession } from "@/lib/portal/session";
 const SHOP_NAV = [
   { href: "/dashboard", label: "Home" },
   { href: "/inbox", label: "Inbox" },
+  { href: "/customers", label: "Customers" },
   { href: "/jobs", label: "Jobs" },
   { href: "/workflows", label: "Workflows" },
   { href: "/documents", label: "Documents" },

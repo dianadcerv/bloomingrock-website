@@ -7,6 +7,22 @@ import {
   type DemoJob,
 } from "@/lib/portal/demo-data";
 
+function JobBreadcrumb() {
+  return (
+    <nav className="portal-breadcrumb" aria-label="Customer and project">
+      <Link href="/customers">Customers</Link>
+      <span aria-hidden="true">/</span>
+      <Link href={`/customers/${DEMO_CUSTOMER.id}`}>{DEMO_CUSTOMER.name}</Link>
+      <span aria-hidden="true">/</span>
+      <Link href={`/customers/${DEMO_CUSTOMER.id}/projects/${DEMO_PROJECT.id}`}>
+        {DEMO_PROJECT.name}
+      </Link>
+      <span aria-hidden="true">/</span>
+      <span>Job</span>
+    </nav>
+  );
+}
+
 function toneFor(status: DemoJob["status"]) {
   if (status === "conflict") return "conflict" as const;
   if (status === "waiting-on-customer") return "missing" as const;
@@ -28,9 +44,11 @@ export function JobHeader({
     ...(role === "shop"
       ? [
           { href: `/jobs/${job.id}/sources`, label: "Add source" },
+          { href: `/jobs/${job.id}/transcript`, label: "Transcript" },
           { href: `/jobs/${job.id}/workflow`, label: "Workflow" },
           { href: `/jobs/${job.id}/missing`, label: "Missing info" },
           { href: `/jobs/${job.id}/knowledge`, label: "Knowledge" },
+          { href: `/jobs/${job.id}/audit`, label: "Audit log" },
         ]
       : [{ href: `/jobs/${job.id}/workflow`, label: "Workflow" }]),
     { href: `/jobs/${job.id}/sign-off`, label: "Sign-off" },
@@ -41,6 +59,7 @@ export function JobHeader({
 
   return (
     <div className="job-head">
+      <JobBreadcrumb />
       <p className="portal-intro__eyebrow">
         {DEMO_CUSTOMER.name} · {DEMO_PROJECT.name}
       </p>
