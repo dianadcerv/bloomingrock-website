@@ -5,6 +5,7 @@ import {
   getCustomerForJob,
   getProjectForJob,
   jobStatusLabel,
+  jobStatusPillTone,
   type DemoJob,
 } from "@/lib/portal/demo-data";
 
@@ -24,13 +25,6 @@ function JobBreadcrumb({ job }: { job: DemoJob }) {
       <span>Job</span>
     </nav>
   );
-}
-
-function toneFor(status: DemoJob["status"]) {
-  if (status === "conflict") return "conflict" as const;
-  if (status === "waiting-on-customer") return "missing" as const;
-  if (status === "ready-for-signoff" || status === "signed") return "ok" as const;
-  return "draft" as const;
 }
 
 export function JobHeader({
@@ -72,7 +66,7 @@ export function JobHeader({
       </p>
       <div className="job-head__title-row">
         <h1 className="portal-intro__title">{job.name}</h1>
-        <StatusPill tone={toneFor(job.status)}>{jobStatusLabel(job.status)}</StatusPill>
+        <StatusPill tone={jobStatusPillTone(job.status)}>{jobStatusLabel(job.status)}</StatusPill>
       </div>
       <p className="job-head__summary">{job.summary}</p>
       <nav className="job-subnav" aria-label="Job sections">

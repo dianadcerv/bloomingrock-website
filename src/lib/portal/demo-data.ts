@@ -80,11 +80,15 @@ export type AuditEntry = {
   detail: string;
 };
 
+export type StatusPillTone = "conflict" | "missing" | "ok" | "draft" | "assumed";
+
 export type DemoJob = {
   id: string;
   name: string;
   projectId: string;
   status: JobStatus;
+  /** Demo-only label for time in current stage. */
+  stageSince: string;
   summary: string;
   revision: number;
   sources: DemoSource[];
@@ -266,6 +270,7 @@ export const JOBS: DemoJob[] = [
     name: "Industrial access platform",
     projectId: "line-3",
     status: "conflict",
+    stageSince: "Oct 8, 2026",
     revision: 0,
     summary:
       "Stairs, landing, and handrails for Line 3. Width disagrees across sources. Load rating, finish, install, and anchoring still missing.",
@@ -482,6 +487,7 @@ export const JOBS: DemoJob[] = [
     name: "Machine guard",
     projectId: "line-3",
     status: "waiting-on-customer",
+    stageSince: "Oct 9, 2026",
     revision: 0,
     summary: "Small welded guard for the Line 3 infeed. Waiting on opening size.",
     sources: [
@@ -568,6 +574,7 @@ export const JOBS: DemoJob[] = [
     name: "Exterior steel stair",
     projectId: "warehouse-b",
     status: "ready-for-signoff",
+    stageSince: "Oct 11, 2026",
     revision: 0,
     summary:
       "Three-flight exterior stair to a new mezzanine door. Checklist mostly filled; engineer review and sign-off are next — no width conflict on this job.",
@@ -884,6 +891,18 @@ export function inboxItemsByCustomer() {
 
 export function getSource(job: DemoJob, sourceId: string) {
   return job.sources.find((source) => source.id === sourceId) ?? null;
+}
+
+export function jobStatusPillTone(status: JobStatus): StatusPillTone {
+  if (status === "conflict") return "conflict";
+  if (status === "waiting-on-customer") return "missing";
+  if (status === "ready-for-signoff" || status === "signed") return "ok";
+  return "draft";
+}
+
+export function jobOwnerRole(job: DemoJob) {
+  const open = job.workflow.find((step) => !step.done);
+  return open?.ownerRole ?? job.workflow.at(-1)?.ownerRole ?? "Estimator";
 }
 
 export function jobStatusLabel(status: JobStatus) {

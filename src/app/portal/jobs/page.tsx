@@ -7,22 +7,53 @@ import { requireSession } from "@/lib/portal/auth";
 import {
   DEMO_CUSTOMERS,
   DEMO_PROJECTS,
+  getCustomerForJob,
   getJob,
+  getProjectForJob,
   jobStatusLabel,
+  jobStatusPillTone,
+  type DemoJob,
   type JobStatus,
 } from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = { title: "Jobs" };
 
-function tone(status: JobStatus) {
-  if (status === "conflict") return "conflict" as const;
-  if (status === "waiting-on-customer") return "missing" as const;
-  if (status === "ready-for-signoff" || status === "signed") return "ok" as const;
-  return "draft" as const;
+type SearchParams = Promise<{
+  status?: string;
+  filter?: string;
+  customer?: string;
+}>;
+
+function jobMatchesFilter(job: DemoJob, filter: string | undefined) {
+  if (!filter) return true;
+  if (filter === "needs-review") {
+    return job.checklist.some((c) => c.reviewState === "needs-review");
+  }
+  if (filter === "drafts") {
+    return job.questions.length > 0;
+  }
+  return true;
 }
 
-export default async function JobsPage() {
+function jobMatchesStatus(job: DemoJob, status: string | undefined) {
+  if (!status) return true;
+  if (status === "conflict") {
+    return job.status === "conflict" || job.conflicts.length > 0;
+  }
+  return job.status === (status as JobStatus);
+}
+
+function filterTitle(status?: string, filter?: string) {
+  if (status === "conflict") return "Jobs with conflicts";
+  if (status === "waiting-on-customer") return "Waiting on customer";
+  if (filter === "needs-review") return "Items needing review";
+  if (filter === "drafts") return "Drafts ready to send";
+  return "Jobs by customer";
+}
+
+export default async function JobsPage({ searchParams }: { searchParams: SearchParams }) {
   const session = await requireSession();
+  const { status, filter, customer: customerParam } = await searchParams;
   const visibleJobs = jobsForSession(session);
 
   if (session.role === "buyer") {
@@ -40,7 +71,9 @@ export default async function JobsPage() {
                 <p>{job.summary}</p>
               </div>
               <div className="portal-list__actions">
-                <StatusPill tone={tone(job.status)}>{jobStatusLabel(job.status)}</StatusPill>
+                <StatusPill tone={jobStatusPillTone(job.status)}>
+                  {jobStatusLabel(job.status)}
+                </StatusPill>
                 <Link className="btn btn--primary" href={`/jobs/${job.id}`}>
                   Open workspace
                 </Link>
@@ -48,6 +81,53 @@ export default async function JobsPage() {
             </li>
           ))}
         </ul>
+      </PortalShell>
+    );
+  }
+
+  const hasQuery = Boolean(status || filter);
+  if (hasQuery) {
+    let filtered = visibleJobs.filter(
+      (job) => jobMatchesStatus(job, status) && jobMatchesFilter(job, filter),
+    );
+    if (customerParam) {
+      filtered = filtered.filter((job) => getCustomerForJob(job)?.id === customerParam);
+    }
+
+    return (
+      <PortalShell session={session} current="/jobs">
+        <PageIntro eyebrow="Filtered list" title={filterTitle(status, filter)}>
+          <p>
+            {filtered.length} job{filtered.length === 1 ? "" : "s"} match this view.{" "}
+            <Link href="/jobs">Clear filters</Link> · <Link href="/dashboard">Home</Link>
+          </p>
+        </PageIntro>
+        <ul className="portal-list">
+          {filtered.map((job) => {
+            const customer = getCustomerForJob(job);
+            const project = getProjectForJob(job);
+            return (
+              <li key={job.id} className="portal-list__item">
+                <div>
+                  <p className="portal-list__kicker">
+                    {customer?.name} · {project?.name}
+                  </p>
+                  <h2>{job.name}</h2>
+                  <p>{job.summary}</p>
+                </div>
+                <div className="portal-list__actions">
+                  <StatusPill tone={jobStatusPillTone(job.status)}>
+                    {jobStatusLabel(job.status)}
+                  </StatusPill>
+                  <Link className="btn btn--primary" href={`/jobs/${job.id}`}>
+                    Open workspace
+                  </Link>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+        {!filtered.length ? <p>No jobs match this filter in the demo data.</p> : null}
       </PortalShell>
     );
   }
@@ -89,7 +169,7 @@ export default async function JobsPage() {
                           <p>{job.summary}</p>
                         </div>
                         <div className="portal-list__actions">
-                          <StatusPill tone={tone(job.status)}>
+                          <StatusPill tone={jobStatusPillTone(job.status)}>
                             {jobStatusLabel(job.status)}
                           </StatusPill>
                           <Link className="btn btn--primary" href={`/jobs/${job.id}`}>

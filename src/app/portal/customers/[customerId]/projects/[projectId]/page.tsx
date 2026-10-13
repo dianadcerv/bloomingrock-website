@@ -9,17 +9,11 @@ import {
   getJob,
   getProject,
   jobStatusLabel,
-  type JobStatus,
+  jobStatusPillTone,
 } from "@/lib/portal/demo-data";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "Project" };
-
-function tone(status: JobStatus) {
-  if (status === "conflict") return "conflict" as const;
-  if (status === "waiting-on-customer") return "missing" as const;
-  return "draft" as const;
-}
 
 export default async function ProjectPage({
   params,
@@ -58,7 +52,9 @@ export default async function ProjectPage({
                   <p>{job.summary}</p>
                 </div>
                 <div className="portal-list__actions">
-                  <StatusPill tone={tone(job.status)}>{jobStatusLabel(job.status)}</StatusPill>
+                  <StatusPill tone={jobStatusPillTone(job.status)}>
+                    {jobStatusLabel(job.status)}
+                  </StatusPill>
                   <Link className="btn btn--primary" href={`/jobs/${job.id}`}>
                     Open job workspace
                   </Link>

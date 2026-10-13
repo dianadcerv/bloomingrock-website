@@ -20,6 +20,8 @@ describe("portal paths", () => {
   it("treats login and dashboard as portal, not marketing", () => {
     assert.equal(isPortalPath("/login"), true);
     assert.equal(isPortalPath("/jobs/access-platform/bom"), true);
+    assert.equal(isPortalPath("/attention"), true);
+    assert.equal(isPortalPath("/activity"), true);
     assert.equal(isPortalPath("/about"), false);
     assert.equal(isMarketingPath("/capabilities"), true);
     assert.equal(toInternalPortalPath("/dashboard"), "/portal/dashboard");
