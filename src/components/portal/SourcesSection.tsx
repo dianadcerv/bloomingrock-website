@@ -6,6 +6,7 @@ function sourceGatherLabel(kind: DemoJob["sources"][0]["kind"], title: string) {
   if (kind === "email") return "Extracted from email (Oct 8)";
   if (kind === "call") return "From transcript: walkthrough-call.m4a";
   if (kind === "sketch") return "OCR from drawing PDF (Oct 8)";
+  if (kind === "pdf" && title.includes("Rev C")) return "OCR from drawing PDF (Oct 9)";
   if (kind === "pdf") return "From document PDF";
   return `From ${title}`;
 }
@@ -41,6 +42,11 @@ export function SourcesSection({
                 sourceId={source.id}
               />
             )}
+            {source.assetPath ? (
+              <p>
+                <Link href={`/jobs/${job.id}/sources/${source.id}/preview`}>View PDF preview</Link>
+              </p>
+            ) : null}
           </li>
         ))}
       </ul>

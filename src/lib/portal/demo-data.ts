@@ -21,6 +21,8 @@ export type DemoSource = {
   status: SourceStatus;
   readByApp?: boolean;
   quote?: string;
+  /** Static asset under /public for PDF preview (demo only). */
+  assetPath?: string;
 };
 
 export type DemoCheckItem = {
@@ -192,10 +194,22 @@ const ACCESS_SOURCES: DemoSource[] = [
     title: "Need a platform off Line 3",
     from: "Jordan Hale <jordan@meridian.demo>",
     summary:
-      "Asks for a steel access platform with stairs and handrails. Mentions a 48-inch clear width.",
+      "Asks for a steel access platform with stairs and handrails. Requests quote to Rev D; mentions 48-inch clear width.",
     status: "conflict",
     readByApp: true,
-    quote: "…need clear width of 48 inches between the rails…",
+    quote: "…please quote to Rev D… clear width of 48 inches between the rails…",
+  },
+  {
+    id: "drawing-rev-c",
+    kind: "pdf",
+    title: "Line 3 platform layout drawing (Rev C)",
+    from: "Jordan Hale (email attachment)",
+    summary:
+      "Demo layout PDF — title block shows part Access platform and revision Rev C. OCR read for checklist.",
+    status: "conflict",
+    readByApp: true,
+    quote: "TITLE BLOCK: DEMO / FAKE · Part: Access platform · Revision: Rev C",
+    assetPath: "/demo/meridian-access-platform-rev-c.pdf",
   },
   {
     id: "sketch-1",
@@ -254,6 +268,14 @@ const ACCESS_AUDIT: AuditEntry[] = [
     detail: "Pulled clear width 48 in. from email; 54 in. from sketch. Marked needs review.",
   },
   {
+    id: "a2b",
+    at: "2026-10-09 08:40 CT",
+    who: "App (demo)",
+    action: "OCR drawing + revision check",
+    detail:
+      "Drawing title block Rev C vs email ask Rev D — flagged conflict; draft customer question (not sent).",
+  },
+  {
     id: "a3",
     at: "2026-10-09 14:05 CT",
     who: "Maya Chen",
@@ -278,7 +300,7 @@ export const JOBS: DemoJob[] = [
     stageSince: "Oct 8, 2026",
     revision: 0,
     summary:
-      "Stairs, landing, and handrails for Line 3. Width disagrees across sources. Load rating, finish, install, and anchoring still missing.",
+      "Stairs, landing, and handrails for Line 3. Width and drawing revision disagree across sources. Load rating, finish, install, and anchoring still missing.",
     sources: ACCESS_SOURCES,
     checklist: [
       {
@@ -302,6 +324,30 @@ export const JOBS: DemoJob[] = [
             sourceId: "sketch-1",
             jobId: "access-platform",
           },
+        ],
+      },
+      {
+        id: "drawing-revision",
+        label: "Drawing revision",
+        status: "conflict",
+        reviewState: "needs-review",
+        value: "Rev C vs Rev D",
+        sourceIds: ["drawing-rev-c", "email-1"],
+        note: "Drawing title block vs email ask — person must confirm before quoting.",
+        provenance: [
+          {
+            type: "extracted",
+            label: "OCR from drawing PDF (Oct 9)",
+            sourceId: "drawing-rev-c",
+            jobId: "access-platform",
+          },
+          {
+            type: "extracted",
+            label: "Extracted from email (Oct 9)",
+            sourceId: "email-1",
+            jobId: "access-platform",
+          },
+          { type: "interpretation" },
         ],
       },
       {
@@ -386,8 +432,24 @@ export const JOBS: DemoJob[] = [
         left: { sourceId: "email-1", value: "48 in." },
         right: { sourceId: "sketch-1", value: "54 in." },
       },
+      {
+        id: "rev-conflict",
+        field: "Drawing revision",
+        left: { sourceId: "drawing-rev-c", value: "Rev C (title block)" },
+        right: { sourceId: "email-1", value: "Rev D (email ask)" },
+      },
     ],
     questions: [
+      {
+        id: "q-rev",
+        prompt:
+          "Which revision should we quote — Rev C on the attached drawing or Rev D in your email?",
+        askedOf: "customer",
+        owner: "Maya Chen (estimator)",
+        draft:
+          "Hi Jordan — thanks for the layout PDF. The title block on the drawing is Rev C, but your email asks us to quote to Rev D. Can you confirm which revision we should hold for this quote? Once that's clear we'll align the width question (48 in. vs 54 in.) in the same note.",
+        sent: false,
+      },
       {
         id: "q-width",
         prompt: "Which clear width should we hold — 48 in. from the email, or 54 in. from the sketch?",
@@ -843,10 +905,10 @@ export const INBOX_ITEMS: InboxItem[] = [
       jobIds: ["access-platform"],
       jobs: ["Industrial access platform"],
     },
-    snippet: "Can you quote an access platform with stairs and handrails…",
+    snippet: "Please quote to Rev D — platform layout attached (Rev C on sheet)…",
     bodyPreview:
-      "Hi Maya — we need an access platform off Line 3 with stairs and handrails. Clear width about 48 inches. Photos attached.",
-    attachments: ["site-photos.pdf"],
+      "Hi Maya — for Line 3 we need a steel access platform with stairs and handrails off the mezzanine.\n\nPlease quote to Rev D when you can. I attached our layout PDF from facilities (title block may still say Rev C — we're rolling D this week).\n\nClear width about 48 inches between rails. Landings on the north side; handrails both sides. We'll handle install if you deliver knocked down.\n\nLoad rating and finish TBD — send questions in one batch if easier.\n\n— Jordan",
+    attachments: ["meridian-access-platform-rev-c.pdf", "site-photos.pdf"],
   },
   {
     id: "in-2",
@@ -967,6 +1029,17 @@ export function inboxItemsByCustomer() {
 
 export function getSource(job: DemoJob, sourceId: string) {
   return job.sources.find((source) => source.id === sourceId) ?? null;
+}
+
+/** Demo-only link from inbox attachment filename to a source PDF preview. */
+export function inboxAttachmentPreviewHref(jobIds: string[], filename: string) {
+  if (
+    filename === "meridian-access-platform-rev-c.pdf" &&
+    jobIds.includes("access-platform")
+  ) {
+    return "/jobs/access-platform/sources/drawing-rev-c/preview";
+  }
+  return null;
 }
 
 export function jobStatusPillTone(status: JobStatus): StatusPillTone {

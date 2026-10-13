@@ -2426,6 +2426,20 @@ img {
   align-items: flex-start;
 }
 
+.portal-pdf-preview {
+  margin-top: 1rem;
+  border: 1px solid var(--stone-300);
+  background: var(--stone-50);
+  min-height: 28rem;
+}
+
+.portal-pdf-preview__frame {
+  width: 100%;
+  min-height: 28rem;
+  border: 0;
+  background: #fff;
+}
+
 .portal-email-outbox {
   list-style: none;
   margin: 0;

@@ -8,7 +8,7 @@ import {
 import { OpenQuestion, PageIntro, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireRole } from "@/lib/portal/auth";
-import { getInboxItem } from "@/lib/portal/demo-data";
+import { getInboxItem, inboxAttachmentPreviewHref } from "@/lib/portal/demo-data";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "Inbox message" };
@@ -34,11 +34,25 @@ export default async function InboxDetailPage({
       <ProvenanceLegend />
       <ExtractedProvenanceMarker label="Extracted from email (Oct 8)" />
       <article className="portal-letter">
-        <p>{item.bodyPreview}</p>
+        {item.bodyPreview.split("\n").map((line, i) => (
+          <p key={i}>{line || "\u00a0"}</p>
+        ))}
         {item.attachments.length ? (
-          <p className="look-field__hint">
-            Attachments: {item.attachments.join(", ")} — demo OCR would run after confirm.
-          </p>
+          <ul className="portal-plain">
+            {item.attachments.map((name) => {
+              const preview = inboxAttachmentPreviewHref(item.suggested.jobIds, name);
+              return (
+                <li key={name}>
+                  {preview ? (
+                    <Link href={preview}>{name}</Link>
+                  ) : (
+                    <span>{name}</span>
+                  )}
+                  <span className="look-field__hint"> — demo OCR after confirm</span>
+                </li>
+              );
+            })}
+          </ul>
         ) : null}
       </article>
       <section className="portal-section">
