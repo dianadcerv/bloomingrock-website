@@ -27,7 +27,10 @@ export function CustomerDashboardHome({
 
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.statusNames}</OpenQuestion>
 
-      <section className="portal-dashboard__section">
+      <section className="portal-dashboard__section" aria-labelledby="customer-overview-heading">
+        <h2 id="customer-overview-heading" className="portal-dashboard__mini-head">
+          Overview
+        </h2>
         <div className="portal-dashboard-metrics portal-dashboard-metrics--customer">
           {summaryTiles.map((tile) => (
             <SummaryMetricTile key={tile.id} {...tile} />

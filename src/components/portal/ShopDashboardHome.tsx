@@ -83,12 +83,21 @@ export function ShopDashboardHome({
 
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.statusNames}</OpenQuestion>
 
-      <section className="portal-dashboard__section portal-dashboard__section--summary" aria-label="Summary">
+      <section className="portal-dashboard__section" aria-labelledby="dash-glance-heading">
+        <h2 id="dash-glance-heading" className="portal-dashboard__mini-head">
+          At a glance
+        </h2>
         <div className="portal-dashboard-metrics">
           {summaryTiles.map((tile) => (
             <SummaryMetricTile key={tile.id} {...tile} />
           ))}
         </div>
+      </section>
+
+      <section className="portal-dashboard__section" aria-labelledby="dash-shortcuts-heading">
+        <h2 id="dash-shortcuts-heading" className="portal-dashboard__mini-head">
+          Workspace shortcuts
+        </h2>
         <div className="portal-dashboard-nav-row">
           {navModules.map((mod) => (
             <ModuleCard key={mod.href + mod.title} variant="nav" {...mod} />
