@@ -75,12 +75,14 @@ export function SummaryMetricTile({
   id,
   href,
   label,
+  shortLabel,
   count,
   tone,
 }: {
   id: string;
   href: string;
   label: string;
+  shortLabel: string;
   count: number;
   tone: StatusPillTone;
 }) {
@@ -94,7 +96,10 @@ export function SummaryMetricTile({
         <MetricIcon id={id} />
       </span>
       <span className="portal-metric-tile__count">{count}</span>
-      <span className="portal-metric-tile__label">{label}</span>
+      <span className="portal-metric-tile__label portal-metric-tile__label--full">{label}</span>
+      <span className="portal-metric-tile__label portal-metric-tile__label--short">
+        {shortLabel}
+      </span>
     </Link>
   );
 }

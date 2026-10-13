@@ -15,6 +15,7 @@ import {
 export type SummaryTile = {
   id: string;
   label: string;
+  shortLabel: string;
   count: number;
   href: string;
   tone: StatusPillTone;
@@ -65,6 +66,7 @@ export function getShopSummaryTiles(): SummaryTile[] {
     {
       id: "inbox",
       label: "New emails to match",
+      shortLabel: "Emails",
       count: INBOX_ITEMS.length,
       href: "/inbox",
       tone: "draft",
@@ -72,6 +74,7 @@ export function getShopSummaryTiles(): SummaryTile[] {
     {
       id: "conflicts",
       label: "Conflicts",
+      shortLabel: "Conflicts",
       count: conflictJobs.length,
       href: "/jobs?status=conflict",
       tone: "conflict",
@@ -79,6 +82,7 @@ export function getShopSummaryTiles(): SummaryTile[] {
     {
       id: "review",
       label: "Items needing review",
+      shortLabel: "Review",
       count: needsReview,
       href: "/jobs?filter=needs-review",
       tone: "assumed",
@@ -86,6 +90,7 @@ export function getShopSummaryTiles(): SummaryTile[] {
     {
       id: "waiting",
       label: "Waiting on customer",
+      shortLabel: "Waiting",
       count: waitingJobs.length,
       href: "/jobs?status=waiting-on-customer",
       tone: "missing",
@@ -93,6 +98,7 @@ export function getShopSummaryTiles(): SummaryTile[] {
     {
       id: "drafts",
       label: "Drafts ready to send",
+      shortLabel: "Drafts",
       count: drafts,
       href: "/jobs?filter=drafts",
       tone: "draft",
@@ -236,6 +242,7 @@ export function getCustomerSummaryTiles(session: PortalSession): SummaryTile[] {
     {
       id: "jobs",
       label: "Your jobs",
+      shortLabel: "Jobs",
       count: jobs.length,
       href: "/jobs",
       tone: "draft",
@@ -243,6 +250,7 @@ export function getCustomerSummaryTiles(session: PortalSession): SummaryTile[] {
     {
       id: "waiting-you",
       label: "Waiting on you",
+      shortLabel: "Action",
       count: getCustomerWaitingItems(session).length,
       href: "#waiting-on-you",
       tone: waiting > 0 ? "missing" : "ok",
@@ -250,6 +258,7 @@ export function getCustomerSummaryTiles(session: PortalSession): SummaryTile[] {
     {
       id: "signoff",
       label: "Ready for sign-off",
+      shortLabel: "Sign-off",
       count: ready,
       href: "/documents",
       tone: ready > 0 ? "ok" : "draft",

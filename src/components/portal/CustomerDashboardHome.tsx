@@ -46,10 +46,10 @@ export function CustomerDashboardHome({
               <li key={row.id} className="portal-attention-list__item">
                 <div className="portal-attention-list__body">
                   <p className="portal-attention-list__title">{row.title}</p>
-                  <p>{row.detail}</p>
+                  <p className="portal-attention-list__detail">{row.detail}</p>
                   <StatusPill tone={row.tone}>{row.statusLabel}</StatusPill>
                 </div>
-                <Link className="btn btn--primary" href={row.href}>
+                <Link className="btn btn--primary portal-attention-list__action" href={row.href}>
                   {row.actionLabel}
                 </Link>
               </li>
