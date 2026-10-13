@@ -296,13 +296,13 @@ export function getCustomerWaitingItems(session: PortalSession): AttentionRow[] 
       });
     }
     for (const q of job.questions) {
-      if (q.askedOf === "customer") {
+      if (q.askedOf === "customer" && q.sent) {
         rows.push({
           id: `req-${q.id}`,
           urgency: 3,
           title: "Upcoming request from Northridge",
-          detail: `${q.prompt} (draft on shop side — not sent yet)`,
-          statusLabel: "Not sent",
+          detail: q.prompt,
+          statusLabel: "Action needed",
           tone: "draft",
           actionLabel: "View requests",
           href: "/requests",

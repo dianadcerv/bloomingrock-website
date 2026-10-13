@@ -47,7 +47,7 @@ export type DemoQuestion = {
   askedOf: "customer" | "shop";
   owner?: string;
   draft: string;
-  sent: false;
+  sent: boolean;
 };
 
 export type DemoBomRow = {
