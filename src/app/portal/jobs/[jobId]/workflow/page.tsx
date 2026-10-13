@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JobHeader } from "@/components/portal/JobHeader";
-import { StatusPill } from "@/components/portal/PortalUi";
+import { DraftNotice } from "@/components/portal/PortalUi";
+import { WorkflowEditor, WorkflowReadOnly } from "@/components/portal/WorkflowEditor";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
 
@@ -13,33 +14,29 @@ export default async function WorkflowPage({
 }) {
   const { jobId } = await params;
   const { session, job } = await requireJob(jobId);
+  const shop = session.role === "shop";
 
   return (
     <PortalShell session={session} current="/workflows">
       <JobHeader job={job} current={`/jobs/${job.id}/workflow`} role={session.role} />
-      <ol className="portal-steps">
-        {job.workflow.map((step) => (
-          <li key={step.id} className={`portal-step portal-step--${step.kind}`}>
-            <span>{step.label}</span>
-            <StatusPill
-              tone={
-                step.kind === "added" ? "assumed" : step.done ? "ok" : "draft"
-              }
-            >
-              {step.kind === "added"
-                ? "Added"
-                : step.kind === "ideal"
-                  ? "Ideal"
-                  : "Minimum"}
-              {step.done ? " · done" : ""}
-            </StatusPill>
-          </li>
-        ))}
-      </ol>
-      <p className="look-field__hint">
-        Final review sits with engineering before sign-off. Added steps are
-        shown in a different color.
-      </p>
+      {shop ? (
+        <>
+          <DraftNotice>FAKE DATA — drag, edit, and add steps in this demo session only.</DraftNotice>
+          <WorkflowEditor
+            jobId={job.id}
+            jobName={job.name}
+            actorName={session.name}
+            initialSteps={job.workflow}
+          />
+        </>
+      ) : (
+        <>
+          <p className="look-field__hint">
+            Customer view: happy-path and added steps only — no internal knowledge editor.
+          </p>
+          <WorkflowReadOnly steps={job.workflow} />
+        </>
+      )}
     </PortalShell>
   );
 }

@@ -9,6 +9,7 @@ const SHOP_NAV = [
   { href: "/customers", label: "Customers" },
   { href: "/jobs", label: "Jobs" },
   { href: "/workflows", label: "Workflows" },
+  { href: "/knowledge/library", label: "Knowledge" },
   { href: "/documents", label: "Documents" },
 ] as const;
 

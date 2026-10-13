@@ -4,8 +4,8 @@ import {
   getProject,
   JOBS,
   type DemoJob,
-} from "./demo-data.ts";
-import { normalizeEmail, type PortalSession } from "./session.ts";
+} from "./demo-data";
+import { normalizeEmail, type PortalSession } from "./session";
 
 export function buyerCustomerIdForEmail(email: string) {
   const normalized = normalizeEmail(email);

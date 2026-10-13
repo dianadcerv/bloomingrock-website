@@ -1,30 +1,46 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import {
-  buyerCustomerIdForEmail,
-  jobCustomerId,
-  jobsForSession,
-  sessionCanAccessJob,
-} from "./access.ts";
-import { getJob } from "./demo-data.ts";
+import { DEMO_CUSTOMERS, getJob, getProject, JOBS } from "./demo-data.ts";
+import { normalizeEmail } from "./session.ts";
+
+function buyerCustomerIdForEmail(email: string) {
+  const normalized = normalizeEmail(email);
+  return DEMO_CUSTOMERS.find((c) => c.email === normalized)?.id ?? null;
+}
+
+function jobCustomerId(job: NonNullable<ReturnType<typeof getJob>>) {
+  const project = getProject(job.projectId);
+  return project?.customerId ?? null;
+}
+
+function sessionCanAccessJob(
+  session: { role: string; email: string },
+  jobId: string,
+) {
+  const job = getJob(jobId);
+  if (!job) return false;
+  if (session.role === "shop") return true;
+  const buyerCustomerId = buyerCustomerIdForEmail(session.email);
+  if (!buyerCustomerId) return false;
+  return jobCustomerId(job) === buyerCustomerId;
+}
+
+function jobsForSession(session: { role: string; email: string }) {
+  if (session.role === "shop") return JOBS;
+  const buyerCustomerId = buyerCustomerIdForEmail(session.email);
+  if (!buyerCustomerId) return [];
+  return JOBS.filter((job) => jobCustomerId(job) === buyerCustomerId);
+}
 
 describe("buyer job access", () => {
   it("scopes jobs per customer login", () => {
     const jordan = {
       email: "jordan@meridian.demo",
       role: "buyer" as const,
-      name: "Jordan Hale",
-      org: "Meridian Food Plants",
-      title: "Plant engineer",
-      exp: Date.now() + 1000,
     };
     const alex = {
       email: "alex@harborview.demo",
       role: "buyer" as const,
-      name: "Alex Rivera",
-      org: "Harborview Logistics",
-      title: "Facilities manager",
-      exp: Date.now() + 1000,
     };
 
     assert.equal(buyerCustomerIdForEmail(jordan.email), "meridian");

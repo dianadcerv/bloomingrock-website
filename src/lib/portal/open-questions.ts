@@ -25,4 +25,17 @@ export const PROTOTYPE_OPEN_QUESTIONS = {
   ocrTool: "W1.10 — Which OCR tool, and how well does it read handwriting and drawings?",
   statusNames: "W3.2 — Stage 1 status values vs sign-off labels on screen",
   addedStepsBlock: "W3.3 — Do added workflow steps block sign-off?",
+  workflowEditPermissions: "Who may edit workflows on a job, and who must approve changes?",
+  knowledgeApproval: "Does expert knowledge need approval before it can be suggested on other jobs?",
+  templateVsJobScope:
+    "Do workflow edits change only this job, or the shop template? (Template editing is Phase 2 shop admin — not in this prototype.)",
+  workflowVersioningRollback: "Versioning and rollback rules when steps are moved, edited, or removed.",
 } as const;
+
+export const DEMO_SHOP_ROLES = [
+  "Estimator",
+  "Reviewer",
+  "Engineer",
+  "Owner / admin",
+  "Fabricator",
+] as const;

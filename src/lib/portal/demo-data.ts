@@ -58,11 +58,18 @@ export type DemoBomRow = {
   notes: string;
 };
 
+export type WorkflowStepKind = "minimum" | "ideal" | "added" | "knowledge-added";
+
 export type WorkflowStep = {
   id: string;
   label: string;
-  kind: "minimum" | "ideal" | "added";
+  kind: WorkflowStepKind;
   done: boolean;
+  ownerRole?: string;
+  inputs?: string;
+  outputs?: string;
+  notes?: string;
+  fromKnowledgeId?: string;
 };
 
 export type AuditEntry = {
@@ -352,13 +359,65 @@ export const JOBS: DemoJob[] = [
       },
     ],
     workflow: [
-      { id: "intake", label: "Intake sources", kind: "minimum", done: true },
-      { id: "checklist", label: "Fill the requirements checklist", kind: "minimum", done: false },
-      { id: "conflicts", label: "Resolve conflicts", kind: "minimum", done: false },
-      { id: "customer-q", label: "Send missing-info questions", kind: "ideal", done: false },
-      { id: "site-walk", label: "Confirm site dimensions on a walk", kind: "added", done: false },
-      { id: "eng-review", label: "Engineering review", kind: "minimum", done: false },
-      { id: "signoff", label: "Customer + engineer sign-off", kind: "minimum", done: false },
+      {
+        id: "intake",
+        label: "Intake sources",
+        kind: "minimum",
+        done: true,
+        ownerRole: "Estimator",
+        inputs: "Email, files, transcripts",
+        outputs: "Sources on the job",
+        notes: "Happy path — predefined for platform jobs.",
+      },
+      {
+        id: "checklist",
+        label: "Fill the requirements checklist",
+        kind: "minimum",
+        done: false,
+        ownerRole: "Estimator",
+        inputs: "Template intake questions",
+        outputs: "Draft checklist values with sources",
+      },
+      {
+        id: "conflicts",
+        label: "Resolve conflicts",
+        kind: "minimum",
+        done: false,
+        ownerRole: "Reviewer",
+        inputs: "Conflicting sources",
+        outputs: "Picked value or ask customer",
+      },
+      {
+        id: "customer-q",
+        label: "Send missing-info questions",
+        kind: "ideal",
+        done: false,
+        ownerRole: "Estimator",
+        outputs: "Draft email — person sends",
+      },
+      {
+        id: "site-walk",
+        label: "Confirm site dimensions on a walk",
+        kind: "added",
+        done: false,
+        ownerRole: "Estimator",
+        notes: "Added from team experience — color-coded.",
+      },
+      {
+        id: "eng-review",
+        label: "Engineering review",
+        kind: "minimum",
+        done: false,
+        ownerRole: "Engineer",
+        outputs: "Checklist ready for sign-off",
+      },
+      {
+        id: "signoff",
+        label: "Customer + engineer sign-off",
+        kind: "minimum",
+        done: false,
+        ownerRole: "Engineer",
+      },
     ],
     bom: [
       {
@@ -458,9 +517,27 @@ export const JOBS: DemoJob[] = [
       },
     ],
     workflow: [
-      { id: "intake", label: "Intake sources", kind: "minimum", done: true },
-      { id: "checklist", label: "Fill the requirements checklist", kind: "minimum", done: false },
-      { id: "signoff", label: "Customer + engineer sign-off", kind: "minimum", done: false },
+      {
+        id: "intake",
+        label: "Intake sources",
+        kind: "minimum",
+        done: true,
+        ownerRole: "Estimator",
+      },
+      {
+        id: "checklist",
+        label: "Fill the requirements checklist",
+        kind: "minimum",
+        done: false,
+        ownerRole: "Estimator",
+      },
+      {
+        id: "signoff",
+        label: "Customer + engineer sign-off",
+        kind: "minimum",
+        done: false,
+        ownerRole: "Engineer",
+      },
     ],
     bom: [
       {
@@ -562,10 +639,34 @@ export const JOBS: DemoJob[] = [
       },
     ],
     workflow: [
-      { id: "intake", label: "Intake sources", kind: "minimum", done: true },
-      { id: "checklist", label: "Fill the requirements checklist", kind: "minimum", done: true },
-      { id: "eng-review", label: "Engineering review", kind: "minimum", done: false },
-      { id: "signoff", label: "Customer + engineer sign-off", kind: "minimum", done: false },
+      {
+        id: "intake",
+        label: "Intake sources",
+        kind: "minimum",
+        done: true,
+        ownerRole: "Estimator",
+      },
+      {
+        id: "checklist",
+        label: "Fill the requirements checklist",
+        kind: "minimum",
+        done: true,
+        ownerRole: "Estimator",
+      },
+      {
+        id: "eng-review",
+        label: "Engineering review",
+        kind: "minimum",
+        done: false,
+        ownerRole: "Engineer",
+      },
+      {
+        id: "signoff",
+        label: "Customer + engineer sign-off",
+        kind: "minimum",
+        done: false,
+        ownerRole: "Engineer",
+      },
     ],
     bom: [
       {

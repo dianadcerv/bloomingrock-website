@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { JobHeader } from "@/components/portal/JobHeader";
-import { DraftNotice, StatusPill } from "@/components/portal/PortalUi";
+import { DraftNotice } from "@/components/portal/PortalUi";
+import { KnowledgeJobWorkspace } from "@/components/portal/KnowledgeJobWorkspace";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJobForShop } from "@/lib/portal/auth";
-import { JOBS } from "@/lib/portal/demo-data";
+import { getKnowledgeSuggestionsForJob } from "@/lib/portal/expert-knowledge";
 
 export const metadata: Metadata = { title: "Knowledge" };
 
@@ -14,42 +15,23 @@ export default async function KnowledgePage({
 }) {
   const { jobId } = await params;
   const { session, job } = await requireJobForShop(jobId);
-  const other = JOBS.find((item) => item.id !== job.id && item.id === "machine-guard");
+  const suggestions = getKnowledgeSuggestionsForJob(job.id);
 
   return (
     <PortalShell session={session} current="/jobs">
       <JobHeader job={job} current={`/jobs/${job.id}/knowledge`} />
       <DraftNotice>
-        Saved team knowledge is only suggested on future jobs, never added
+        Internal only — customer logins cannot open this page. Knowledge is never applied
         automatically.
       </DraftNotice>
-      <section className="portal-section">
-        <h2>Capture from this job</h2>
-        <ul className="portal-plain">
-          {job.knowledge.length ? (
-            job.knowledge.map((item) => <li key={item}>{item}</li>)
-          ) : (
-            <li>Nothing captured yet.</li>
-          )}
-        </ul>
-      </section>
-      {other ? (
-        <section className="portal-section">
-          <h2>Suggestion on {other.name}</h2>
-          <p>
-            Use the 42 in. rail-height assumption on the machine guard too?
-          </p>
-          <p className="portal-inline-actions">
-            <button className="btn btn--primary" type="button" disabled>
-              Accept (demo)
-            </button>
-            <button className="btn btn--ghost portal-btn-quiet" type="button" disabled>
-              Skip (demo)
-            </button>
-            <StatusPill tone="draft">Person decides</StatusPill>
-          </p>
-        </section>
-      ) : null}
+      <KnowledgeJobWorkspace
+        jobId={job.id}
+        jobName={job.name}
+        actorName={session.name}
+        workflowSteps={job.workflow}
+        suggestions={suggestions}
+        capturedOnJob={job.knowledge}
+      />
     </PortalShell>
   );
 }
