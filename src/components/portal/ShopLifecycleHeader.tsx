@@ -1,6 +1,6 @@
 "use client";
 
-import { OpenQuestion, StatusPill } from "@/components/portal/PortalUi";
+import { Badge } from "@/components/portal/PortalUi";
 import type { DemoShopRecord, ShopLifecyclePhase } from "@/lib/portal/admin-demo-data";
 import {
   allowedNextPhases,
@@ -9,6 +9,7 @@ import {
   phaseLabel,
   planLabel,
 } from "@/lib/portal/admin-shops-store";
+import { OpenQuestion } from "@/components/portal/DemoNotes";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 function stepIndex(phase: ShopLifecyclePhase) {
@@ -29,6 +30,7 @@ export function ShopLifecycleHeader({
 
   return (
     <section className="portal-lifecycle-header" aria-labelledby="lifecycle-heading">
+      <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.managedServicePricing}</OpenQuestion>
       <div className="portal-lifecycle-header__meta">
         <div>
           <h2 id="lifecycle-heading">Lifecycle</h2>
@@ -79,15 +81,15 @@ export function ShopLifecycleHeader({
           <ul className="portal-plain">
             <li>
               Workflow set up for at least one product —{" "}
-              <StatusPill tone={shop.exitCriteria.workflowSetUp ? "ok" : "missing"}>
+              <Badge tone={shop.exitCriteria.workflowSetUp ? "success" : "neutral"}>
                 {shop.exitCriteria.workflowSetUp ? "Met" : "Not met"}
-              </StatusPill>
+              </Badge>
             </li>
             <li>
               Successful first project —{" "}
-              <StatusPill tone={shop.exitCriteria.firstProjectSuccess ? "ok" : "missing"}>
+              <Badge tone={shop.exitCriteria.firstProjectSuccess ? "success" : "neutral"}>
                 {shop.exitCriteria.firstProjectSuccess ? "Met" : "Not met"}
-              </StatusPill>
+              </Badge>
             </li>
           </ul>
           {!exitOk ? (
@@ -108,8 +110,6 @@ export function ShopLifecycleHeader({
           From Ongoing Success, superadmin can move back to Build-out for more template work (demo).
         </p>
       ) : null}
-
-      <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.managedServicePricing}</OpenQuestion>
     </section>
   );
 }

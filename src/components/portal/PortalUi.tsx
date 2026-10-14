@@ -1,4 +1,39 @@
 import Link from "next/link";
+import type { CheckStatus } from "@/lib/portal/demo-data";
+import type { StatusPillTone } from "@/lib/portal/demo-data";
+
+export { OpenQuestion } from "@/components/portal/DemoNotes";
+
+export type BadgeTone = "neutral" | "info" | "success" | "critical";
+
+export function Badge({ tone, children }: { tone: BadgeTone; children: React.ReactNode }) {
+  return <span className={`portal-badge portal-badge--${tone}`}>{children}</span>;
+}
+
+function legacyToneToBadge(tone: StatusPillTone): BadgeTone {
+  if (tone === "conflict") return "critical";
+  if (tone === "ok") return "success";
+  if (tone === "missing" || tone === "assumed") return "info";
+  return "neutral";
+}
+
+export function badgeToneForCheckStatus(status: CheckStatus): BadgeTone {
+  if (status === "conflict") return "critical";
+  if (status === "complete") return "success";
+  if (status === "missing" || status === "assumed") return "info";
+  return "neutral";
+}
+
+/** @deprecated Prefer Badge — kept for gradual migration. */
+export function StatusPill({
+  tone,
+  children,
+}: {
+  tone: StatusPillTone;
+  children: React.ReactNode;
+}) {
+  return <Badge tone={legacyToneToBadge(tone)}>{children}</Badge>;
+}
 
 export function ModuleCard({
   href,
@@ -27,16 +62,6 @@ export function ModuleCard({
   );
 }
 
-export function StatusPill({
-  tone,
-  children,
-}: {
-  tone: "conflict" | "missing" | "ok" | "draft" | "assumed";
-  children: React.ReactNode;
-}) {
-  return <span className={`portal-pill portal-pill--${tone}`}>{children}</span>;
-}
-
 export function DraftNotice({ children }: { children: React.ReactNode }) {
   return (
     <p className="portal-draft" role="status">
@@ -63,19 +88,7 @@ export function PageIntro({
   );
 }
 
-export function OpenQuestion({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="portal-open-q" role="note">
-      <strong>Open question</strong> — {children}
-    </p>
-  );
-}
-
 /** @deprecated Use InterpretationMarker or ProvenanceMarks */
 export function SuggestionBadge() {
-  return (
-    <span className="portal-provenance portal-provenance--interpretation">
-      Interpretation, needs review
-    </span>
-  );
+  return <Badge tone="info">Needs a check</Badge>;
 }

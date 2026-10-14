@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { DemoBanner } from "@/components/portal/AuthChrome";
+import { DemoNotesProvider } from "@/components/portal/DemoNotes";
+import { PortalMobileNav } from "@/components/portal/PortalMobileNav";
+import { PoweredByBloomingRock } from "@/components/portal/PoweredByBloomingRock";
 import { isShopAdmin, isShopStaff, roleDisplayLabel } from "@/lib/portal/roles";
 import type { PortalSession } from "@/lib/portal/session";
 
@@ -34,48 +37,52 @@ export function PortalShell({
   const roleLabel = roleDisplayLabel(session.role);
 
   return (
-    <div className="portal">
-      <DemoBanner />
-      <header className="portal-header">
-        <Link href="/dashboard" className="portal-header__brand" aria-label="Portal home">
-          <BrandMark />
-        </Link>
-        <nav className="portal-header__nav" aria-label="Portal">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`portal-header__link${current === item.href ? " is-active" : ""}`}
-            >
-              {item.label}
-            </Link>
-          ))}
-          {isShopAdmin(session.role) ? (
-            <Link
-              href="/admin"
-              className={`portal-header__link${current === "/admin" ? " is-active" : ""}`}
-            >
-              Admin
-            </Link>
-          ) : null}
-          {session.role === "superadmin" ? (
-            <Link
-              href="/admin/shops"
-              className={`portal-header__link${current === "/admin/shops" ? " is-active" : ""}`}
-            >
-              Superadmin
-            </Link>
-          ) : null}
-        </nav>
-        <p className="portal-header__who">
-          <span>
-            {session.name} · {session.org}
-          </span>
-          <span className="portal-header__role">{roleLabel}</span>
-          <Link href="/auth/logout">Log out</Link>
-        </p>
-      </header>
-      <main className="portal-main">{children}</main>
-    </div>
+    <DemoNotesProvider>
+      <div className="portal">
+        <DemoBanner />
+        <header className="portal-header">
+          <Link href="/dashboard" className="portal-header__brand" aria-label="Portal home">
+            <BrandMark />
+          </Link>
+          <nav className="portal-header__nav portal-header__nav--desktop" aria-label="Portal">
+            {nav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`portal-header__link${current === item.href ? " is-active" : ""}`}
+              >
+                {item.label}
+              </Link>
+            ))}
+            {isShopAdmin(session.role) ? (
+              <Link
+                href="/admin"
+                className={`portal-header__link${current === "/admin" ? " is-active" : ""}`}
+              >
+                Admin
+              </Link>
+            ) : null}
+            {session.role === "superadmin" ? (
+              <Link
+                href="/admin/shops"
+                className={`portal-header__link${current === "/admin/shops" ? " is-active" : ""}`}
+              >
+                Superadmin
+              </Link>
+            ) : null}
+          </nav>
+          <p className="portal-header__who portal-header__who--desktop">
+            <span>
+              {session.name} · {session.org}
+            </span>
+            <span className="portal-header__role">{roleLabel}</span>
+            <Link href="/auth/logout">Log out</Link>
+          </p>
+        </header>
+        <main className="portal-main">{children}</main>
+        <PoweredByBloomingRock />
+        <PortalMobileNav session={session} />
+      </div>
+    </DemoNotesProvider>
   );
 }

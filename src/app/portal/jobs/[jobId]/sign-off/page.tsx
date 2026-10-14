@@ -120,11 +120,7 @@ export default async function SignOffPage({
           <h3>Requirements checklist</h3>
           <ProvenanceLegend />
           <ul className="portal-plain">
-            {job.checklist.map((item, index) => {
-              const firstInterp = job.checklist.findIndex((c) =>
-                c.provenance?.some((m) => m.type === "interpretation"),
-              );
-              return (
+            {job.checklist.map((item) => (
                 <li key={item.id} className="portal-check">
                   <StatusPill tone={checkTone(item.status)}>
                     {checkStatusLabel(item.status)}
@@ -136,7 +132,6 @@ export default async function SignOffPage({
                       <ProvenanceMarks
                         marks={item.provenance}
                         jobId={job.id}
-                        showInterpretationOpenQuestion={index === firstInterp}
                       />
                     ) : null}
                     <p className="look-field__hint">
@@ -149,8 +144,7 @@ export default async function SignOffPage({
                     </p>
                   </div>
                 </li>
-              );
-            })}
+            ))}
           </ul>
         </section>
 

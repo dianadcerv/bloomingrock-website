@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { DemoBanner } from "@/components/portal/AuthChrome";
-import { OpenQuestion } from "@/components/portal/PortalUi";
+import { DemoNotesProvider, OpenQuestion } from "@/components/portal/DemoNotes";
 import { WORKING_APP_TITLE } from "@/lib/portal/admin-demo-data";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 import { isSuperAdmin, roleDisplayLabel } from "@/lib/portal/roles";
@@ -35,39 +35,41 @@ export function AdminShell({
   const nav = superadmin ? SUPERADMIN_NAV : SHOP_ADMIN_NAV;
 
   return (
-    <div className="portal portal-admin">
-      <DemoBanner />
-      <header className="portal-header">
-        <Link href={superadmin ? "/admin/shops" : "/admin"} className="portal-header__brand">
-          <BrandMark />
-        </Link>
-        <p className="portal-admin-app-title">
-          {WORKING_APP_TITLE}
-          <span className="look-field__hint"> — Phase 2 admin (demo)</span>
-        </p>
-        <nav className="portal-header__nav" aria-label="Admin">
-          {nav.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`portal-header__link${current === item.href ? " is-active" : ""}`}
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-        <p className="portal-header__who">
-          <span>
-            {session.name} · {session.org}
-          </span>
-          <span className="portal-header__role">{roleDisplayLabel(session.role)}</span>
-          <Link href="/auth/logout">Log out</Link>
-        </p>
-      </header>
-      <main className="portal-main portal-main--admin">
-        <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.appNameBLO38}</OpenQuestion>
-        {children}
-      </main>
-    </div>
+    <DemoNotesProvider>
+      <div className="portal portal-admin">
+        <DemoBanner />
+        <header className="portal-header">
+          <Link href={superadmin ? "/admin/shops" : "/admin"} className="portal-header__brand">
+            <BrandMark />
+          </Link>
+          <p className="portal-admin-app-title">
+            {WORKING_APP_TITLE}
+            <span className="look-field__hint"> — admin (demo)</span>
+          </p>
+          <nav className="portal-header__nav portal-header__nav--desktop" aria-label="Admin">
+            {nav.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`portal-header__link${current === item.href ? " is-active" : ""}`}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          <p className="portal-header__who portal-header__who--desktop">
+            <span>
+              {session.name} · {session.org}
+            </span>
+            <span className="portal-header__role">{roleDisplayLabel(session.role)}</span>
+            <Link href="/auth/logout">Log out</Link>
+          </p>
+        </header>
+        <main className="portal-main portal-main--admin">
+          <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.appNameBLO38}</OpenQuestion>
+          {children}
+        </main>
+      </div>
+    </DemoNotesProvider>
   );
 }

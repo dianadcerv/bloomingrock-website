@@ -310,7 +310,7 @@ export const JOBS: DemoJob[] = [
         reviewState: "needs-review",
         value: "48 in. vs 54 in.",
         sourceIds: ["email-1", "sketch-1"],
-        note: "Two extracted values conflict — person must pick or ask customer.",
+        note: "Email and sketch disagree — pick one or ask the customer.",
         provenance: [
           {
             type: "extracted",

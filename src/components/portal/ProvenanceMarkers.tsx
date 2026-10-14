@@ -1,30 +1,24 @@
 import Link from "next/link";
-import { OpenQuestion } from "@/components/portal/PortalUi";
+import { Badge } from "@/components/portal/PortalUi";
 import type { ProvenanceMark } from "@/lib/portal/provenance";
 import { sourceHref } from "@/lib/portal/provenance";
-import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export function ProvenanceLegend() {
   return (
-    <div className="portal-provenance-legend" role="note" aria-label="Provenance legend">
+    <div className="portal-provenance-legend" role="note" aria-label="How values are labeled">
       <p className="portal-provenance-legend__title">How values are labeled</p>
       <ul>
         <li>
-          <span className="portal-provenance portal-provenance--institutional">
-            Institutional knowledge
-          </span>
-          — captured by your team during the order (who + when).
+          <Badge tone="neutral">Your team added</Badge> — someone on your team entered this on the
+          job (who + when).
         </li>
         <li>
-          <span className="portal-provenance portal-provenance--extracted">Extracted from …</span>
-          — quoted or OCR’d from email, transcript, drawing, or another connected source (link
-          back).
+          <Badge tone="info">Pulled from a source</Badge> — quoted from email, drawing, transcript,
+          or another file (link back).
         </li>
         <li>
-          <span className="portal-provenance portal-provenance--interpretation">
-            Interpretation, needs review
-          </span>
-          — inferred, not verbatim from a source; a person must confirm.
+          <Badge tone="info">Needs a check</Badge> — inferred or summarized; a person should
+          confirm before sign-off.
         </li>
       </ul>
     </div>
@@ -40,7 +34,7 @@ export function InstitutionalKnowledgeMarker({
 }) {
   return (
     <span className="portal-provenance portal-provenance--institutional">
-      Institutional knowledge · {addedBy} · {addedAt}
+      Your team added · {addedBy} · {addedAt}
     </span>
   );
 }
@@ -54,7 +48,8 @@ export function ExtractedProvenanceMarker({
   jobId?: string;
   sourceId?: string;
 }) {
-  const inner = <span className="portal-provenance portal-provenance--extracted">{label}</span>;
+  const display = label.replace(/^Extracted from /i, "Pulled from ");
+  const inner = <span className="portal-provenance portal-provenance--extracted">{display}</span>;
   if (jobId && sourceId) {
     return (
       <Link href={sourceHref(jobId, sourceId)} className="portal-provenance-link">
@@ -65,28 +60,18 @@ export function ExtractedProvenanceMarker({
   return inner;
 }
 
-export function InterpretationMarker({ showOpenQuestion = false }: { showOpenQuestion?: boolean }) {
+export function InterpretationMarker() {
   return (
-    <span className="portal-provenance-block">
-      <span className="portal-provenance portal-provenance--interpretation">
-        Interpretation, needs review
-      </span>
-      {showOpenQuestion ? (
-        <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.interpretationAccuracyHarness}</OpenQuestion>
-      ) : null}
-    </span>
+    <span className="portal-provenance portal-provenance--interpretation">Needs a check</span>
   );
 }
 
 export function ProvenanceMarks({
   marks,
   jobId,
-  showInterpretationOpenQuestion,
 }: {
   marks: ProvenanceMark[];
   jobId: string;
-  /** Show accuracy harness open question once per page section, not every row. */
-  showInterpretationOpenQuestion?: boolean;
 }) {
   if (!marks.length) return null;
   return (
@@ -111,12 +96,7 @@ export function ProvenanceMarks({
             />
           );
         }
-        return (
-          <InterpretationMarker
-            key={`${mark.type}-${i}`}
-            showOpenQuestion={showInterpretationOpenQuestion}
-          />
-        );
+        return <InterpretationMarker key={`${mark.type}-${i}`} />;
       })}
     </div>
   );

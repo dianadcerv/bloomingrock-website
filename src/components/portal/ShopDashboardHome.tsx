@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { DashboardNotificationsLive } from "@/components/portal/DashboardNotificationsLive";
-import { ModuleCard, OpenQuestion, StatusPill } from "@/components/portal/PortalUi";
+import { OpenQuestion } from "@/components/portal/DemoNotes";
+import { ModuleCard, Badge } from "@/components/portal/PortalUi";
 import { SummaryMetricTile } from "@/components/portal/SummaryMetricTile";
 import type { DashboardNotification } from "@/lib/portal/workflow-changes";
 import type {
@@ -17,6 +18,13 @@ import {
 } from "@/lib/portal/dashboard-data";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
+function attentionBadgeTone(tone: AttentionRow["tone"]) {
+  if (tone === "conflict") return "critical" as const;
+  if (tone === "ok") return "success" as const;
+  if (tone === "missing") return "info" as const;
+  return "neutral" as const;
+}
+
 function WipMobileList({ jobs }: { jobs: WorkJobRow[] }) {
   return (
     <ul className="portal-wip-mobile-list">
@@ -25,7 +33,9 @@ function WipMobileList({ jobs }: { jobs: WorkJobRow[] }) {
           <Link href={`/jobs/${job.jobId}`} className="portal-wip-mobile-list__link">
             <div className="portal-wip-mobile-list__head">
               <span className="portal-wip-mobile-list__job">{job.jobName}</span>
-              <StatusPill tone={job.tone}>{job.statusLabel}</StatusPill>
+              <Badge tone={job.tone === "conflict" ? "critical" : job.tone === "ok" ? "success" : "info"}>
+                {job.statusLabel}
+              </Badge>
             </div>
             <p className="portal-wip-mobile-list__meta">
               {job.customer} · {job.project} · {job.ownerRole} · since {job.stageSince}
@@ -118,18 +128,17 @@ export function ShopDashboardHome({
           <section className="portal-dashboard__section">
             <div className="portal-dashboard__section-head">
               <h2>Needs your attention</h2>
-              <Link href="/attention">View all</Link>
+              <Link href="/attention" className="portal-link-quiet">
+                View all
+              </Link>
             </div>
-            <ul className="portal-attention-list">
+            <ul className="portal-attention-compact">
               {attention.map((row) => (
-                <li key={row.id} className="portal-attention-list__item">
-                  <div className="portal-attention-list__body">
-                    <p className="portal-attention-list__title">{row.title}</p>
-                    <p className="portal-attention-list__detail">{row.detail}</p>
-                    <StatusPill tone={row.tone}>{row.statusLabel}</StatusPill>
-                  </div>
-                  <Link className="btn btn--primary portal-attention-list__action" href={row.href}>
-                    {row.actionLabel}
+                <li key={row.id}>
+                  <Link href={row.href} className="portal-attention-compact__row">
+                    <Badge tone={attentionBadgeTone(row.tone)}>{row.statusLabel}</Badge>
+                    <span className="portal-attention-compact__job">{row.title}</span>
+                    <span className="portal-attention-compact__action">{row.actionLabel}</span>
                   </Link>
                 </li>
               ))}
@@ -197,7 +206,9 @@ export function ShopDashboardHome({
                             <p className="look-field__hint">
                               {job.project} · {job.ownerRole} · since {job.stageSince}
                             </p>
-                            <StatusPill tone={job.tone}>{job.statusLabel}</StatusPill>
+                            <Badge tone={job.tone === "conflict" ? "critical" : job.tone === "ok" ? "success" : "info"}>
+                              {job.statusLabel}
+                            </Badge>
                           </Link>
                         </li>
                       ))}
@@ -227,7 +238,9 @@ export function ShopDashboardHome({
                       </td>
                       <td>{job.ownerRole}</td>
                       <td>
-                        <StatusPill tone={job.tone}>{job.statusLabel}</StatusPill>
+                        <Badge tone={job.tone === "conflict" ? "critical" : job.tone === "ok" ? "success" : "info"}>
+                          {job.statusLabel}
+                        </Badge>
                       </td>
                       <td>{job.stageSince}</td>
                     </tr>
@@ -242,7 +255,9 @@ export function ShopDashboardHome({
           <section className="portal-dashboard__section">
             <div className="portal-dashboard__section-head">
               <h2>Recent activity</h2>
-              <Link href="/activity">View all</Link>
+              <Link href="/activity" className="portal-link-quiet">
+                View all
+              </Link>
             </div>
             <ul className="portal-plain portal-audit">
               {recentActivity.map((entry) => (

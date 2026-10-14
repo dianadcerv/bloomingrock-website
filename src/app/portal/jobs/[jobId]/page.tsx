@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { JobChecklistClient } from "@/components/portal/JobChecklistClient";
+import { JobConflictBanner } from "@/components/portal/JobConflictBanner";
 import { JobHeader } from "@/components/portal/JobHeader";
-import { ChecklistSection } from "@/components/portal/ChecklistSection";
+import { JobRecentAuditClient } from "@/components/portal/JobRecentAuditClient";
 import { SourcesSection } from "@/components/portal/SourcesSection";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
 import { isShopStaff } from "@/lib/portal/roles";
-import { getSource } from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = { title: "Job workspace" };
 
@@ -21,29 +22,11 @@ export default async function JobWorkspacePage({
   return (
     <PortalShell session={session} current="/jobs">
       <JobHeader job={job} current={`/jobs/${job.id}`} role={session.role} />
+      <JobConflictBanner job={job} />
 
       <SourcesSection job={job} showShopLinks={isShopStaff(session.role)} />
 
-      <ChecklistSection job={job} />
-
-      {job.conflicts.length ? (
-        <section className="portal-section">
-          <h2>Conflicts</h2>
-          {job.conflicts.map((conflict) => (
-            <div key={conflict.id} className="portal-conflict">
-              <p>
-                <strong>{conflict.field}</strong>
-              </p>
-              <p>
-                {getSource(job, conflict.left.sourceId)?.title}: {conflict.left.value}
-              </p>
-              <p>
-                {getSource(job, conflict.right.sourceId)?.title}: {conflict.right.value}
-              </p>
-            </div>
-          ))}
-        </section>
-      ) : null}
+      <JobChecklistClient job={job} who={session.name} />
 
       <section className="portal-section">
         <h2>Open questions (job)</h2>
@@ -71,13 +54,7 @@ export default async function JobWorkspacePage({
       {isShopStaff(session.role) ? (
         <section className="portal-section">
           <h2>Recent activity</h2>
-          <ul className="portal-plain portal-audit">
-            {job.auditLog.slice(0, 3).map((entry) => (
-              <li key={entry.id}>
-                <time dateTime={entry.at}>{entry.at}</time> — {entry.action}: {entry.detail}
-              </li>
-            ))}
-          </ul>
+          <JobRecentAuditClient jobId={job.id} seed={job.auditLog.slice(0, 3)} />
           <p>
             <Link href={`/jobs/${job.id}/audit`}>Full audit log</Link>
           </p>

@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { StatusPill } from "@/components/portal/PortalUi";
-import type { DemoShopRecord, ShopEngagementType } from "@/lib/portal/admin-demo-data";
+import { Badge } from "@/components/portal/PortalUi";
+import type { DemoShopRecord, ShopEngagementType, ShopLifecyclePhase } from "@/lib/portal/admin-demo-data";
 import {
   ADMIN_SHOPS_UPDATED_EVENT,
   createShopRecord,
@@ -12,6 +12,12 @@ import {
   planLabel,
   writeStoredShops,
 } from "@/lib/portal/admin-shops-store";
+
+function phaseBadgeTone(phase: ShopLifecyclePhase) {
+  if (phase === "onboarding") return "neutral" as const;
+  if (phase === "build-out") return "info" as const;
+  return "success" as const;
+}
 
 export function SuperadminShopsClient({ initialShops }: { initialShops: DemoShopRecord[] }) {
   const [shops, setShops] = useState(initialShops);
@@ -76,29 +82,24 @@ export function SuperadminShopsClient({ initialShops }: { initialShops: DemoShop
         </section>
       ) : null}
 
-      <ul className="portal-list">
+      <ul className="portal-list portal-list--clickable">
         {shops.map((shop) => (
-          <li key={shop.id} className="portal-list__item">
-            <div>
-              <p className="portal-list__kicker">{shop.primaryContact}</p>
-              <h2>{shop.name}</h2>
-              <p>
-                Plan: <strong>{planLabel(shop.engagement)}</strong> · Phase:{" "}
-                <strong>{phaseLabel(shop.phase)}</strong>
-              </p>
-              <p className="look-field__hint">
-                {shop.onboarding.filter((s) => s.done).length}/{shop.onboarding.length} onboarding
-                setup steps complete
-              </p>
-            </div>
-            <div className="portal-list__actions">
-              <StatusPill tone={shop.phase === "onboarding" ? "draft" : "ok"}>
-                {phaseLabel(shop.phase)}
-              </StatusPill>
-              <Link className="btn btn--primary" href={`/admin/shops/${shop.id}`}>
-                View shop
-              </Link>
-            </div>
+          <li key={shop.id}>
+            <Link href={`/admin/shops/${shop.id}`} className="portal-list__item portal-list__item--link">
+              <div className="portal-list__item-main">
+                <p className="portal-list__kicker">{shop.primaryContact}</p>
+                <h2>{shop.name}</h2>
+                <p>
+                  Plan: <strong>{planLabel(shop.engagement)}</strong> · Phase:{" "}
+                  <strong>{phaseLabel(shop.phase)}</strong>
+                </p>
+                <p className="look-field__hint">
+                  {shop.onboarding.filter((s) => s.done).length}/{shop.onboarding.length} onboarding
+                  setup steps complete
+                </p>
+              </div>
+              <Badge tone={phaseBadgeTone(shop.phase)}>{phaseLabel(shop.phase)}</Badge>
+            </Link>
           </li>
         ))}
       </ul>
