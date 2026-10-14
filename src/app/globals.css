@@ -2474,6 +2474,78 @@ img {
   margin-left: 0.5rem;
 }
 
+.portal-lifecycle-header {
+  margin-bottom: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--stone-300);
+  background: var(--stone-50);
+}
+
+.portal-lifecycle-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.portal-lifecycle-progress {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .portal-lifecycle-progress {
+    grid-template-columns: 1fr;
+  }
+}
+
+.portal-lifecycle-progress__step {
+  padding: 0.75rem;
+  border-radius: 0.35rem;
+  border: 1px dashed var(--stone-300);
+  position: relative;
+}
+
+.portal-lifecycle-progress__step--current {
+  border-color: var(--lichen);
+  background: rgba(122, 158, 106, 0.08);
+  outline: 2px solid var(--lichen);
+}
+
+.portal-lifecycle-progress__step--complete {
+  border-style: solid;
+  border-color: var(--lichen);
+}
+
+.portal-lifecycle-progress__label {
+  display: block;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.portal-lifecycle-progress__hint {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--stone-600);
+  margin-top: 0.25rem;
+}
+
+.portal-lifecycle-exit {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--stone-300);
+}
+
+.portal-add-customer {
+  margin-bottom: 1.5rem;
+}
+
 .portal-powered-by {
   margin-top: 1.5rem;
   font-size: 0.75rem;

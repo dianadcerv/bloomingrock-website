@@ -1,7 +1,9 @@
 /** Phase 2 admin — fake demo data only (BLO-29). */
 
-export type ShopLifecyclePhase = "onboarding" | "customer-success";
+/** Lifecycle phase (NOT the same as billing plan). */
+export type ShopLifecyclePhase = "onboarding" | "build-out" | "ongoing-success";
 
+/** Billing / delivery plan. */
 export type ShopEngagementType = "managed-service" | "project-based";
 
 export type DemoShopRecord = {
@@ -10,6 +12,10 @@ export type DemoShopRecord = {
   phase: ShopLifecyclePhase;
   engagement: ShopEngagementType;
   primaryContact: string;
+  exitCriteria: {
+    workflowSetUp: boolean;
+    firstProjectSuccess: boolean;
+  };
   onboarding: {
     id: string;
     label: string;
@@ -42,9 +48,13 @@ export const DEMO_ADMIN_SHOPS: DemoShopRecord[] = [
   {
     id: "northridge",
     name: "Northridge Steel",
-    phase: "customer-success",
+    phase: "ongoing-success",
     engagement: "project-based",
     primaryContact: "Maya Chen",
+    exitCriteria: {
+      workflowSetUp: true,
+      firstProjectSuccess: true,
+    },
     onboarding: [
       {
         id: "wf",
@@ -74,10 +84,14 @@ export const DEMO_ADMIN_SHOPS: DemoShopRecord[] = [
   },
   {
     id: "lakeview-fab",
-    name: "Lakeview Fabrication (demo)",
+    name: "Lakeview Fabrication",
     phase: "onboarding",
     engagement: "managed-service",
     primaryContact: "Pending kickoff",
+    exitCriteria: {
+      workflowSetUp: false,
+      firstProjectSuccess: false,
+    },
     onboarding: [
       {
         id: "wf",
@@ -102,6 +116,80 @@ export const DEMO_ADMIN_SHOPS: DemoShopRecord[] = [
         label: "Add initial users",
         done: false,
         detail: "Shop admin account not created yet.",
+      },
+    ],
+  },
+  {
+    id: "prairie-stairs",
+    name: "Prairie Stair & Rail",
+    phase: "build-out",
+    engagement: "managed-service",
+    primaryContact: "Chris Webb",
+    exitCriteria: {
+      workflowSetUp: true,
+      firstProjectSuccess: true,
+    },
+    onboarding: [
+      {
+        id: "wf",
+        label: "Design default workflow at first meeting",
+        done: true,
+        detail: "Exterior stairs happy path live.",
+      },
+      {
+        id: "cat",
+        label: "Set up at least one product category + workflow",
+        done: true,
+        detail: "First category shipped; adding mezzanine stairs template in build-out.",
+      },
+      {
+        id: "brand",
+        label: "Branding setup",
+        done: true,
+        detail: "Inherited colors from website (demo mock).",
+      },
+      {
+        id: "users",
+        label: "Add initial users",
+        done: true,
+        detail: "Shop admin + two estimators.",
+      },
+    ],
+  },
+  {
+    id: "summit-platforms",
+    name: "Summit Platforms LLC",
+    phase: "onboarding",
+    engagement: "project-based",
+    primaryContact: "Jamie Ortiz",
+    exitCriteria: {
+      workflowSetUp: true,
+      firstProjectSuccess: false,
+    },
+    onboarding: [
+      {
+        id: "wf",
+        label: "Design default workflow at first meeting",
+        done: true,
+        detail: "Platform workflow drafted — pending first live job.",
+      },
+      {
+        id: "cat",
+        label: "Set up at least one product category + workflow",
+        done: true,
+        detail: "Access platforms category created.",
+      },
+      {
+        id: "brand",
+        label: "Branding setup",
+        done: false,
+        detail: "Logo upload pending.",
+      },
+      {
+        id: "users",
+        label: "Add initial users",
+        done: true,
+        detail: "Shop admin invited.",
       },
     ],
   },

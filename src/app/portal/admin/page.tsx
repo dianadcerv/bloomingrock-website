@@ -54,7 +54,7 @@ export default async function ShopAdminHomePage() {
       <section className="portal-section">
         <h2>Onboarding status (Northridge)</h2>
         <p className="look-field__hint">
-          Phase: Customer Success · Engagement: Project-based (demo).
+          Phase: Ongoing Success · Plan: Project-based (demo).
         </p>
         <ul className="portal-plain">
           {shop.onboarding.map((step) => (
