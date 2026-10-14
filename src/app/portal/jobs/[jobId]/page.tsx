@@ -5,6 +5,7 @@ import { ChecklistSection } from "@/components/portal/ChecklistSection";
 import { SourcesSection } from "@/components/portal/SourcesSection";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
+import { isShopStaff } from "@/lib/portal/roles";
 import { getSource } from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = { title: "Job workspace" };
@@ -21,7 +22,7 @@ export default async function JobWorkspacePage({
     <PortalShell session={session} current="/jobs">
       <JobHeader job={job} current={`/jobs/${job.id}`} role={session.role} />
 
-      <SourcesSection job={job} showShopLinks={session.role === "shop"} />
+      <SourcesSection job={job} showShopLinks={isShopStaff(session.role)} />
 
       <ChecklistSection job={job} />
 
@@ -56,7 +57,7 @@ export default async function JobWorkspacePage({
             </li>
           ))}
         </ul>
-        {session.role === "shop" ? (
+        {isShopStaff(session.role) ? (
           <p>
             <Link href={`/jobs/${job.id}/missing`}>Open missing-info drafts</Link>
           </p>
@@ -67,7 +68,7 @@ export default async function JobWorkspacePage({
         )}
       </section>
 
-      {session.role === "shop" ? (
+      {isShopStaff(session.role) ? (
         <section className="portal-section">
           <h2>Recent activity</h2>
           <ul className="portal-plain portal-audit">

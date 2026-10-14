@@ -6,6 +6,7 @@ import { OpenQuestion, StatusPill } from "@/components/portal/PortalUi";
 import { ProvenanceLegend, ProvenanceMarks } from "@/components/portal/ProvenanceMarkers";
 import type { AuditEntry, WorkflowStep } from "@/lib/portal/demo-data";
 import { DEMO_SHOP_ROLES, PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
+import { isShopStaff } from "@/lib/portal/roles";
 import type { PortalSession } from "@/lib/portal/session";
 import { normalizeEmail } from "@/lib/portal/session";
 import type {
@@ -83,7 +84,7 @@ export function WorkflowJobClient({
   session: PortalSession;
   initialSteps: WorkflowStep[];
 }) {
-  const isShop = session.role === "shop";
+  const isShop = isShopStaff(session.role);
   const myEmail = normalizeEmail(session.email);
   const mySide = isShop ? "shop" : "customer";
   const auditSeq = useRef(0);

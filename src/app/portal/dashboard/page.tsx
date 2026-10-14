@@ -3,6 +3,7 @@ import { CustomerDashboardHome } from "@/components/portal/CustomerDashboardHome
 import { ShopDashboardHome } from "@/components/portal/ShopDashboardHome";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireSession } from "@/lib/portal/auth";
+import { isShopStaff } from "@/lib/portal/roles";
 import {
   getCustomerJobRows,
   getCustomerSummaryTiles,
@@ -29,7 +30,7 @@ export default async function DashboardPage() {
   const session = await requireSession();
   const firstName = session.name.split(" ")[0];
 
-  if (session.role === "shop") {
+  if (isShopStaff(session.role)) {
     const navModules = [
       {
         href: "/inbox",

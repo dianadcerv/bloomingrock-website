@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { JobHeader } from "@/components/portal/JobHeader";
+import { PoweredByBloomingRock } from "@/components/portal/PoweredByBloomingRock";
 import { PrintButton } from "@/components/portal/PrintButton";
 import { DraftNotice, OpenQuestion } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
@@ -47,6 +48,7 @@ export default async function PdfPage({
             </li>
           ))}
         </ul>
+        <PoweredByBloomingRock />
       </article>
       <div className="portal-letter">
         <p className="look-field__hint">Drafted email</p>

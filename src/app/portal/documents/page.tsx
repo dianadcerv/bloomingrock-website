@@ -4,6 +4,7 @@ import { PageIntro } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { jobsForSession } from "@/lib/portal/access";
 import { requireSession } from "@/lib/portal/auth";
+import { isShopStaff } from "@/lib/portal/roles";
 import { getCustomerForJob } from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = { title: "Documents" };
@@ -17,7 +18,7 @@ export default async function DocumentsPage() {
       <PageIntro eyebrow="Sign-off / documents" title="Documents">
         <p>
           Drafts per job — nothing sent in the demo.
-          {session.role === "shop" ? " Meridian and Harborview jobs listed separately." : ""}
+          {isShopStaff(session.role) ? " Meridian and Harborview jobs listed separately." : ""}
         </p>
       </PageIntro>
       {jobs.map((job) => {
@@ -28,7 +29,7 @@ export default async function DocumentsPage() {
           { href: `/jobs/${job.id}/bom`, title: "Bill of materials" },
           { href: `/jobs/${job.id}/pdf`, title: "Requirements PDF" },
         ];
-        if (session.role === "shop" && job.controlledProposal) {
+        if (isShopStaff(session.role) && job.controlledProposal) {
           items.push({
             href: `/jobs/${job.id}/controlled`,
             title: "Controlled job (proposal)",

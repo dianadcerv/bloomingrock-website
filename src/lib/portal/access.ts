@@ -5,6 +5,7 @@ import {
   JOBS,
   type DemoJob,
 } from "./demo-data";
+import { isShopStaff } from "./roles";
 import { normalizeEmail, type PortalSession } from "./session";
 
 export function buyerCustomerIdForEmail(email: string) {
@@ -20,14 +21,14 @@ export function jobCustomerId(job: DemoJob) {
 export function sessionCanAccessJob(session: PortalSession, jobId: string) {
   const job = getJob(jobId);
   if (!job) return false;
-  if (session.role === "shop") return true;
+  if (isShopStaff(session.role)) return true;
   const buyerCustomerId = buyerCustomerIdForEmail(session.email);
   if (!buyerCustomerId) return false;
   return jobCustomerId(job) === buyerCustomerId;
 }
 
 export function jobsForSession(session: PortalSession) {
-  if (session.role === "shop") return JOBS;
+  if (isShopStaff(session.role)) return JOBS;
   const buyerCustomerId = buyerCustomerIdForEmail(session.email);
   if (!buyerCustomerId) return [];
   return JOBS.filter((job) => jobCustomerId(job) === buyerCustomerId);

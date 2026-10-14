@@ -19,14 +19,14 @@ function sessionCanAccessJob(
 ) {
   const job = getJob(jobId);
   if (!job) return false;
-  if (session.role === "shop") return true;
+  if (session.role === "shop" || session.role === "shop-admin" || session.role === "superadmin") return true;
   const buyerCustomerId = buyerCustomerIdForEmail(session.email);
   if (!buyerCustomerId) return false;
   return jobCustomerId(job) === buyerCustomerId;
 }
 
 function jobsForSession(session: { role: string; email: string }) {
-  if (session.role === "shop") return JOBS;
+  if (session.role === "shop" || session.role === "shop-admin" || session.role === "superadmin") return JOBS;
   const buyerCustomerId = buyerCustomerIdForEmail(session.email);
   if (!buyerCustomerId) return [];
   return JOBS.filter((job) => jobCustomerId(job) === buyerCustomerId);

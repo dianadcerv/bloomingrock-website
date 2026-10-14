@@ -12,9 +12,9 @@ export function CustomerProjectSwitcher({
   role,
 }: {
   job: DemoJob;
-  role: "shop" | "buyer";
+  role: "shop" | "shop-admin" | "superadmin" | "buyer";
 }) {
-  if (role !== "shop") return null;
+  if (role === "buyer") return null;
 
   const currentProject = getProjectForJob(job);
   const currentCustomerId = currentProject?.customerId;

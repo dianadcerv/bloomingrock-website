@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { OpenQuestion, PageIntro } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireRole } from "@/lib/portal/auth";
+import { requireShopStaff } from "@/lib/portal/auth";
 import { EXPERT_KNOWLEDGE_TIPS, tipsGroupedByTag } from "@/lib/portal/expert-knowledge";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "Knowledge library" };
 
 export default async function KnowledgeLibraryPage() {
-  const session = await requireRole("shop");
+  const session = await requireShopStaff();
   const groups = tipsGroupedByTag();
 
   return (

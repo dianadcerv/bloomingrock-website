@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { AuthChrome } from "@/components/portal/AuthChrome";
 import { LoginForm } from "@/components/portal/LoginForm";
 import { getSession } from "@/lib/portal/auth";
+import { roleDisplayLabel } from "@/lib/portal/roles";
 import { DEMO_USERS } from "@/lib/portal/session";
 
 export const metadata: Metadata = {
@@ -35,7 +36,7 @@ export default async function LoginPage({
         <ul>
           {DEMO_USERS.map((user) => (
             <li key={user.email}>
-              <strong>{user.role === "shop" ? "Shop user" : "Customer"}</strong>
+              <strong>{roleDisplayLabel(user.role)}</strong>
               <span>
                 {user.name}, {user.title} · {user.email}
               </span>

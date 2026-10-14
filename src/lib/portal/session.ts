@@ -4,7 +4,7 @@ export const SESSION_COOKIE = "br_portal";
 export const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;
 export const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
-export type PortalRole = "shop" | "buyer";
+export type PortalRole = "superadmin" | "shop-admin" | "shop" | "buyer";
 
 export type PortalUser = {
   email: string;
@@ -55,11 +55,25 @@ function decode<T>(token: string, key = secret()): T | null {
 
 export const DEMO_USERS: readonly PortalUser[] = [
   {
+    email: "diana@bloomingrock.demo",
+    role: "superadmin",
+    name: "Diana Cervantes",
+    org: "BloomingRock",
+    title: "Superadmin",
+  },
+  {
     email: "maya@northridge.demo",
-    role: "shop",
+    role: "shop-admin",
     name: "Maya Chen",
     org: "Northridge Steel",
-    title: "Estimator",
+    title: "Shop admin · Estimator",
+  },
+  {
+    email: "riley@northridge.demo",
+    role: "shop",
+    name: "Riley Ortiz",
+    org: "Northridge Steel",
+    title: "Engineer",
   },
   {
     email: "jordan@meridian.demo",
@@ -139,7 +153,15 @@ export function readSessionToken(
   const data = decode<PortalSession & { typ?: string }>(token, key);
   if (!data || data.typ !== "session" || !data.email || !data.exp) return null;
   if (now > data.exp) return null;
-  if (data.role !== "shop" && data.role !== "buyer") return null;
+  const role = data.role;
+  if (
+    role !== "shop" &&
+    role !== "shop-admin" &&
+    role !== "superadmin" &&
+    role !== "buyer"
+  ) {
+    return null;
+  }
   return {
     email: data.email,
     role: data.role,

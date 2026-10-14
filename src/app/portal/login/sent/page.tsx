@@ -44,9 +44,13 @@ export default async function LoginSentPage({
             Open demo link
           </Link>
           <p className="look-field__hint">
-            {user.role === "shop"
-              ? "Opens the shop-user dashboard (not admin)."
-              : "Opens the customer dashboard."}
+            {user.role === "superadmin"
+              ? "Opens BloomingRock superadmin (all shops)."
+              : user.role === "shop-admin"
+                ? "Opens job intake home; use Admin in the header for shop settings."
+                : user.role === "shop"
+                  ? "Opens the shop job intake home."
+                  : "Opens the customer dashboard."}
           </p>
         </div>
       ) : (

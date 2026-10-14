@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageIntro, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireRole } from "@/lib/portal/auth";
+import { requireShopStaff } from "@/lib/portal/auth";
 import { getShopAttentionItems } from "@/lib/portal/dashboard-data";
 
 export const metadata: Metadata = { title: "Needs attention" };
 
 export default async function AttentionPage() {
-  const session = await requireRole("shop");
+  const session = await requireShopStaff();
   const rows = getShopAttentionItems();
 
   return (

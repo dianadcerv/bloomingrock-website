@@ -13,7 +13,8 @@ const key = "test-portal-secret";
 
 describe("demo users", () => {
   it("maps shop and buyer emails", () => {
-    assert.equal(findDemoUser("Maya@Northridge.demo")?.role, "shop");
+    assert.equal(findDemoUser("Maya@Northridge.demo")?.role, "shop-admin");
+    assert.equal(findDemoUser("diana@bloomingrock.demo")?.role, "superadmin");
     assert.equal(findDemoUser("jordan@meridian.demo")?.role, "buyer");
     assert.equal(findDemoUser("alex@harborview.demo")?.role, "buyer");
     assert.equal(findDemoUser("nobody@example.com"), null);
@@ -26,7 +27,7 @@ describe("magic tokens", () => {
     const token = createMagicToken("maya@northridge.demo", now, key);
     const user = consumeMagicToken(token, now + 1_000, key);
     assert.equal(user?.name, "Maya Chen");
-    assert.equal(user?.role, "shop");
+    assert.equal(user?.role, "shop-admin");
   });
 
   it("rejects expiry and tampering", () => {
@@ -43,7 +44,7 @@ describe("session tokens", () => {
     assert.ok(user);
     const token = createSessionToken(user, 10, key);
     const session = readSessionToken(token, 11, key);
-    assert.equal(session?.role, "shop");
-    assert.equal(session?.title, "Estimator");
+    assert.equal(session?.role, "shop-admin");
+    assert.equal(session?.title, "Shop admin · Estimator");
   });
 });

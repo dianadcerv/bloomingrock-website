@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { CategorySuggestionsClient } from "@/components/portal/CategorySuggestionsClient";
 import { OpenQuestion, PageIntro } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireRole } from "@/lib/portal/auth";
+import { requireShopAdmin } from "@/lib/portal/auth";
 import { categorySuggestions } from "@/lib/portal/workflow-changes";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
@@ -27,7 +27,7 @@ export default async function KnowledgeCategoryPage({
 }: {
   params: Promise<{ categoryId: string }>;
 }) {
-  const session = await requireRole("shop");
+  const session = await requireShopAdmin();
   const { categoryId } = await params;
   const label = CATEGORIES[categoryId];
   if (!label) notFound();

@@ -30,18 +30,18 @@ function JobBreadcrumb({ job }: { job: DemoJob }) {
 export function JobHeader({
   job,
   current,
-  role = "shop",
+  role = "shop-admin",
 }: {
   job: DemoJob;
   current: string;
-  role?: "shop" | "buyer";
+  role?: "shop" | "shop-admin" | "superadmin" | "buyer";
 }) {
   const project = getProjectForJob(job);
   const customer = getCustomerForJob(job);
 
   const links = [
     { href: `/jobs/${job.id}`, label: "Workspace" },
-    ...(role === "shop"
+    ...(role !== "buyer"
       ? [
           { href: `/jobs/${job.id}/sources`, label: "Add source" },
           { href: `/jobs/${job.id}/transcript`, label: "Transcript" },

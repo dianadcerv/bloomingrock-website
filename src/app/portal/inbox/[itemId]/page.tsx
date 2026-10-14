@@ -7,7 +7,7 @@ import {
 } from "@/components/portal/ProvenanceMarkers";
 import { OpenQuestion, PageIntro, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireRole } from "@/lib/portal/auth";
+import { requireShopStaff } from "@/lib/portal/auth";
 import { getInboxItem, inboxAttachmentPreviewHref } from "@/lib/portal/demo-data";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
@@ -18,7 +18,7 @@ export default async function InboxDetailPage({
 }: {
   params: Promise<{ itemId: string }>;
 }) {
-  const session = await requireRole("shop");
+  const session = await requireShopStaff();
   const { itemId } = await params;
   const item = getInboxItem(itemId);
   if (!item) notFound();

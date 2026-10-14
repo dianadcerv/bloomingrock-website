@@ -4,6 +4,7 @@ import { PageIntro } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { jobsForSession } from "@/lib/portal/access";
 import { requireSession } from "@/lib/portal/auth";
+import { isShopStaff } from "@/lib/portal/roles";
 import { getCustomerForJob, jobStatusLabel } from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = { title: "Workflows" };
@@ -15,7 +16,7 @@ export default async function WorkflowsPage() {
   return (
     <PortalShell session={session} current="/workflows">
       <PageIntro eyebrow="Visual workflow" title="Workflows">
-        <p>Minimum, ideal, and added steps per job{session.role === "shop" ? " (all customers)" : ""}.</p>
+        <p>Minimum, ideal, and added steps per job{isShopStaff(session.role) ? " (all customers)" : ""}.</p>
       </PageIntro>
       <ul className="portal-list">
         {jobs.map((job) => {

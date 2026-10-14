@@ -32,6 +32,15 @@ export const PROTOTYPE_OPEN_QUESTIONS = {
   workflowVersioningRollback: "Versioning and rollback rules when steps are moved, edited, or removed.",
   interpretationAccuracyHarness:
     "What accuracy harness will we build around AI interpretations?",
+  appNameBLO38: "BLO-38 — Product name undecided; “Job Intake App” is the working title in this prototype.",
+  managedServicePricing:
+    "Managed service onboarding — pricing and timeline with consulting (superadmin view).",
+  emailAutoAttachLearning:
+    "When should project email auto-attach vs require a person to confirm the match?",
+  shopUserTypePermissions:
+    "Fine-grained permission differences between Estimator, Engineer, Sales, and Materials (demo treats them as equal).",
+  brandingWebsiteExtract:
+    "How reliably should website URL inherit logo and colors in production?",
 } as const;
 
 export const DEMO_SHOP_ROLES = [

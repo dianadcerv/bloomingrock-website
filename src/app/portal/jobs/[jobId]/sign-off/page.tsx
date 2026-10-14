@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { ProvenanceLegend, ProvenanceMarks } from "@/components/portal/ProvenanceMarkers";
+import { PoweredByBloomingRock } from "@/components/portal/PoweredByBloomingRock";
 import { DraftNotice, OpenQuestion, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
@@ -195,6 +196,7 @@ export default async function SignOffPage({
             </button>
           ) : null}
         </section>
+        <PoweredByBloomingRock />
       </article>
     </PortalShell>
   );

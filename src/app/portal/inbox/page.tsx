@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageIntro, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireRole } from "@/lib/portal/auth";
+import { requireShopStaff } from "@/lib/portal/auth";
 import { inboxItemsByCustomer } from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = { title: "Inbox" };
 
 export default async function InboxPage() {
-  const session = await requireRole("shop");
+  const session = await requireShopStaff();
   const groups = inboxItemsByCustomer();
 
   return (

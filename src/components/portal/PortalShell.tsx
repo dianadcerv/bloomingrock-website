@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { DemoBanner } from "@/components/portal/AuthChrome";
+import { isShopAdmin, isShopStaff, roleDisplayLabel } from "@/lib/portal/roles";
 import type { PortalSession } from "@/lib/portal/session";
 
 const SHOP_NAV = [
@@ -29,8 +30,8 @@ export function PortalShell({
   current?: string;
   children: React.ReactNode;
 }) {
-  const nav = session.role === "shop" ? SHOP_NAV : BUYER_NAV;
-  const roleLabel = session.role === "shop" ? "Shop user" : "Customer";
+  const nav = isShopStaff(session.role) ? SHOP_NAV : BUYER_NAV;
+  const roleLabel = roleDisplayLabel(session.role);
 
   return (
     <div className="portal">
@@ -49,6 +50,22 @@ export function PortalShell({
               {item.label}
             </Link>
           ))}
+          {isShopAdmin(session.role) ? (
+            <Link
+              href="/admin"
+              className={`portal-header__link${current === "/admin" ? " is-active" : ""}`}
+            >
+              Admin
+            </Link>
+          ) : null}
+          {session.role === "superadmin" ? (
+            <Link
+              href="/admin/shops"
+              className={`portal-header__link${current === "/admin/shops" ? " is-active" : ""}`}
+            >
+              Superadmin
+            </Link>
+          ) : null}
         </nav>
         <p className="portal-header__who">
           <span>

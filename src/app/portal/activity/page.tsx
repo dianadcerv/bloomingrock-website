@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageIntro } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireRole } from "@/lib/portal/auth";
+import { requireShopStaff } from "@/lib/portal/auth";
 import { getRecentAuditAcrossJobs } from "@/lib/portal/dashboard-data";
 
 export const metadata: Metadata = { title: "Activity" };
 
 export default async function ActivityPage() {
-  const session = await requireRole("shop");
+  const session = await requireShopStaff();
   const all = getRecentAuditAcrossJobs(999);
 
   return (

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { StatusPill } from "@/components/portal/PortalUi";
+import { isShopStaff } from "@/lib/portal/roles";
 import type { PortalSession } from "@/lib/portal/session";
 import { normalizeEmail } from "@/lib/portal/session";
 import type {
@@ -40,7 +41,7 @@ export function WorkflowMutualPanel({
   const [replyDraft, setReplyDraft] = useState<Record<string, string>>({});
 
   const myEmail = normalizeEmail(session.email);
-  const isShop = session.role === "shop";
+  const isShop = isShopStaff(session.role);
 
   const canApprove = (change: WorkflowChangeProposal) => {
     if (change.status !== "pending") return false;

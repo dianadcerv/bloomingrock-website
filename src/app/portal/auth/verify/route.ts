@@ -16,7 +16,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(login);
   }
 
-  const dashboard = new URL("/dashboard", request.url);
+  const dashboard = new URL(
+    user.role === "superadmin" ? "/admin/shops" : "/dashboard",
+    request.url,
+  );
   const response = NextResponse.redirect(dashboard);
   response.cookies.set(
     SESSION_COOKIE,

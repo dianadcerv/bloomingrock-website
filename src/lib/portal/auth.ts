@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { sessionCanAccessJob } from "@/lib/portal/access";
 import { getJob } from "@/lib/portal/demo-data";
+import { isShopAdmin, isShopStaff, isSuperAdmin } from "@/lib/portal/roles";
 import {
   readSessionToken,
   SESSION_COOKIE,
@@ -28,6 +29,24 @@ export async function requireRole(role: PortalRole): Promise<PortalSession> {
   return session;
 }
 
+export async function requireShopStaff(): Promise<PortalSession> {
+  const session = await requireSession();
+  if (!isShopStaff(session.role)) redirect("/dashboard");
+  return session;
+}
+
+export async function requireShopAdmin(): Promise<PortalSession> {
+  const session = await requireSession();
+  if (!isShopAdmin(session.role)) redirect("/dashboard");
+  return session;
+}
+
+export async function requireSuperAdmin(): Promise<PortalSession> {
+  const session = await requireSession();
+  if (!isSuperAdmin(session.role)) redirect("/dashboard");
+  return session;
+}
+
 /** Loads a job the current session may view; buyers only see their customer’s jobs. */
 export async function requireJob(jobId: string) {
   const session = await requireSession();
@@ -38,6 +57,6 @@ export async function requireJob(jobId: string) {
 
 export async function requireJobForShop(jobId: string) {
   const result = await requireJob(jobId);
-  if (result.session.role !== "shop") redirect("/dashboard");
+  if (!isShopStaff(result.session.role)) redirect("/dashboard");
   return result;
 }

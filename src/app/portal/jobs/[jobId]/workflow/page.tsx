@@ -4,6 +4,7 @@ import { DraftNotice } from "@/components/portal/PortalUi";
 import { WorkflowJobClient } from "@/components/portal/WorkflowJobClient";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
+import { isShopStaff } from "@/lib/portal/roles";
 
 export const metadata: Metadata = { title: "Workflow" };
 
@@ -14,7 +15,7 @@ export default async function WorkflowPage({
 }) {
   const { jobId } = await params;
   const { session, job } = await requireJob(jobId);
-  const shop = session.role === "shop";
+  const shop = isShopStaff(session.role);
 
   return (
     <PortalShell session={session} current="/workflows">

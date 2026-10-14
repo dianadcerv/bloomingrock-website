@@ -2426,6 +2426,61 @@ img {
   align-items: flex-start;
 }
 
+.portal-admin-app-title {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--stone-600);
+}
+
+.portal-main--admin {
+  max-width: 56rem;
+}
+
+.portal-admin-table-wrap {
+  overflow-x: auto;
+}
+
+.portal-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.portal-admin-table th,
+.portal-admin-table td {
+  border: 1px solid var(--stone-300);
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+}
+
+.portal-admin-table th {
+  background: var(--stone-100);
+}
+
+.portal-brand-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.portal-brand-swatch {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--stone-300);
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+
+.portal-powered-by {
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  color: var(--stone-500);
+  letter-spacing: 0.04em;
+}
+
 .portal-pdf-preview {
   margin-top: 1rem;
   border: 1px solid var(--stone-300);

@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageIntro } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireRole } from "@/lib/portal/auth";
+import { requireShopStaff } from "@/lib/portal/auth";
 import { DEMO_CUSTOMERS, getProject, projectRollup } from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = { title: "Customers" };
 
 export default async function CustomersPage() {
-  const session = await requireRole("shop");
+  const session = await requireShopStaff();
 
   return (
     <PortalShell session={session} current="/customers">
