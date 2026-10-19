@@ -26,7 +26,6 @@ export const metadata: Metadata = {
   },
 };
 
-// DIANA_CONFIRM: "I'm based in Chicago" — JSON-LD service area (80 km) and address below
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
@@ -91,9 +90,7 @@ export default function ChicagoShopsPage() {
               <p>
                 I&apos;m Diana. I help owner-run custom shops in Chicagoland.
                 Fab, welding, CNC, and other engineer-to-order work, with
-                somewhere around{" "}
-                {/* DIANA_CONFIRM: "3 to 25 people" public range — Vera flag 6 */}
-                3 to 25 people. If you&apos;re the owner, you might also be the
+                somewhere around 3 to 25 people. If you&apos;re the owner, you might also be the
                 estimator. Requests come in by email, text, and phone, and the
                 details get scattered before anyone sits down to quote.
               </p>
@@ -120,9 +117,8 @@ export default function ChicagoShopsPage() {
             <div className="about-copy">
               <p>
                 I start with quoting, because that&apos;s where a lot of a
-                normal week can disappear.{" "}
-                {/* DIANA_CONFIRM: "I'm based in Chicago" + JSON-LD service area — Vera flag 3 */}
-                I&apos;m based in Chicago and I&apos;m focused on shops here
+                normal week can disappear. I&apos;m based in Chicago and
+                I&apos;m focused on shops here
                 and in the suburbs.
               </p>
             </div>
