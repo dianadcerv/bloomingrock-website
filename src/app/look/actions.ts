@@ -25,6 +25,7 @@ export type LookFormState = {
 
 const HEARD_ABOUT_OPTIONS = [
   "LinkedIn",
+  "Instagram",
   "Referral",
   "Search",
   "Event",
