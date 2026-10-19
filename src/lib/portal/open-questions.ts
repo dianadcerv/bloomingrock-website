@@ -41,6 +41,12 @@ export const PROTOTYPE_OPEN_QUESTIONS = {
     "Fine-grained permission differences between Estimator, Engineer, Sales, and Materials (demo treats them as equal).",
   brandingWebsiteExtract:
     "How reliably should website URL inherit logo and colors in production?",
+  secureUploadVirusScan:
+    "BLO-INTAKE-1 — Virus/malware scanning on customer uploads before staff download?",
+  secureUploadStorage:
+    "BLO-INTAKE-2 — Storage location, encryption at rest, and retention for upload links?",
+  secureUploadRevocation:
+    "BLO-INTAKE-3 — Revoke/rotate upload links early; audit trail when revoked?",
 } as const;
 
 export const DEMO_SHOP_ROLES = [

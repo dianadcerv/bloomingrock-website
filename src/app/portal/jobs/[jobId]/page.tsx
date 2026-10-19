@@ -4,7 +4,8 @@ import { JobChecklistClient } from "@/components/portal/JobChecklistClient";
 import { JobConflictBanner } from "@/components/portal/JobConflictBanner";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { JobRecentAuditClient } from "@/components/portal/JobRecentAuditClient";
-import { SourcesSection } from "@/components/portal/SourcesSection";
+import { JobSourcesClient } from "@/components/portal/JobSourcesClient";
+import { JobUploadLinkStatus } from "@/components/portal/JobUploadLinkStatus";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
 import { isShopStaff } from "@/lib/portal/roles";
@@ -24,7 +25,11 @@ export default async function JobWorkspacePage({
       <JobHeader job={job} current={`/jobs/${job.id}`} role={session.role} />
       <JobConflictBanner job={job} />
 
-      <SourcesSection job={job} showShopLinks={isShopStaff(session.role)} />
+      {isShopStaff(session.role) ? (
+        <JobUploadLinkStatus jobId={job.id} jobName={job.name} createdBy={session.name} />
+      ) : null}
+
+      <JobSourcesClient job={job} showShopLinks={isShopStaff(session.role)} />
 
       <JobChecklistClient job={job} who={session.name} />
 

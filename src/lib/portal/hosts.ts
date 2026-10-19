@@ -3,7 +3,7 @@ export const PORTAL_PREFIX = "/portal";
 export const MARKETING_ORIGIN = "https://www.bloomingrocksolutions.com";
 
 const PORTAL_PATH_PATTERN =
-  /^(?:\/login|\/dashboard|\/attention|\/activity|\/notifications|\/inbox|\/customers|\/jobs|\/workflows|\/documents|\/requests|\/knowledge|\/admin|\/auth)(?:\/|$)/;
+  /^(?:\/login|\/dashboard|\/attention|\/activity|\/notifications|\/inbox|\/customers|\/jobs|\/workflows|\/documents|\/requests|\/knowledge|\/admin|\/auth|\/upload|\/intake|\/phone-entry)(?:\/|$)/;
 
 const MARKETING_PATH_PATTERN =
   /^(?:\/about|\/capabilities|\/look|\/make-ai-stick)(?:\/|$)/;
