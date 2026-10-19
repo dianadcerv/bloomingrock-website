@@ -31,9 +31,14 @@ export function LookForm({
         {bookingUrl ? (
           <p className="look-form__lead">
             Thanks. I’ll look at your business first and send you a few
-            follow-up questions before we meet. When you’re ready, pick a time
-            on my calendar for the 15-minute look. No pitch deck, just whether
-            there’s a quick win worth doing.
+            follow-up questions before we meet. Go ahead and pick a time on my
+            calendar for the 15-minute look. No pitch deck, just whether
+            there’s a quick win worth doing. Open times start a few days out, so
+            if you need to talk sooner, email me at{" "}
+            <a className="cta-email" href={`mailto:${CONTACT_EMAIL}`}>
+              {CONTACT_EMAIL}
+            </a>
+            .
           </p>
         ) : (
           <p className="look-form__lead">
