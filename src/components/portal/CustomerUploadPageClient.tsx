@@ -1,7 +1,7 @@
 "use client";
 
 import { CustomerUploadForm } from "@/components/portal/CustomerUploadForm";
-import { getFileRequest, isUploadLinkOpen } from "@/lib/portal/intake-store";
+import { getFileRequest } from "@/lib/portal/intake-store";
 
 export function CustomerUploadPageClient({ token }: { token: string }) {
   const request = getFileRequest(token);

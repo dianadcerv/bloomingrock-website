@@ -1,6 +1,12 @@
 import type { DemoSource, InboxItem } from "./demo-data";
 
-export type UploadLinkStatus = "open" | "closed-quote-sent" | "closed-superseded";
+export const UPLOAD_LINK_DAYS_AFTER_SHIP = 30;
+
+export type UploadLinkStatus =
+  | "open"
+  | "closed-job"
+  | "closed-shipping-expired"
+  | "closed-superseded";
 
 export type FileRequestRecord = {
   token: string;
@@ -14,6 +20,8 @@ export type FileRequestRecord = {
   createdAt: string;
   createdBy: string;
   closedAt?: string;
+  /** When set, link stays open until 30 days after this timestamp (ms). */
+  orderShippedAtMs?: number;
   /** Optional inbox thread this request was sent from */
   inboxItemId?: string;
 };
@@ -63,8 +71,16 @@ export type ExtendedInboxItem = InboxItem & {
   fileRequestToken?: string;
 };
 
+export type JobUploadLinkDisplayStatus =
+  | "none"
+  | "open"
+  | "closing-after-ship"
+  | "closed-job"
+  | "closed-shipping-expired";
+
 export type JobUploadLinkSummary = {
-  displayStatus: "none" | "open" | "closed-quote-sent";
+  displayStatus: JobUploadLinkDisplayStatus;
+  daysUntilShippingClose: number | null;
   activeRequest: FileRequestRecord | null;
   lastClosedRequest: FileRequestRecord | null;
 };

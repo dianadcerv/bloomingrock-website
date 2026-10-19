@@ -11,6 +11,7 @@ import type {
   UploadLinkStatus,
   WebsiteQuotePayload,
 } from "./intake-types";
+import { UPLOAD_LINK_DAYS_AFTER_SHIP } from "./intake-types";
 
 export const INTAKE_STORAGE_KEY = "portal-intake-v1";
 export const INTAKE_UPDATED_EVENT = "portal-intake-updated";
@@ -37,6 +38,27 @@ function emptyState(): IntakeState {
   };
 }
 
+function shippingCloseDeadlineMs(req: FileRequestRecord) {
+  if (!req.orderShippedAtMs) return null;
+  return req.orderShippedAtMs + UPLOAD_LINK_DAYS_AFTER_SHIP * 86_400_000;
+}
+
+export function daysUntilShippingClose(req: FileRequestRecord): number | null {
+  const deadline = shippingCloseDeadlineMs(req);
+  if (!deadline) return null;
+  return Math.max(0, Math.ceil((deadline - Date.now()) / 86_400_000));
+}
+
+function normalizeFileRequest(
+  r: FileRequestRecord & { expiryDays?: number; status?: string },
+): FileRequestRecord {
+  let status: UploadLinkStatus = r.status ?? "open";
+  if ((r.status as string | undefined) === "closed-quote-sent") status = "closed-job";
+  const rest = { ...r, status };
+  delete (rest as { expiryDays?: number }).expiryDays;
+  return rest;
+}
+
 function readState(): IntakeState {
   if (typeof window === "undefined") return emptyState();
   try {
@@ -53,19 +75,36 @@ function readState(): IntakeState {
   }
 }
 
-/** Legacy session rows may lack status (pre–quote-sent rule). */
-function normalizeFileRequest(r: FileRequestRecord & { expiryDays?: number }): FileRequestRecord {
-  const status: UploadLinkStatus =
-    r.status ??
-    (r.closedAt ? "closed-quote-sent" : "open");
-  const { expiryDays: _drop, ...rest } = r;
-  return { ...rest, status };
-}
-
 function writeState(state: IntakeState) {
   if (typeof window === "undefined") return;
   sessionStorage.setItem(INTAKE_STORAGE_KEY, JSON.stringify(state));
   window.dispatchEvent(new Event(INTAKE_UPDATED_EVENT));
+}
+
+/** Auto-close open links 30 days after order shipped (demo). */
+export function applyShippingAutoClose(persist = true) {
+  const state = readState();
+  const at = nowLabel();
+  let changed = false;
+  for (const req of state.fileRequests) {
+    if (req.status !== "open" || !req.orderShippedAtMs) continue;
+    const deadline = shippingCloseDeadlineMs(req);
+    if (deadline && Date.now() >= deadline) {
+      req.status = "closed-shipping-expired";
+      req.closedAt = at;
+      changed = true;
+      state.audit.unshift({
+        id: `ia-${Date.now()}-ship-exp`,
+        at,
+        who: "App (demo)",
+        action: "Closed upload link",
+        detail: `30 days after order shipped — link closed automatically (demo).`,
+        jobId: req.jobId,
+      });
+    }
+  }
+  if (changed && persist) writeState(state);
+  return state;
 }
 
 function nowLabel() {
@@ -77,10 +116,13 @@ function randomToken() {
 }
 
 export function isUploadLinkOpen(req: FileRequestRecord) {
-  return req.status === "open";
+  applyShippingAutoClose(true);
+  const fresh = getFileRequest(req.token);
+  return fresh?.status === "open";
 }
 
 export function getFileRequest(token: string) {
+  applyShippingAutoClose(true);
   return readState().fileRequests.find((r) => r.token === token) ?? null;
 }
 
@@ -89,6 +131,7 @@ function closeOpenLinksForJob(
   jobId: string,
   status: UploadLinkStatus,
   who: string,
+  action: string,
   detail: string,
 ) {
   const at = nowLabel();
@@ -102,28 +145,68 @@ function closeOpenLinksForJob(
     id: `ia-${Date.now()}-close`,
     at,
     who,
-    action: status === "closed-quote-sent" ? "Closed upload link" : "Replaced upload link",
+    action,
     detail,
     jobId,
   });
 }
 
 export function getJobUploadLinkSummary(jobId: string): JobUploadLinkSummary {
-  const requests = readState()
-    .fileRequests.filter((r) => r.jobId === jobId)
+  const state = applyShippingAutoClose(true);
+  const requests = state.fileRequests
+    .filter((r) => r.jobId === jobId)
     .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
+
   const activeRequest = requests.find((r) => r.status === "open") ?? null;
   const lastClosedRequest =
-    requests.find((r) => r.status === "closed-quote-sent" || r.status === "closed-superseded") ??
-    null;
+    requests.find(
+      (r) =>
+        r.status === "closed-job" ||
+        r.status === "closed-shipping-expired" ||
+        r.status === "closed-superseded",
+    ) ?? null;
 
   if (activeRequest) {
-    return { displayStatus: "open", activeRequest, lastClosedRequest };
+    if (activeRequest.orderShippedAtMs) {
+      const days = daysUntilShippingClose(activeRequest);
+      return {
+        displayStatus: "closing-after-ship",
+        daysUntilShippingClose: days,
+        activeRequest,
+        lastClosedRequest,
+      };
+    }
+    return {
+      displayStatus: "open",
+      daysUntilShippingClose: null,
+      activeRequest,
+      lastClosedRequest,
+    };
   }
-  if (lastClosedRequest?.status === "closed-quote-sent") {
-    return { displayStatus: "closed-quote-sent", activeRequest: null, lastClosedRequest };
+
+  if (lastClosedRequest?.status === "closed-job") {
+    return {
+      displayStatus: "closed-job",
+      daysUntilShippingClose: null,
+      activeRequest: null,
+      lastClosedRequest,
+    };
   }
-  return { displayStatus: "none", activeRequest: null, lastClosedRequest };
+  if (lastClosedRequest?.status === "closed-shipping-expired") {
+    return {
+      displayStatus: "closed-shipping-expired",
+      daysUntilShippingClose: null,
+      activeRequest: null,
+      lastClosedRequest,
+    };
+  }
+
+  return {
+    displayStatus: "none",
+    daysUntilShippingClose: null,
+    activeRequest: null,
+    lastClosedRequest,
+  };
 }
 
 export function createFileRequest(input: {
@@ -132,7 +215,6 @@ export function createFileRequest(input: {
   askDescription: string;
   createdBy: string;
   inboxItemId?: string;
-  /** When true, closes any prior open link on this job (superseded). */
   replaceOpen?: boolean;
 }): FileRequestRecord {
   const job = getJob(input.jobId);
@@ -159,6 +241,7 @@ export function createFileRequest(input: {
       input.jobId,
       "closed-superseded",
       input.createdBy,
+      "Replaced upload link",
       "New upload link issued — previous link closed (demo).",
     );
   }
@@ -168,14 +251,13 @@ export function createFileRequest(input: {
     at: record.createdAt,
     who: input.createdBy,
     action: "Created secure upload link",
-    detail: `${record.title} — open until quote is sent (demo).`,
+    detail: `${record.title} — open through quote and order; closes 30 days after ship or when job is closed (demo).`,
     jobId: input.jobId,
   });
   writeState(state);
   return record;
 }
 
-/** One-click fresh link after quote sent (reuses last request copy). */
 export function sendNewUploadLink(jobId: string, createdBy: string) {
   const state = readState();
   const prior = state.fileRequests
@@ -192,17 +274,57 @@ export function sendNewUploadLink(jobId: string, createdBy: string) {
   });
 }
 
-export function closeUploadLinksForQuoteSent(jobId: string, who: string) {
+export function markOrderShippedForUploadLinks(jobId: string, who: string) {
+  const state = readState();
+  const open = state.fileRequests.filter((r) => r.jobId === jobId && r.status === "open");
+  if (!open.length) return false;
+  const at = nowLabel();
+  const shippedMs = Date.now();
+  for (const req of open) {
+    if (!req.orderShippedAtMs) req.orderShippedAtMs = shippedMs;
+  }
+  state.audit.unshift({
+    id: `ia-${Date.now()}-ship`,
+    at,
+    who,
+    action: "Marked order shipped",
+    detail: `Upload link stays open ${UPLOAD_LINK_DAYS_AFTER_SHIP} days after ship, then closes automatically (demo).`,
+    jobId,
+  });
+  writeState(state);
+  return true;
+}
+
+export function closeJobUploadLinks(jobId: string, who: string) {
   const state = readState();
   const hadOpen = state.fileRequests.some((r) => r.jobId === jobId && r.status === "open");
   if (!hadOpen) return false;
   closeOpenLinksForJob(
     state,
     jobId,
-    "closed-quote-sent",
+    "closed-job",
     who,
-    "Quote sent — customer upload link closed (demo).",
+    "Closed job",
+    "Job closed — customer upload link closed (demo).",
   );
+  writeState(state);
+  return true;
+}
+
+/** Demo/screenshots: simulate ship date N days ago for countdown. */
+export function demoSetOrderShippedDaysAgo(jobId: string, daysAgo: number, who: string) {
+  const state = readState();
+  const open = state.fileRequests.find((r) => r.jobId === jobId && r.status === "open");
+  if (!open) return false;
+  open.orderShippedAtMs = Date.now() - daysAgo * 86_400_000;
+  state.audit.unshift({
+    id: `ia-${Date.now()}-ship-demo`,
+    at: nowLabel(),
+    who,
+    action: "Marked order shipped",
+    detail: `Demo: treated as shipped ${daysAgo} day(s) ago for countdown preview.`,
+    jobId,
+  });
   writeState(state);
   return true;
 }
@@ -220,7 +342,7 @@ export function submitCustomerUpload(input: {
   note: string;
 }) {
   const req = getFileRequest(input.token);
-  if (!req || !isUploadLinkOpen(req)) return null;
+  if (!req || req.status !== "open") return null;
 
   const payload: CustomerUploadPayload = {
     token: input.token,

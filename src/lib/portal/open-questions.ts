@@ -47,6 +47,8 @@ export const PROTOTYPE_OPEN_QUESTIONS = {
     "BLO-INTAKE-2 — Storage location, encryption at rest, and retention for upload links?",
   secureUploadRevocation:
     "BLO-INTAKE-3 — Revoke/rotate upload links early; audit trail when revoked?",
+  uploadLinkLifetimePolicy:
+    "Upload link lifetime (open through quote/order, 30 days after ship, manual job close) may be revisited — Diana 10/19.",
 } as const;
 
 export const DEMO_SHOP_ROLES = [

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { PoweredByBloomingRock } from "@/components/portal/PoweredByBloomingRock";
 import type { FileRequestRecord } from "@/lib/portal/intake-types";
-import { isUploadLinkOpen, submitCustomerUpload } from "@/lib/portal/intake-store";
+import { submitCustomerUpload } from "@/lib/portal/intake-store";
 import { NORTHRIDGE_BRANDING } from "@/lib/portal/admin-demo-data";
 
 export function CustomerUploadForm({ request }: { request: FileRequestRecord }) {
@@ -11,7 +11,7 @@ export function CustomerUploadForm({ request }: { request: FileRequestRecord }) 
   const [note, setNote] = useState("");
   const [done, setDone] = useState(false);
   const b = NORTHRIDGE_BRANDING;
-  const closed = !isUploadLinkOpen(request);
+  const closed = request.status !== "open";
 
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
@@ -50,15 +50,18 @@ export function CustomerUploadForm({ request }: { request: FileRequestRecord }) 
 
       {closed ? (
         <p className="customer-upload__closed" role="alert">
-          This upload link is closed — the shop has sent the quote. Ask them for a new link if you
-          need to send more files.
+          This upload link is closed — the job ended or the 30-day window after shipping expired.
+          Ask the shop for a new link if you need to send more files.
         </p>
       ) : (
         <>
           <section className="customer-upload__ask">
             <h2>What to send</h2>
             <p>{request.askDescription}</p>
-            <p className="look-field__hint">No login required. Link closes when the quote is sent.</p>
+            <p className="look-field__hint">
+              No login required. Link stays open through quote and order; closes 30 days after ship or
+              when the shop closes the job.
+            </p>
           </section>
 
           {done ? (

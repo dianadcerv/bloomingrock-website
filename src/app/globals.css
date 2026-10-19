@@ -2591,6 +2591,88 @@ img {
   margin-bottom: 1.5rem;
 }
 
+.portal-dialog {
+  border: none;
+  padding: 0;
+  max-width: 36rem;
+  width: calc(100% - 2rem);
+  border-radius: 4px;
+  box-shadow: 0 8px 32px rgb(28 32 28 / 0.2);
+}
+
+.portal-dialog::backdrop {
+  background: rgb(44 42 38 / 0.45);
+}
+
+.portal-dialog__inner {
+  padding: 1.25rem 1.35rem;
+  background: #fff;
+}
+
+.portal-dialog__close {
+  margin-top: 0.75rem;
+}
+
+.portal-upload-link-status .portal-dashboard__section-head {
+  align-items: center;
+}
+
+.customer-upload {
+  max-width: 32rem;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #fff;
+  border: 1px solid var(--stone-300);
+}
+
+.customer-upload .btn--primary {
+  background: var(--shop-accent, var(--lichen));
+}
+
+.customer-upload__header h1 {
+  font-size: 1.35rem;
+  margin: 0.25rem 0;
+}
+
+.customer-upload__shop {
+  font-weight: 700;
+  color: var(--shop-primary, var(--moss-700));
+  margin: 0;
+}
+
+.customer-upload__drop {
+  border: 2px dashed var(--stone-300);
+  padding: 1.5rem;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.customer-upload__pick {
+  margin-top: 0.75rem;
+  cursor: pointer;
+}
+
+.customer-upload--embedded {
+  margin: 0;
+  max-width: none;
+}
+
+.portal-embed-snippet {
+  font-family: ui-monospace, monospace;
+  font-size: 0.8125rem;
+}
+
+.portal-embed-preview {
+  width: 100%;
+  min-height: 520px;
+  border: 1px solid var(--stone-300);
+  border-radius: 4px;
+}
+
+.portal-inbox-actions {
+  flex-wrap: wrap;
+}
+
 .portal-list--clickable .portal-list__item--link {
   display: flex;
   flex-wrap: wrap;

@@ -39,6 +39,12 @@ export default async function ShopAdminHomePage() {
           body="Access platforms set up at onboarding; add more anytime."
         />
         <ModuleCard
+          href="/admin/intake"
+          eyebrow="Website intake"
+          title="Quote request form"
+          body="Embed snippet + preview for leads from your site."
+        />
+        <ModuleCard
           href="/admin/branding"
           eyebrow="Branding"
           title="Logo + colors"

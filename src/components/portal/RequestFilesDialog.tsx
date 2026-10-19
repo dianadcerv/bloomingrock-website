@@ -64,8 +64,8 @@ export function RequestFilesDialog({
         <form method="dialog" className="portal-dialog__inner" onSubmit={(e) => e.preventDefault()}>
           <h2>Request files (secure link)</h2>
           <p className="look-field__hint">
-            Customer gets a branded upload page — no account. Link closes when the quote is sent
-            (demo: session only).
+            Customer gets a branded upload page — no account. Link stays open through quote and
+            order; closes 30 days after ship or when the job is closed (demo: session only).
           </p>
           <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.secureUploadVirusScan}</OpenQuestion>
           <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.secureUploadStorage}</OpenQuestion>
@@ -106,7 +106,7 @@ export function RequestFilesDialog({
                   Preview upload page
                 </a>
               </div>
-              <p className="look-field__hint">Status: Open until quote is sent.</p>
+              <p className="look-field__hint">Status: Open (through quote and order).</p>
             </div>
           ) : (
             <button type="button" className="btn btn--primary" onClick={generate}>
