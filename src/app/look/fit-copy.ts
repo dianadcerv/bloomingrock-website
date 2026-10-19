@@ -6,10 +6,10 @@ export const LOOK_NOT_FOR_YOU = [
   "Your quoting already runs smoothly and you like it that way.",
 ] as const;
 
-/** DRAFT pending Vera — for-you bullets for owner-run Chicagoland job shops (3–25 people, under ~$5M) */
-export const LOOK_FOR_YOU_DRAFT = [
-  "You run a custom fab, machine, or maker shop with a small team, and the owner still prices most jobs.",
-  "Quote requests land in email, text, and voicemail, and the details scatter before anyone sits down to price.",
-  "You'd rather flag what's missing than send a quote with gaps — a person still says yes before anything goes out.",
-  "You want one simple intake your team can run in a normal week, not a big software rollout.",
+/** Owner-run Chicagoland job shops (3–25 people; under ~$5M — segment note, not for render) */
+export const LOOK_FOR_YOU = [
+  "You run a small custom fab, machine, or maker shop, and the owner still prices a lot of the jobs.",
+  "Quote requests come in by email, text, and voicemail, and the details get scattered before anyone sits down to price.",
+  "You'd rather catch what's missing than send a quote with gaps.",
+  "You want one simple intake your team can actually keep up with.",
 ] as const;

@@ -115,7 +115,8 @@ export async function submitChecklistRequest(
     return {
       ok: false,
       formToken: nextToken,
-      error: "Please confirm you’re human and try again.",
+      error:
+        "Please check the box to show you're not a bot, then try again.",
     };
   }
 

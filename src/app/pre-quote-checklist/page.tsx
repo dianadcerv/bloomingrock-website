@@ -7,11 +7,9 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { createFormToken } from "@/lib/look-security";
 import { ChecklistForm } from "./ChecklistForm";
 
-/** DRAFT pending Vera — page copy and checklist body */
-
 const PAGE_TITLE = "Pre-quote checklist for custom jobs | BloomingRock Solutions";
 const PAGE_DESCRIPTION =
-  "A one-page checklist for small fab and machine shops: drawings, material, quantity, tolerances, finish, due date, and contact — gathered before anyone prices the job.";
+  "A one-page checklist for small fab and machine shops. Drawings, material, quantity, tolerances, finish, due date, and contact, all gathered before you price the job.";
 
 export const dynamic = "force-dynamic";
 
@@ -66,18 +64,19 @@ export default function PreQuoteChecklistPage() {
           <div className="section__inner reveal">
             <div className="about-copy">
               <p>
-                In a small shop, quotes usually wait on a missing drawing,
-                revision, or call note — not on the math. This checklist is the
-                same idea I wrote about on{" "}
+                A quote can sit for days waiting on a missing drawing, revision,
+                or call note. The math is rarely the slow part. This checklist
+                builds on what I wrote in{" "}
                 <Link className="text-link" href="/quotes-stall">
                   why quotes stall
                 </Link>
-                : one short list, filled in before anyone opens the quoting
+                : one short list you fill in before anyone opens the quoting
                 sheet.
               </p>
               <p>
-                Download the printable version below. If you want help shaping
-                intake around how your shop actually gets requests,{" "}
+                Grab the printable version below. If you want help setting up
+                intake around how requests actually reach your shop,{" "}
+                {/* DIANA_CONFIRM: "free" 15-minute look — Vera flag 5 */}
                 <Link className="text-link" href="/look">
                   book a free 15-minute look
                 </Link>

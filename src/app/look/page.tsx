@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import { createFormToken } from "@/lib/look-security";
-import { LOOK_FOR_YOU_DRAFT, LOOK_NOT_FOR_YOU } from "./fit-copy";
+import { LOOK_FOR_YOU, LOOK_NOT_FOR_YOU } from "./fit-copy";
 import { activeLookHeadline } from "./headlines";
 import { LookForm } from "./LookForm";
 
@@ -59,15 +59,14 @@ export default function LookPage() {
           <div className="section__inner section__inner--wide reveal">
             <p className="section__eyebrow">Fit</p>
             <h2 className="section__title" id="look-fit-heading">
-              This is for you / This isn&apos;t for you
+              Is this a fit?
             </h2>
 
             <div className="scope-grid">
               <div className="scope-block">
                 <h3 className="scope-block__title">This is for you if</h3>
-                {/* DRAFT pending Vera */}
                 <ul className="scope-list scope-list--in">
-                  {LOOK_FOR_YOU_DRAFT.map((item) => (
+                  {LOOK_FOR_YOU.map((item) => (
                     <li key={item}>{item}</li>
                   ))}
                 </ul>

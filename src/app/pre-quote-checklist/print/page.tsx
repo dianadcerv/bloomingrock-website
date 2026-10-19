@@ -7,8 +7,6 @@ import {
 import { PrintControls } from "./PrintControls";
 import "./print.css";
 
-/** DRAFT pending Vera — printable checklist content */
-
 export const metadata: Metadata = {
   title: `${CHECKLIST_TITLE} (print) | BloomingRock Solutions`,
   robots: { index: false, follow: false },
@@ -39,9 +37,8 @@ export default function PreQuoteChecklistPrintPage() {
       ))}
 
       <footer className="checklist-print__footer">
-        <p>
-          bloomingrock.com · Pre-quote checklist — DRAFT pending final copy
-        </p>
+        {/* DIANA_CONFIRM: print footer domain — Vera flag 4 */}
+        <p>bloomingrocksolutions.com · Pre-quote checklist</p>
       </footer>
     </div>
   );

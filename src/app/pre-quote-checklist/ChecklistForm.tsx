@@ -28,9 +28,13 @@ export function ChecklistForm({
         <p className="look-form__eyebrow">Checklist ready</p>
         <h2 className="look-form__title">Here&apos;s your copy.</h2>
         <p className="look-form__lead">
-          Print it or save as PDF from your browser. If anything looks off for
-          your shop, reply to the email you used — I&apos;m still tuning this
-          for owner-run shops.
+          Print it or save it as a PDF from your browser. I&apos;m still working
+          on this list, so if something&apos;s missing for your shop, email me
+          at{" "}
+          <a className="cta-email" href={`mailto:${CONTACT_EMAIL}`}>
+            {CONTACT_EMAIL}
+          </a>
+          .
         </p>
         <Link className="btn btn--primary" href={PRINT_PATH}>
           Open printable checklist
@@ -49,8 +53,8 @@ export function ChecklistForm({
       <p className="look-form__eyebrow">Free download</p>
       <h2 className="look-form__title">Get the checklist.</h2>
       <p className="look-form__lead">
-        Name and email. I&apos;ll send you to the printable page — not a
-        mailing list.
+        Just your name and email, then I&apos;ll take you straight to the
+        printable page. I won&apos;t add you to a mailing list.
       </p>
 
       <div className="look-form__grid">
@@ -109,7 +113,7 @@ export function ChecklistForm({
       ) : null}
 
       <button className="btn btn--primary" type="submit" disabled={pending}>
-        {pending ? "Sending…" : "Send me the checklist"}
+        {pending ? "One sec..." : "Get the checklist"}
       </button>
 
       <p className="look-form__fine">

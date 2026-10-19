@@ -6,15 +6,12 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SITE_URL } from "@/lib/site";
 
-/** DRAFT pending Vera — Chicago local page copy */
-
-const PAGE_TITLE =
-  "Practical AI and RFQ intake for Chicagoland job shops | BloomingRock Solutions";
+const PAGE_TITLE = "RFQ Intake and Practical AI for Chicago Job Shops";
 const PAGE_DESCRIPTION =
-  "I help owner-run fab and machine shops in Chicagoland gather quote requests in one place — drawings, revisions, and call notes — so a person can price the job without chasing details.";
+  "I help owner-run fab and machine shops in Chicagoland get quote requests, drawings, and call notes in one place, so you can price the job without chasing details.";
 
 export const metadata: Metadata = {
-  title: PAGE_TITLE,
+  title: { absolute: PAGE_TITLE },
   description: PAGE_DESCRIPTION,
   alternates: {
     canonical: "/chicago-shops",
@@ -91,15 +88,17 @@ export default function ChicagoShopsPage() {
           <div className="section__inner reveal">
             <div className="about-copy">
               <p>
-                I&apos;m Diana. I work with owner-run custom shops in Chicagoland
-                — fab, welding, CNC, and other engineer-to-order work — usually
-                about 3 to 25 people. The owner is often the estimator. Requests
-                come in by email, text, and phone, and the details scatter before
-                anyone sits down to quote.
+                I&apos;m Diana. I help owner-run custom shops in Chicagoland.
+                Fab, welding, CNC, and other engineer-to-order work, with
+                somewhere around{" "}
+                {/* DIANA_CONFIRM: "3 to 25 people" public range — Vera flag 6 */}
+                3 to 25 people. If you&apos;re the owner, you might also be the
+                estimator. Requests come in by email, text, and phone, and the
+                details get scattered before anyone sits down to quote.
               </p>
               <p>
                 I&apos;m not selling big quoting software or a company-wide AI
-                rollout.                 I help you set up RFQ intake for job shops: one place for the
+                rollout. I help job shops set up RFQ intake: one place for the
                 drawing, the revision, and the notes from the call, with missing
                 pieces flagged before you price. A person still says yes before
                 anything goes to the customer.
@@ -119,39 +118,40 @@ export default function ChicagoShopsPage() {
             </h2>
             <div className="about-copy">
               <p>
-                Most of my work starts with quoting — because that&apos;s where
-                a normal week gets eaten up. These are the problems I hear from
-                shops around Chicago, Elk Grove, Schaumburg, Joliet, and the
-                industrial corridors west and south of the city.
+                I start with quoting, because that&apos;s where a lot of a
+                normal week can disappear.{" "}
+                {/* DIANA_CONFIRM: "I'm based in Chicago" + JSON-LD service area — Vera flag 3 */}
+                I&apos;m based in Chicago and I&apos;m focused on shops here
+                and in the suburbs.
               </p>
             </div>
             <ul className="scope-list scope-list--in" style={{ marginTop: "1.25rem" }}>
               <li>
-                Engineer-to-order quoting when every job is custom and the
-                request lives in three inboxes.
+                Engineer-to-order quoting, when every job is custom and the
+                request is spread across three inboxes.
               </li>
               <li>
-                A simple way to quote custom fabrication jobs faster by
-                gathering details first — not by auto-pricing parts you&apos;ve
-                never run.
+                Quoting custom fabrication jobs faster by getting the details
+                together first. Not by auto-pricing parts you&apos;ve never run.
               </li>
               <li>
-                Secure customer file upload for quotes so drawings don&apos;t sit
-                in personal email attachments.
+                {/* DIANA_CONFIRM: file upload offer — what you set up, where files live (Vera flag 1; no "secure" until confirmed) */}
+                A file upload for customer quotes, so drawings come in one place
+                instead of sitting in someone&apos;s personal email.
               </li>
               <li>
-                Practical AI for family-owned business: pull dates and specs out
-                of email so someone checks them instead of retyping — after the
-                checklist habit is in place.
+                Practical AI for family-owned businesses. Once the checklist
+                habit is in place, AI can pull dates and specs out of emails so
+                someone checks them instead of retyping them.
               </li>
             </ul>
             <div className="about-copy" style={{ marginTop: "1.25rem" }}>
               <p>
-                I wrote more about the missing-details problem on{" "}
+                I wrote more about the missing-details problem in{" "}
                 <Link className="text-link" href="/quotes-stall">
                   why quotes stall
                 </Link>
-                . If you want a printable list to use on the floor, grab the{" "}
+                . If you want a printable list for the floor, grab the{" "}
                 <Link className="text-link" href="/pre-quote-checklist">
                   pre-quote checklist
                 </Link>
@@ -167,16 +167,18 @@ export default function ChicagoShopsPage() {
             <div className="about-copy">
               <p>
                 If you&apos;re looking for an AI consultant for manufacturers in
-                Chicago, I keep the first step small. A free 15-minute look at how requests
-                actually come into your shop — email, website, walk-ins, whatever
-                you use today. If there&apos;s a quick win, I&apos;ll say so. If
-                not, I&apos;ll say that too.
+                Chicago, I keep the first step small. It&apos;s a{" "}
+                {/* DIANA_CONFIRM: "free" 15-minute look — Vera flag 5 */}
+                free 15-minute look at how requests come into your shop today,
+                by email, website, walk-in, or whatever you use. If there&apos;s
+                a quick win, I&apos;ll tell you. If there isn&apos;t, I&apos;ll
+                tell you that too.
               </p>
               <p>
-                I lead the setup myself and hand it off so your team knows where
-                the intake lives and what happens when a line on the checklist is
-                blank. No rip-and-replace ERP project. Usually it&apos;s a form, a
-                shared folder, and a short habit your people already have time for.
+                I do the setup myself, then hand it off so your team knows where
+                intake lives and what to do when a line on the checklist is
+                blank. No ripping out your ERP. The goal is something small
+                enough that your people will actually use it.
               </p>
             </div>
           </div>
