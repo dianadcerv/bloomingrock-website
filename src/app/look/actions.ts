@@ -16,23 +16,13 @@ import {
   verifyFormToken,
   verifyTurnstile,
 } from "@/lib/look-security";
+import { HEARD_ABOUT_OPTIONS } from "./heard-about-options";
 
 export type LookFormState = {
   ok: boolean;
   error?: string;
   formToken?: string;
 };
-
-const HEARD_ABOUT_OPTIONS = [
-  "LinkedIn",
-  "Instagram",
-  "Referral",
-  "Search",
-  "Event",
-  "Other",
-] as const;
-
-type HeardAboutOption = (typeof HEARD_ABOUT_OPTIONS)[number];
 
 function trim(value: FormDataEntryValue | null) {
   return typeof value === "string" ? value.trim() : "";
@@ -308,5 +298,3 @@ export async function submitLookRequest(
     error: "Something went sideways sending that. Try once more, or email me directly.",
   };
 }
-
-export { HEARD_ABOUT_OPTIONS, type HeardAboutOption };
