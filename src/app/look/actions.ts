@@ -16,6 +16,7 @@ import {
   verifyFormToken,
   verifyTurnstile,
 } from "@/lib/look-security";
+import { submitInboundIntake } from "@/lib/intake-inbound";
 import { HEARD_ABOUT_OPTIONS } from "./heard-about-options";
 
 export type LookFormState = {
@@ -39,13 +40,6 @@ function escapeHtml(value: string) {
 
 function websiteHref(url: string) {
   return escapeHtml(url);
-}
-
-function commandCenterUrl() {
-  return (
-    process.env.COMMAND_CENTER_URL?.trim() ||
-    "https://starship-bridge-26.vercel.app"
-  );
 }
 
 function parseHeardAbout(
@@ -79,32 +73,6 @@ function parseHeardAbout(
 function buildDetails(week: string, website: string) {
   if (!website) return week;
   return `${week}\n\nWebsite: ${website}`;
-}
-
-async function submitInboundIntake(payload: {
-  name: string;
-  email: string;
-  business: string;
-  details: string;
-  heardAbout?: string;
-  source: "website-look";
-}): Promise<boolean> {
-  const secret = process.env.INTAKE_INBOUND_SECRET?.trim();
-  if (!secret) return false;
-
-  try {
-    const response = await fetch(`${commandCenterUrl()}/api/intake/inbound`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${secret}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-    return response.ok;
-  } catch {
-    return false;
-  }
 }
 
 async function sendLookEmailNotification({

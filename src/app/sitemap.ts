@@ -9,6 +9,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/make-ai-stick",
     "/quotes-stall",
     "/look",
+    "/chicago-shops",
+    "/pre-quote-checklist",
   ];
 
   return routes.map((path) => ({
