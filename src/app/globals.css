@@ -246,25 +246,12 @@ img {
 }
 
 .btn--primary {
-  background: var(--portal-accent, var(--lichen));
+  background: var(--moss-700);
   color: var(--stone-50);
-  min-height: 2.75rem;
 }
 
 .btn--primary:hover {
-  background: var(--moss-700);
-}
-
-.btn--secondary {
-  background: var(--stone-50);
-  color: var(--stone-900);
-  border-color: var(--stone-300);
-  min-height: 2.75rem;
-}
-
-.btn--secondary:hover {
-  border-color: var(--lichen);
-  color: var(--moss-800);
+  background: var(--lichen);
 }
 
 .btn--ghost {
@@ -1064,6 +1051,28 @@ img {
   color: var(--stone-900);
   --portal-accent: var(--lichen);
   padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Portal app UI — do not apply to marketing site buttons */
+.portal .btn--primary {
+  background: var(--portal-accent);
+  min-height: 2.75rem;
+}
+
+.portal .btn--primary:hover {
+  background: var(--moss-700);
+}
+
+.portal .btn--secondary {
+  background: var(--stone-50);
+  color: var(--stone-900);
+  border-color: var(--stone-300);
+  min-height: 2.75rem;
+}
+
+.portal .btn--secondary:hover {
+  border-color: var(--lichen);
+  color: var(--moss-800);
 }
 
 .portal-banner {
