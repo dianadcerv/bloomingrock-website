@@ -37,7 +37,6 @@ export default function PreQuoteChecklistPrintPage() {
       ))}
 
       <footer className="checklist-print__footer">
-        {/* DIANA_CONFIRM: print footer domain — Vera flag 4 */}
         <p>bloomingrocksolutions.com · Pre-quote checklist</p>
       </footer>
     </div>

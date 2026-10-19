@@ -76,7 +76,6 @@ export default function PreQuoteChecklistPage() {
               <p>
                 Grab the printable version below. If you want help setting up
                 intake around how requests actually reach your shop,{" "}
-                {/* DIANA_CONFIRM: "free" 15-minute look — Vera flag 5 */}
                 <Link className="text-link" href="/look">
                   book a free 15-minute look
                 </Link>

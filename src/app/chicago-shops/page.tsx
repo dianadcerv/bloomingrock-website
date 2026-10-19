@@ -26,6 +26,7 @@ export const metadata: Metadata = {
   },
 };
 
+// DIANA_CONFIRM: "I'm based in Chicago" — JSON-LD service area (80 km) and address below
 const localBusinessJsonLd = {
   "@context": "https://schema.org",
   "@type": "ProfessionalService",
@@ -135,11 +136,6 @@ export default function ChicagoShopsPage() {
                 together first. Not by auto-pricing parts you&apos;ve never run.
               </li>
               <li>
-                {/* DIANA_CONFIRM: file upload offer — what you set up, where files live (Vera flag 1; no "secure" until confirmed) */}
-                A file upload for customer quotes, so drawings come in one place
-                instead of sitting in someone&apos;s personal email.
-              </li>
-              <li>
                 Practical AI for family-owned businesses. Once the checklist
                 habit is in place, AI can pull dates and specs out of emails so
                 someone checks them instead of retyping them.
@@ -167,9 +163,8 @@ export default function ChicagoShopsPage() {
             <div className="about-copy">
               <p>
                 If you&apos;re looking for an AI consultant for manufacturers in
-                Chicago, I keep the first step small. It&apos;s a{" "}
-                {/* DIANA_CONFIRM: "free" 15-minute look — Vera flag 5 */}
-                free 15-minute look at how requests come into your shop today,
+                Chicago, I keep the first step small. It&apos;s a free
+                15-minute look at how requests come into your shop today,
                 by email, website, walk-in, or whatever you use. If there&apos;s
                 a quick win, I&apos;ll tell you. If there isn&apos;t, I&apos;ll
                 tell you that too.
