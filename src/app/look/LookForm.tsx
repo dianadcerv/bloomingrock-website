@@ -3,11 +3,8 @@
 import { useActionState, useState } from "react";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { CONTACT_EMAIL } from "@/lib/contact";
-import {
-  HEARD_ABOUT_OPTIONS,
-  submitLookRequest,
-  type LookFormState,
-} from "./actions";
+import { submitLookRequest, type LookFormState } from "./actions";
+import { HEARD_ABOUT_OPTIONS } from "./heard-about-options";
 
 const initialState: LookFormState = { ok: false };
 
