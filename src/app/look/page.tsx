@@ -22,6 +22,14 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/look",
   },
+  openGraph: {
+    title: "Book a 15-minute look | BloomingRock Solutions",
+    description: subhead,
+  },
+  twitter: {
+    title: "Book a 15-minute look | BloomingRock Solutions",
+    description: subhead,
+  },
 };
 
 export default function LookPage() {
