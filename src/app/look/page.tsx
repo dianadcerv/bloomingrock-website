@@ -7,6 +7,9 @@ import { CONTACT_EMAIL } from "@/lib/contact";
 import { createFormToken } from "@/lib/look-security";
 import { LookForm } from "./LookForm";
 
+const DEFAULT_BOOKING_URL =
+  "https://calendar.app.google/m8GCvEo9nnwKyLrK9";
+
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
@@ -55,6 +58,9 @@ export default function LookPage() {
             <LookForm
               formToken={createFormToken()}
               turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+              bookingUrl={
+                process.env.BOOKING_URL?.trim() || DEFAULT_BOOKING_URL
+              }
             />
             <p className="look-fallback">
               Prefer email?{" "}

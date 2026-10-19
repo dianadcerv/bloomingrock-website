@@ -23,6 +23,17 @@ export type LookFormState = {
   formToken?: string;
 };
 
+const HEARD_ABOUT_OPTIONS = [
+  "LinkedIn",
+  "Instagram",
+  "Referral",
+  "Search",
+  "Event",
+  "Other",
+] as const;
+
+type HeardAboutOption = (typeof HEARD_ABOUT_OPTIONS)[number];
+
 function trim(value: FormDataEntryValue | null) {
   return typeof value === "string" ? value.trim() : "";
 }
@@ -38,6 +49,139 @@ function escapeHtml(value: string) {
 
 function websiteHref(url: string) {
   return escapeHtml(url);
+}
+
+function commandCenterUrl() {
+  return (
+    process.env.COMMAND_CENTER_URL?.trim() ||
+    "https://starship-bridge-26.vercel.app"
+  );
+}
+
+function parseHeardAbout(
+  selectRaw: string,
+  otherRaw: string,
+): { heardAbout?: string; error?: string } {
+  if (!selectRaw) return {};
+
+  const match = HEARD_ABOUT_OPTIONS.find(
+    (option) => option.toLowerCase() === selectRaw.toLowerCase(),
+  );
+  if (!match) {
+    return { error: "Please pick how you heard about us, or leave it blank." };
+  }
+
+  const other = sanitizeOneLine(otherRaw);
+  if (match === "Other") {
+    if (other.length > 200) {
+      return { error: "Please keep that to a short phrase." };
+    }
+    return { heardAbout: other ? `Other: ${other}` : "Other" };
+  }
+
+  if (other.length > 0) {
+    return { error: "The extra line is only needed when you pick Other." };
+  }
+
+  return { heardAbout: match };
+}
+
+function buildDetails(week: string, website: string) {
+  if (!website) return week;
+  return `${week}\n\nWebsite: ${website}`;
+}
+
+async function submitInboundIntake(payload: {
+  name: string;
+  email: string;
+  business: string;
+  details: string;
+  heardAbout?: string;
+  source: "website-look";
+}): Promise<boolean> {
+  const secret = process.env.INTAKE_INBOUND_SECRET?.trim();
+  if (!secret) return false;
+
+  try {
+    const response = await fetch(`${commandCenterUrl()}/api/intake/inbound`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${secret}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
+async function sendLookEmailNotification({
+  name,
+  email,
+  business,
+  week,
+  website,
+  heardAbout,
+}: {
+  name: string;
+  email: string;
+  business: string;
+  week: string;
+  website: string;
+  heardAbout?: string;
+}): Promise<boolean> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return false;
+
+  const domain = process.env.RESEND_EMAIL_DOMAIN?.trim();
+  const from = domain
+    ? `BloomingRock <look@${domain}>`
+    : "BloomingRock <onboarding@resend.dev>";
+  const resend = new Resend(apiKey);
+
+  const heardBlock = heardAbout
+    ? `<p style="margin:0 0 16px"><strong>How they heard about us:</strong> ${escapeHtml(heardAbout)}</p>`
+    : "";
+
+  const { error } = await resend.emails.send(
+    {
+      from,
+      to: CONTACT_EMAIL,
+      replyTo: email,
+      subject: `15-minute look: ${business}`,
+      html: `
+      <div style="font-family:Georgia,serif;color:#2C2A26;line-height:1.5">
+        <p style="font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#3D6B5A;margin:0 0 8px">
+          15-minute look
+        </p>
+        <h1 style="font-size:22px;font-weight:500;margin:0 0 16px">
+          ${escapeHtml(business)}
+        </h1>
+        <p style="margin:0 0 8px"><strong>Name:</strong> ${escapeHtml(name)}</p>
+        <p style="margin:0 0 8px"><strong>Email:</strong> ${escapeHtml(email)}</p>
+        <p style="margin:0 0 8px"><strong>Business:</strong> ${escapeHtml(business)}</p>
+        <p style="margin:0 0 16px"><strong>Website:</strong> ${
+          website
+            ? `<a href="${websiteHref(website)}">${escapeHtml(website)}</a>`
+            : "Not given"
+        }</p>
+        ${heardBlock}
+        <p style="margin:0 0 6px"><strong>Where the week gets eaten up:</strong></p>
+        <p style="margin:0;white-space:pre-wrap">${escapeHtml(week)}</p>
+      </div>
+    `,
+    },
+    {
+      idempotencyKey: `look-request/${createHash("sha256")
+        .update(`${email}|${business}|${week}`)
+        .digest("hex")
+        .slice(0, 32)}`,
+    },
+  );
+
+  return !error;
 }
 
 export async function submitLookRequest(
@@ -76,6 +220,14 @@ export async function submitLookRequest(
   const business = sanitizeOneLine(trim(formData.get("business")));
   const week = sanitizeMultiline(trim(formData.get("week")));
   const websiteResult = normalizeWebsite(trim(formData.get("website")));
+  const heardResult = parseHeardAbout(
+    trim(formData.get("heard_about")),
+    trim(formData.get("heard_about_other")),
+  );
+
+  if (heardResult.error) {
+    return { ok: false, formToken: nextToken, error: heardResult.error };
+  }
 
   if (name.length < 2 || name.length > 80) {
     return { ok: false, formToken: nextToken, error: "Please add your name." };
@@ -106,6 +258,7 @@ export async function submitLookRequest(
   }
 
   const website = websiteResult.url;
+  const heardAbout = heardResult.heardAbout;
   const emailKey = email.toLowerCase();
   if (!lookIpLimiter.consume(`ip:${ip}`) || !lookEmailLimiter.consume(`email:${emailKey}`)) {
     return {
@@ -115,8 +268,33 @@ export async function submitLookRequest(
     };
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
+  const details = buildDetails(week, website);
+  const portalOk = await submitInboundIntake({
+    name,
+    email,
+    business,
+    details,
+    ...(heardAbout ? { heardAbout } : {}),
+    source: "website-look",
+  });
+
+  let emailOk = false;
+  if (!portalOk) {
+    emailOk = await sendLookEmailNotification({
+      name,
+      email,
+      business,
+      week,
+      website,
+      heardAbout,
+    });
+  }
+
+  if (portalOk || emailOk) {
+    return { ok: true };
+  }
+
+  if (!process.env.RESEND_API_KEY && !process.env.INTAKE_INBOUND_SECRET?.trim()) {
     return {
       ok: false,
       formToken: nextToken,
@@ -124,54 +302,11 @@ export async function submitLookRequest(
     };
   }
 
-  const domain = process.env.RESEND_EMAIL_DOMAIN?.trim();
-  const from = domain
-    ? `BloomingRock <look@${domain}>`
-    : "BloomingRock <onboarding@resend.dev>";
-  const resend = new Resend(apiKey);
-
-  const { error } = await resend.emails.send(
-    {
-      from,
-      to: CONTACT_EMAIL,
-      replyTo: email,
-      subject: `15-minute look: ${business}`,
-      html: `
-      <div style="font-family:Georgia,serif;color:#2C2A26;line-height:1.5">
-        <p style="font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#3D6B5A;margin:0 0 8px">
-          15-minute look
-        </p>
-        <h1 style="font-size:22px;font-weight:500;margin:0 0 16px">
-          ${escapeHtml(business)}
-        </h1>
-        <p style="margin:0 0 8px"><strong>Name:</strong> ${escapeHtml(name)}</p>
-        <p style="margin:0 0 8px"><strong>Email:</strong> ${escapeHtml(email)}</p>
-        <p style="margin:0 0 8px"><strong>Business:</strong> ${escapeHtml(business)}</p>
-        <p style="margin:0 0 16px"><strong>Website:</strong> ${
-          website
-            ? `<a href="${websiteHref(website)}">${escapeHtml(website)}</a>`
-            : "Not given"
-        }</p>
-        <p style="margin:0 0 6px"><strong>Where the week gets eaten up:</strong></p>
-        <p style="margin:0;white-space:pre-wrap">${escapeHtml(week)}</p>
-      </div>
-    `,
-    },
-    {
-      idempotencyKey: `look-request/${createHash("sha256")
-        .update(`${email}|${business}|${week}`)
-        .digest("hex")
-        .slice(0, 32)}`,
-    },
-  );
-
-  if (error) {
-    return {
-      ok: false,
-      formToken: nextToken,
-      error: "Something went sideways sending that. Try once more, or email me directly.",
-    };
-  }
-
-  return { ok: true };
+  return {
+    ok: false,
+    formToken: nextToken,
+    error: "Something went sideways sending that. Try once more, or email me directly.",
+  };
 }
+
+export { HEARD_ABOUT_OPTIONS, type HeardAboutOption };
