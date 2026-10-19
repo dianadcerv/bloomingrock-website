@@ -33,8 +33,8 @@ export function LookForm({
         <h2 className="look-form__title">Got it. I’ll look before we talk.</h2>
         {bookingUrl ? (
           <p className="look-form__lead">
-            I’ll review the business first. When you’re ready, pick a time on my
-            calendar for the 15-minute look — no pitch deck, just whether
+            I’ll look at your business first. When you’re ready, pick a time on
+            my calendar for the 15-minute look. No pitch deck, just whether
             there’s a quick win worth doing.
           </p>
         ) : (
@@ -63,7 +63,7 @@ export function LookForm({
       <p className="look-form__eyebrow">Free 15-minute look</p>
       <h2 className="look-form__title">Tell me enough to prepare.</h2>
       <p className="look-form__lead">
-        A few fields. I’ll use them to look at the business before we talk — not
+        A few fields. I’ll use them to look at your business before we talk, not
         to build a mailing list.
       </p>
 
@@ -141,7 +141,7 @@ export function LookForm({
 
       <label className="look-field">
         <span className="look-field__label">
-          How did you hear about us?{" "}
+          How did you hear about me?{" "}
           <span className="look-field__optional">optional</span>
         </span>
         <select
@@ -150,7 +150,7 @@ export function LookForm({
           value={heardAbout}
           onChange={(event) => setHeardAbout(event.target.value)}
         >
-          <option value="">Choose one — or skip</option>
+          <option value="">Choose one, or skip</option>
           {HEARD_ABOUT_OPTIONS.map((option) => (
             <option key={option} value={option}>
               {option}
@@ -170,7 +170,7 @@ export function LookForm({
             type="text"
             name="heard_about_other"
             maxLength={200}
-            placeholder="Podcast, trade show, friend…"
+            placeholder="Podcast, newsletter, a meetup..."
           />
         </label>
       ) : (
