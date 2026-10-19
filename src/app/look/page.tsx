@@ -5,6 +5,8 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import { createFormToken } from "@/lib/look-security";
+import { LOOK_FOR_YOU_DRAFT, LOOK_NOT_FOR_YOU } from "./fit-copy";
+import { activeLookHeadline } from "./headlines";
 import { LookForm } from "./LookForm";
 
 const DEFAULT_BOOKING_URL =
@@ -12,10 +14,11 @@ const DEFAULT_BOOKING_URL =
 
 export const dynamic = "force-dynamic";
 
+const { headline, subhead } = activeLookHeadline();
+
 export const metadata: Metadata = {
   title: "Book a 15-minute look | BloomingRock Solutions",
-  description:
-    "Request a free 15-minute look at where AI can save real time in your week — then get one workflow set up so it actually gets used.",
+  description: subhead,
   alternates: {
     canonical: "/look",
   },
@@ -43,17 +46,45 @@ export default function LookPage() {
 
           <div className="page-hero__content">
             <p className="page-hero__brand">BloomingRock</p>
-            <h1 className="page-hero__headline">
-              A closer look at your week — no charge.
-            </h1>
-            <p className="page-hero__support">
-              Fifteen minutes. I’ll tell you whether there’s a quick win worth
-              doing. Fill this in so I can look at the business first.
-            </p>
+            <h1 className="page-hero__headline">{headline}</h1>
+            <p className="page-hero__support">{subhead}</p>
           </div>
         </section>
 
-        <section className="section section--stone" id="look-form">
+        <section
+          className="section section--stone"
+          id="look-fit"
+          aria-labelledby="look-fit-heading"
+        >
+          <div className="section__inner section__inner--wide reveal">
+            <p className="section__eyebrow">Fit</p>
+            <h2 className="section__title" id="look-fit-heading">
+              This is for you / This isn&apos;t for you
+            </h2>
+
+            <div className="scope-grid">
+              <div className="scope-block">
+                <h3 className="scope-block__title">This is for you if</h3>
+                {/* DRAFT pending Vera */}
+                <ul className="scope-list scope-list--in">
+                  {LOOK_FOR_YOU_DRAFT.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="scope-block">
+                <h3 className="scope-block__title">This isn&apos;t for you if</h3>
+                <ul className="scope-list scope-list--out">
+                  {LOOK_NOT_FOR_YOU.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="section section--moss" id="look-form">
           <div className="section__inner look-panel reveal">
             <LookForm
               formToken={createFormToken()}
