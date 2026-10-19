@@ -1,33 +1,58 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { CONTACT_EMAIL } from "@/lib/contact";
-import { submitLookRequest, type LookFormState } from "./actions";
+import {
+  HEARD_ABOUT_OPTIONS,
+  submitLookRequest,
+  type LookFormState,
+} from "./actions";
 
 const initialState: LookFormState = { ok: false };
 
 export function LookForm({
   formToken,
   turnstileSiteKey,
+  bookingUrl,
 }: {
   formToken: string;
   turnstileSiteKey?: string;
+  bookingUrl?: string;
 }) {
   const [state, formAction, pending] = useActionState(
     submitLookRequest,
     initialState,
   );
+  const [heardAbout, setHeardAbout] = useState("");
 
   if (state.ok) {
     return (
       <div className="look-form look-form--success" role="status">
         <p className="look-form__eyebrow">You’re on the list</p>
         <h2 className="look-form__title">Got it. I’ll look before we talk.</h2>
-        <p className="look-form__lead">
-          I’ll review the business and reply to set a 15-minute time. No pitch
-          deck — just whether there’s a quick win worth doing.
-        </p>
+        {bookingUrl ? (
+          <p className="look-form__lead">
+            I’ll review the business first. When you’re ready, pick a time on my
+            calendar for the 15-minute look — no pitch deck, just whether
+            there’s a quick win worth doing.
+          </p>
+        ) : (
+          <p className="look-form__lead">
+            I’ll review the business and reply to set a 15-minute time. No pitch
+            deck — just whether there’s a quick win worth doing.
+          </p>
+        )}
+        {bookingUrl ? (
+          <a
+            className="btn btn--primary"
+            href={bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Pick a time on my calendar
+          </a>
+        ) : null}
       </div>
     );
   }
@@ -38,7 +63,7 @@ export function LookForm({
       <p className="look-form__eyebrow">Free 15-minute look</p>
       <h2 className="look-form__title">Tell me enough to prepare.</h2>
       <p className="look-form__lead">
-        Four fields. I’ll use them to look at the business before we talk — not
+        A few fields. I’ll use them to look at the business before we talk — not
         to build a mailing list.
       </p>
 
@@ -113,6 +138,44 @@ export function LookForm({
           placeholder="Follow-up, scheduling, inbox, reporting…"
         />
       </label>
+
+      <label className="look-field">
+        <span className="look-field__label">
+          How did you hear about us?{" "}
+          <span className="look-field__optional">optional</span>
+        </span>
+        <select
+          className="look-field__input"
+          name="heard_about"
+          value={heardAbout}
+          onChange={(event) => setHeardAbout(event.target.value)}
+        >
+          <option value="">Choose one — or skip</option>
+          {HEARD_ABOUT_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      {heardAbout === "Other" ? (
+        <label className="look-field">
+          <span className="look-field__label">
+            Tell me in a few words{" "}
+            <span className="look-field__optional">optional</span>
+          </span>
+          <input
+            className="look-field__input"
+            type="text"
+            name="heard_about_other"
+            maxLength={200}
+            placeholder="Podcast, trade show, friend…"
+          />
+        </label>
+      ) : (
+        <input type="hidden" name="heard_about_other" value="" />
+      )}
 
       {turnstileSiteKey ? <TurnstileWidget siteKey={turnstileSiteKey} /> : null}
 

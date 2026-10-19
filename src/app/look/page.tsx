@@ -55,6 +55,7 @@ export default function LookPage() {
             <LookForm
               formToken={createFormToken()}
               turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+              bookingUrl={process.env.BOOKING_URL?.trim() || undefined}
             />
             <p className="look-fallback">
               Prefer email?{" "}
