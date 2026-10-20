@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { JobControlledHoldBanner } from "@/components/portal/JobControlledHoldBanner";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { DraftNotice } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
@@ -15,21 +16,14 @@ export default async function ControlledJobPage({
   const { session, job } = await requireJobForShop(jobId);
 
   return (
-    <PortalShell session={session} current="/documents">
+    <PortalShell session={session} current="/jobs">
       <JobHeader job={job} current={`/jobs/${job.id}/controlled`} />
-      <DraftNotice>
-        Proposal only. Attorney and hosting reviews are still open (BLO-21,
-        BLO-25, BLO-26). Nothing here is legal advice.
-      </DraftNotice>
-      <section className="portal-section">
-        <h2>If this were a controlled job</h2>
-        <ul className="portal-plain">
-          <li>The app would flag it and refuse to process until reviews are done.</li>
-          <li>Outside tools would be off.</li>
-          <li>Only users marked as US persons could open it.</li>
-          <li>The app would log who viewed or sent what.</li>
-        </ul>
-      </section>
+      <DraftNotice>Demo — audit and access rules for controlled jobs are not final.</DraftNotice>
+      <JobControlledHoldBanner job={job} />
+      <p>
+        Open the <a href={`/jobs/${job.id}`}>job workspace</a> for sources on hold. Checklist and
+        AI suggestions are intentionally empty until handling moves outside the app.
+      </p>
     </PortalShell>
   );
 }

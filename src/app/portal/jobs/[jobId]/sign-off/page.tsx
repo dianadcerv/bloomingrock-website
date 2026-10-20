@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { ProvenanceLegend, ProvenanceMarks } from "@/components/portal/ProvenanceMarkers";
+import {
+  SignOffAutoEmailSection,
+  SignOffBuyerCodeHint,
+} from "@/components/portal/SignOffAutoEmailSection";
 import { PoweredByBloomingRock } from "@/components/portal/PoweredByBloomingRock";
-import { DraftNotice, OpenQuestion, StatusPill } from "@/components/portal/PortalUi";
+import { OpenQuestion, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
 import {
@@ -43,28 +47,11 @@ export default async function SignOffPage({
 
       {buyer ? (
         <>
-          <p className="portal-auth__lead">
-            Secure link entry — no customer account. Enter the one-time code from your email.
-          </p>
-          <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.codeEmailOutgoing}</OpenQuestion>
+          <SignOffBuyerCodeHint jobId={job.id} />
           <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.linkCodeExpiry}</OpenQuestion>
-          <div className="portal-letter">
-            <p className="look-field__hint">Demo code (not emailed)</p>
-            <p className="portal-code">482917</p>
-            <label className="look-field">
-              <span className="look-field__label">One-time code</span>
-              <input className="look-field__input" defaultValue="482917" readOnly />
-            </label>
-            <button className="btn btn--primary" type="button" disabled>
-              Verify code (demo)
-            </button>
-          </div>
         </>
       ) : (
-        <DraftNotice>
-          Internal view. The app drafts the link email — a person sends. Nothing is sent in this
-          prototype.
-        </DraftNotice>
+        <SignOffAutoEmailSection job={job} />
       )}
 
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.signOffPageLayout}</OpenQuestion>
@@ -83,17 +70,6 @@ export default async function SignOffPage({
             Revision {job.revision} · {new Date().toLocaleDateString("en-US")} · {DEMO_SHOP.name}
           </p>
         </header>
-
-        {!buyer ? (
-          <>
-            <p>
-              Sign-off link (demo): /jobs/{job.id}/sign-off
-            </p>
-            <button className="btn btn--primary" type="button" disabled>
-              Prepare link email (demo)
-            </button>
-          </>
-        ) : null}
 
         <section className="portal-section">
           <h3>Conflicts first</h3>
@@ -121,29 +97,26 @@ export default async function SignOffPage({
           <ProvenanceLegend />
           <ul className="portal-plain">
             {job.checklist.map((item) => (
-                <li key={item.id} className="portal-check">
-                  <StatusPill tone={checkTone(item.status)}>
-                    {checkStatusLabel(item.status)}
-                  </StatusPill>
-                  <div>
-                    <strong>{item.label}</strong>
-                    {item.value ? <p>{item.value}</p> : null}
-                    {item.provenance?.length ? (
-                      <ProvenanceMarks
-                        marks={item.provenance}
-                        jobId={job.id}
-                      />
-                    ) : null}
-                    <p className="look-field__hint">
-                      Sources:{" "}
-                      {item.sourceIds.length
-                        ? item.sourceIds
-                            .map((id) => getSource(job, id)?.title ?? id)
-                            .join(", ")
-                        : "—"}
-                    </p>
-                  </div>
-                </li>
+              <li key={item.id} className="portal-check">
+                <StatusPill tone={checkTone(item.status)}>
+                  {checkStatusLabel(item.status)}
+                </StatusPill>
+                <div>
+                  <strong>{item.label}</strong>
+                  {item.value ? <p>{item.value}</p> : null}
+                  {item.provenance?.length ? (
+                    <ProvenanceMarks marks={item.provenance} jobId={job.id} />
+                  ) : null}
+                  <p className="look-field__hint">
+                    Sources:{" "}
+                    {item.sourceIds.length
+                      ? item.sourceIds
+                          .map((id) => getSource(job, id)?.title ?? id)
+                          .join(", ")
+                      : "—"}
+                  </p>
+                </div>
+              </li>
             ))}
           </ul>
         </section>

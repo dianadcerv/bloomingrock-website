@@ -9,6 +9,7 @@ export type JobStatus =
   | "gathering"
   | "conflict"
   | "waiting-on-customer"
+  | "controlled-hold"
   | "ready-for-signoff"
   | "signed";
 
@@ -107,6 +108,16 @@ export type DemoJob = {
   knowledge: string[];
   auditLog: AuditEntry[];
   controlledProposal?: boolean;
+  /** ITAR / export-controlled / CUI — no AI extraction in Phase 1 demo. */
+  controlledHold?: boolean;
+  /** Seeded automatic sign-off invite (BLO-21). Session store may override. */
+  signOffInvite?: {
+    contact: string;
+    email: string;
+    code: string;
+    sentAt: string;
+    sentBy: string;
+  };
 };
 
 export type DemoProject = {
@@ -182,7 +193,7 @@ export const DEMO_PROJECT_WAREHOUSE_B: DemoProject = {
   name: "Warehouse B expansion",
   customerId: DEMO_CUSTOMER_HARBORVIEW.id,
   site: "Harborview dock yard, Joliet IL",
-  jobIds: ["warehouse-b-stair"],
+  jobIds: ["warehouse-b-stair", "itar-mezz-guard"],
 };
 
 export const DEMO_PROJECTS: DemoProject[] = [DEMO_PROJECT, DEMO_PROJECT_WAREHOUSE_B];
@@ -885,8 +896,89 @@ export const JOBS: DemoJob[] = [
         id: "hv-a3",
         at: "2026-10-12 15:20 CT",
         who: "Maya Chen",
-        action: "Checklist review",
-        detail: "Marked ready for sign-off pending live load confirmation and engineering review.",
+        action: "Requirements ready",
+        detail: "Engineer marked requirements ready for customer sign-off.",
+      },
+      {
+        id: "hv-a4",
+        at: "2026-10-12 15:22 CT",
+        who: "App (automatic)",
+        action: "Sign-off code sent",
+        detail: "Sign-off code sent automatically to Alex Rivera (alex@harborview.demo).",
+      },
+    ],
+    signOffInvite: {
+      contact: "Alex Rivera",
+      email: "alex@harborview.demo",
+      code: "482917",
+      sentAt: "Oct 12, 2026, 3:22 PM CT",
+      sentBy: "App (automatic)",
+    },
+  },
+  {
+    id: "itar-mezz-guard",
+    name: "Mezzanine guard — defense annex",
+    projectId: "warehouse-b",
+    status: "controlled-hold",
+    stageSince: "Oct 14, 2026",
+    revision: 0,
+    summary:
+      "Customer upload and email reference ITAR-controlled drawings and CUI markings. Held for manual handling — no AI extraction.",
+    controlledHold: true,
+    sources: [
+      {
+        id: "itar-email-1",
+        kind: "email",
+        title: "Mezz guard package — controlled markings",
+        from: "Alex Rivera <alex@harborview.demo>",
+        summary:
+          "References export-controlled data, ITAR jurisdiction, and CUI-labeled attachments. Northridge must handle outside automated intake.",
+        status: "needs-review",
+        readByApp: false,
+        quote:
+          "…attachments are ITAR-controlled / export-controlled — do not forward outside US persons… markings: CUI // SP-…",
+      },
+      {
+        id: "itar-zip-1",
+        kind: "zip",
+        title: "Mezz_guard_CUI_bundle.zip",
+        from: "Secure upload link",
+        summary:
+          "Zip contains PDF cover sheet labeled CUI and drawing set with export-control legend. Not opened by the app.",
+        status: "needs-review",
+        readByApp: false,
+      },
+    ],
+    checklist: [],
+    conflicts: [],
+    questions: [],
+    workflow: [
+      {
+        id: "intake",
+        label: "Intake sources",
+        kind: "minimum",
+        done: true,
+        ownerRole: "Estimator",
+        notes: "Stopped — controlled markings detected.",
+      },
+      {
+        id: "checklist",
+        label: "Fill the requirements checklist",
+        kind: "minimum",
+        done: false,
+        ownerRole: "Estimator",
+      },
+    ],
+    bom: [],
+    knowledge: [],
+    auditLog: [
+      {
+        id: "itar-a1",
+        at: "2026-10-14 09:05 CT",
+        who: "App (demo)",
+        action: "Controlled job hold",
+        detail:
+          "Possible controlled job from intake markings (ITAR / export-controlled / CUI). Not processed — handle outside the app.",
       },
     ],
   },
@@ -1044,6 +1136,7 @@ export function inboxAttachmentPreviewHref(jobIds: string[], filename: string) {
 
 export function jobStatusPillTone(status: JobStatus): StatusPillTone {
   if (status === "conflict") return "conflict";
+  if (status === "controlled-hold") return "conflict";
   if (status === "waiting-on-customer") return "missing";
   if (status === "ready-for-signoff" || status === "signed") return "ok";
   return "draft";
@@ -1064,6 +1157,8 @@ export function jobStatusLabel(status: JobStatus) {
       return "Conflict";
     case "waiting-on-customer":
       return "Waiting on customer";
+    case "controlled-hold":
+      return "Controlled hold";
     case "ready-for-signoff":
       return "Ready for sign-off";
     case "signed":

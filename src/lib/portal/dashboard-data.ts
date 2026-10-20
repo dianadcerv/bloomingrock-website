@@ -114,6 +114,7 @@ export function getShopAttentionItems(
   const platform = JOBS.find((j) => j.id === "access-platform")!;
   const guard = JOBS.find((j) => j.id === "machine-guard")!;
   const stair = JOBS.find((j) => j.id === "warehouse-b-stair")!;
+  const controlled = JOBS.find((j) => j.id === "itar-mezz-guard")!;
 
   const workflowRows: AttentionRow[] = getWorkflowWaitingAttention(shopEmail).map((wf) => ({
     id: wf.id,
@@ -139,8 +140,18 @@ export function getShopAttentionItems(
       href: "/inbox/in-1",
     },
     {
-      id: "att-conflict",
+      id: "att-controlled",
       urgency: 2,
+      title: "Possible controlled job",
+      detail: `${controlled.name}: ITAR / export-controlled / CUI markings — not processed`,
+      statusLabel: "Controlled",
+      tone: "conflict",
+      actionLabel: "Open job",
+      href: "/jobs/itar-mezz-guard",
+    },
+    {
+      id: "att-conflict",
+      urgency: 3,
       title: "Resolve conflict",
       detail: `${platform.name}: clear width 48 in. vs 54 in.`,
       statusLabel: jobStatusLabel(platform.status),
@@ -150,7 +161,7 @@ export function getShopAttentionItems(
     },
     {
       id: "att-review-platform",
-      urgency: 3,
+      urgency: 4,
       title: "Review interpretations",
       detail: `${platform.name}: ${platform.checklist.filter((c) => c.reviewState === "needs-review").length} checklist lines need a person`,
       statusLabel: "Needs review",
@@ -160,7 +171,7 @@ export function getShopAttentionItems(
     },
     {
       id: "att-in-2",
-      urgency: 4,
+      urgency: 5,
       title: "Confirm dual job match",
       detail: "Small guard email attaches to platform + guard",
       statusLabel: "Needs confirm",
@@ -170,7 +181,7 @@ export function getShopAttentionItems(
     },
     {
       id: "att-waiting",
-      urgency: 5,
+      urgency: 6,
       title: "Waiting on customer",
       detail: `${guard.name}: opening size missing`,
       statusLabel: jobStatusLabel(guard.status),
@@ -180,7 +191,7 @@ export function getShopAttentionItems(
     },
     {
       id: "att-drafts",
-      urgency: 6,
+      urgency: 7,
       title: "Send customer draft",
       detail: "Width + load rating questions drafted, not sent",
       statusLabel: "DRAFT, NOT SENT",
@@ -190,9 +201,9 @@ export function getShopAttentionItems(
     },
     {
       id: "att-stair",
-      urgency: 7,
-      title: "Engineering review",
-      detail: `${stair.name}: ready for sign-off after load rating`,
+      urgency: 8,
+      title: "Sign-off invite sent",
+      detail: `${stair.name}: automatic sign-off code emailed — review checklist on sign-off page`,
       statusLabel: jobStatusLabel(stair.status),
       tone: jobStatusPillTone(stair.status),
       actionLabel: "Review",
@@ -317,7 +328,7 @@ export function getCustomerWaitingItems(session: PortalSession): AttentionRow[] 
         id: `sign-${job.id}`,
         urgency: 2,
         title: "Review requirements sign-off",
-        detail: `${job.name} — secure link and one-time code when Northridge sends invite`,
+        detail: `${job.name} — one-time code emailed automatically when requirements were marked ready`,
         statusLabel: jobStatusLabel(job.status),
         tone: jobStatusPillTone(job.status),
         actionLabel: "Open sign-off",

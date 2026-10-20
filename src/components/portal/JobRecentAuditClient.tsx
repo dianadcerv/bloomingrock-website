@@ -8,6 +8,7 @@ import {
   type ConflictAuditEntry,
 } from "@/lib/portal/job-conflicts-store";
 import { getIntakeAuditForJob, INTAKE_UPDATED_EVENT } from "@/lib/portal/intake-store";
+import { getSignOffAuditForJob, SIGN_OFF_UPDATED_EVENT } from "@/lib/portal/sign-off-store";
 
 type SeedEntry = DemoJob["auditLog"][number];
 
@@ -22,29 +23,34 @@ export function JobRecentAuditClient({
   const [intakeAudit, setIntakeAudit] = useState<
     { id: string; at: string; action: string; detail: string }[]
   >([]);
+  const [signOffAudit, setSignOffAudit] = useState<SeedEntry[]>([]);
 
   useEffect(() => {
     const refresh = () => {
       setConflictAudit(getConflictAudit(jobId));
       setIntakeAudit(getIntakeAuditForJob(jobId));
+      setSignOffAudit(getSignOffAuditForJob(jobId));
     };
     refresh();
     window.addEventListener(JOB_CONFLICT_UPDATED_EVENT, refresh);
     window.addEventListener(INTAKE_UPDATED_EVENT, refresh);
+    window.addEventListener(SIGN_OFF_UPDATED_EVENT, refresh);
     return () => {
       window.removeEventListener(JOB_CONFLICT_UPDATED_EVENT, refresh);
       window.removeEventListener(INTAKE_UPDATED_EVENT, refresh);
+      window.removeEventListener(SIGN_OFF_UPDATED_EVENT, refresh);
     };
   }, [jobId]);
 
   const rows = useMemo(() => {
     const merged = [
+      ...signOffAudit.map((e) => ({ id: e.id, at: e.at, action: e.action, detail: e.detail })),
       ...intakeAudit.map((e) => ({ id: e.id, at: e.at, action: e.action, detail: e.detail })),
       ...conflictAudit.map((e) => ({ id: e.id, at: e.at, action: e.action, detail: e.detail })),
       ...seed.map((e) => ({ id: e.id, at: e.at, action: e.action, detail: e.detail })),
     ];
-    return merged.slice(0, 5);
-  }, [conflictAudit, intakeAudit, seed]);
+    return merged.slice(0, 6);
+  }, [conflictAudit, intakeAudit, signOffAudit, seed]);
 
   return (
     <ul className="portal-plain portal-audit">

@@ -42,11 +42,15 @@ export function JobSourcesClient({
               · {source.kind} · {source.from}
             </span>
             <p>{source.summary}</p>
-            <ExtractedProvenanceMarker
-              label={sourceGatherLabel(source.kind, source.title)}
-              jobId={job.id}
-              sourceId={source.id}
-            />
+            {job.controlledHold || !source.readByApp ? (
+              <p className="look-field__hint">Not processed by the app — controlled or unopened intake.</p>
+            ) : (
+              <ExtractedProvenanceMarker
+                label={sourceGatherLabel(source.kind, source.title)}
+                jobId={job.id}
+                sourceId={source.id}
+              />
+            )}
             {source.assetPath ? (
               <p>
                 <Link href={`/jobs/${job.id}/sources/${source.id}/preview`}>View PDF preview</Link>

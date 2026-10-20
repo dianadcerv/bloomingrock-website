@@ -29,10 +29,10 @@ export default async function DocumentsPage() {
           { href: `/jobs/${job.id}/bom`, title: "Bill of materials" },
           { href: `/jobs/${job.id}/pdf`, title: "Requirements PDF" },
         ];
-        if (isShopStaff(session.role) && job.controlledProposal) {
+        if (isShopStaff(session.role) && (job.controlledProposal || job.controlledHold)) {
           items.push({
             href: `/jobs/${job.id}/controlled`,
-            title: "Controlled job (proposal)",
+            title: job.controlledHold ? "Controlled job hold" : "Controlled job (proposal)",
           });
         }
         return (

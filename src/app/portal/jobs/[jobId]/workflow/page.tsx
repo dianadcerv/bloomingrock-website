@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JobHeader } from "@/components/portal/JobHeader";
 import { DraftNotice } from "@/components/portal/PortalUi";
+import { RequirementsReadyAction } from "@/components/portal/RequirementsReadyAction";
 import { WorkflowJobClient } from "@/components/portal/WorkflowJobClient";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
@@ -31,6 +32,9 @@ export default async function WorkflowPage({
           knowledge library is not shown to customer logins.
         </p>
       )}
+      {shop && !job.controlledHold ? (
+        <RequirementsReadyAction job={job} who={session.name} />
+      ) : null}
       <WorkflowJobClient
         jobId={job.id}
         jobName={job.name}

@@ -52,8 +52,9 @@ describe("buyer job access", () => {
     assert.equal(sessionCanAccessJob(alex, "machine-guard"), false);
 
     assert.equal(jobsForSession(jordan).length, 2);
-    assert.equal(jobsForSession(alex).length, 1);
+    assert.equal(jobsForSession(alex).length, 2);
     assert.ok(jobsForSession(alex).some((j) => j.id === "warehouse-b-stair"));
+    assert.ok(jobsForSession(alex).some((j) => j.id === "itar-mezz-guard"));
   });
 
   it("maps harbor job to harborview customer", () => {

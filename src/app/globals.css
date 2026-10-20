@@ -2917,6 +2917,115 @@ img {
   background: #fff;
 }
 
+.portal-controlled-banner {
+  margin: 0 0 var(--dash-gap-subsection, 1.75rem);
+  padding: 1rem 1.15rem;
+  border: 2px solid #8b3a3a;
+  border-radius: 3px;
+  background: #fdf5f5;
+}
+
+.portal-controlled-banner__title {
+  margin: 0 0 0.5rem;
+  font-weight: 700;
+  color: #6b2a2a;
+}
+
+.portal-controlled-banner__body {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.portal-outbound-policy {
+  margin: 0 0 1.25rem;
+  padding: 0.85rem 1rem;
+  border-left: 4px solid var(--shop-accent, #7a9e6a);
+  background: var(--stone-50);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.portal-email-preview {
+  margin: 0 0 1.25rem;
+  border: 1px solid var(--stone-300);
+  border-top: 4px solid var(--shop-accent, #7a9e6a);
+  border-radius: 3px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.portal-email-preview__header {
+  padding: 1rem 1.15rem;
+  background: color-mix(in srgb, var(--shop-primary, #2f4a3c) 8%, #fff);
+  border-bottom: 1px solid var(--stone-300);
+}
+
+.portal-email-preview__logo {
+  margin: 0 0 0.35rem;
+  font-weight: 700;
+  color: var(--shop-primary, #2f4a3c);
+}
+
+.portal-email-preview__meta {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--stone-600);
+}
+
+.portal-email-preview__badge {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  background: var(--shop-accent, #7a9e6a);
+  color: #fff;
+}
+
+.portal-email-preview__subject {
+  margin: 0;
+  padding: 1rem 1.15rem 0;
+  font-size: 1.05rem;
+}
+
+.portal-email-preview__body {
+  padding: 0.75rem 1.15rem 1.15rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.portal-email-preview__body p {
+  margin: 0 0 0.75rem;
+}
+
+.portal-email-preview__link {
+  font-family: ui-monospace, monospace;
+  font-size: 0.8125rem;
+  word-break: break-all;
+}
+
+.portal-code--inline {
+  display: inline;
+  font-size: 1.1rem;
+  letter-spacing: 0.12em;
+}
+
+.portal-requirements-ready {
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.1rem;
+  border: 1px dashed var(--stone-300);
+  background: var(--stone-50);
+}
+
+.portal-requirements-ready__done {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+}
+
 .portal-email-outbox {
   list-style: none;
   margin: 0;

@@ -49,6 +49,10 @@ export const PROTOTYPE_OPEN_QUESTIONS = {
     "BLO-INTAKE-3 — Revoke/rotate upload links early; audit trail when revoked?",
   uploadLinkLifetimePolicy:
     "Upload link lifetime (open through quote/order, 30 days after ship, manual job close) may be revisited — Diana 10/19.",
+  controlledJobDetection:
+    "BLO-21 — Controlled-job detection uses intake markings (ITAR, export-controlled, CUI). Unlabeled files may not be flagged.",
+  signOffAutoEmailOnly:
+    "BLO-21 — The sign-off code email is the only message sent without a person clicking Send; all other customer emails stay drafts for review.",
 } as const;
 
 export const DEMO_SHOP_ROLES = [
