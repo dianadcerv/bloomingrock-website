@@ -30,6 +30,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  serverActions: {
+    bodySizeLimit: "16mb",
+  },
   images: {
     formats: ["image/webp"],
   },

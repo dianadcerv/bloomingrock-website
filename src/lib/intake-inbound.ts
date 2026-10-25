@@ -1,4 +1,14 @@
-export type InboundSource = "website-look" | "website-checklist";
+export type InboundSource =
+  | "website-look"
+  | "website-checklist"
+  | "website-paid-look";
+
+export type InboundAttachment = {
+  url: string;
+  name: string;
+  contentType: string;
+  size?: number;
+};
 
 function commandCenterUrl() {
   return (
@@ -14,6 +24,8 @@ export async function submitInboundIntake(payload: {
   details: string;
   heardAbout?: string;
   source: InboundSource;
+  answers?: Record<string, unknown>;
+  attachments?: InboundAttachment[];
 }): Promise<boolean> {
   const secret = process.env.INTAKE_INBOUND_SECRET?.trim();
   if (!secret) return false;
