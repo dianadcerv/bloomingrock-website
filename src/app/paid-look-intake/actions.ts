@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { headers } from "next/headers";
 import { Resend } from "resend";
 import { CONTACT_EMAIL } from "@/lib/contact";
+import { buildPaidLookInboundPayload } from "@/lib/intake/paid-look-payload";
 import { submitInboundIntake } from "@/lib/intake-inbound";
 import {
   clientIp,
@@ -217,17 +218,10 @@ export async function submitPaidLookIntake(
   }
 
   const { answers, contactName } = parsed;
-  const details = buildPaidLookDetails(answers);
 
-  const portalOk = await submitInboundIntake({
-    name: contactName,
-    email: answers.email,
-    business: answers.shopName,
-    details,
-    source: "website-paid-look",
-    answers: answers as unknown as Record<string, unknown>,
-    attachments,
-  });
+  const portalOk = await submitInboundIntake(
+    buildPaidLookInboundPayload(answers, contactName, attachments),
+  );
 
   let emailOk = false;
   if (!portalOk) {

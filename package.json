@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "tsx --test src/lib/look-security.test.ts src/lib/paid-look-intake.test.ts"
+    "test": "tsx --test src/lib/look-security.test.ts src/lib/paid-look-intake.test.ts src/lib/intake/paid-look-payload.test.ts"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
