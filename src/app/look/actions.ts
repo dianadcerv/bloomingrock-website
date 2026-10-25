@@ -6,14 +6,14 @@ import { Resend } from "resend";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import {
   clientIp,
-  createFormToken,
   isValidEmail,
   lookEmailLimiter,
   lookIpLimiter,
+  mintFormToken,
   normalizeWebsite,
   sanitizeMultiline,
   sanitizeOneLine,
-  verifyFormToken,
+  validateFormToken,
   verifyTurnstile,
 } from "@/lib/look-security";
 import { submitInboundIntake } from "@/lib/intake-inbound";
@@ -147,8 +147,8 @@ export async function submitLookRequest(
   formData: FormData,
 ): Promise<LookFormState> {
   const submittedToken = trim(formData.get("form_token"));
-  const tokenStillValid = verifyFormToken(submittedToken);
-  const nextToken = tokenStillValid ? submittedToken : createFormToken();
+  const tokenStillValid = await validateFormToken(submittedToken);
+  const nextToken = tokenStillValid ? submittedToken : await mintFormToken();
 
   if (trim(formData.get("company_fax"))) {
     return { ok: true };

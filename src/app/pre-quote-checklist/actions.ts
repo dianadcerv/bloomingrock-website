@@ -7,12 +7,12 @@ import { CONTACT_EMAIL } from "@/lib/contact";
 import { submitInboundIntake } from "@/lib/intake-inbound";
 import {
   clientIp,
-  createFormToken,
   isValidEmail,
   lookEmailLimiter,
   lookIpLimiter,
+  mintFormToken,
   sanitizeOneLine,
-  verifyFormToken,
+  validateFormToken,
   verifyTurnstile,
 } from "@/lib/look-security";
 
@@ -93,8 +93,8 @@ export async function submitChecklistRequest(
   formData: FormData,
 ): Promise<ChecklistFormState> {
   const submittedToken = trim(formData.get("form_token"));
-  const tokenStillValid = verifyFormToken(submittedToken);
-  const nextToken = tokenStillValid ? submittedToken : createFormToken();
+  const tokenStillValid = await validateFormToken(submittedToken);
+  const nextToken = tokenStillValid ? submittedToken : await mintFormToken();
 
   if (trim(formData.get("company_fax"))) {
     return { ok: true };

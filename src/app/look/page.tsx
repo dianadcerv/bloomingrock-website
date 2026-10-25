@@ -4,7 +4,7 @@ import { RevealObserver } from "@/components/RevealObserver";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CONTACT_EMAIL } from "@/lib/contact";
-import { createFormToken } from "@/lib/look-security";
+import { mintFormToken } from "@/lib/look-security";
 import { LOOK_FOR_YOU, LOOK_NOT_FOR_YOU } from "./fit-copy";
 import { activeLookHeadline } from "./headlines";
 import { LookForm } from "./LookForm";
@@ -32,7 +32,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LookPage() {
+export default async function LookPage() {
+  const formToken = await mintFormToken();
+
   return (
     <div className="site">
       <RevealObserver />
@@ -94,7 +96,7 @@ export default function LookPage() {
         <section className="section section--moss" id="look-form">
           <div className="section__inner look-panel reveal">
             <LookForm
-              formToken={createFormToken()}
+              formToken={formToken}
               turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
               bookingUrl={
                 process.env.BOOKING_URL?.trim() || DEFAULT_BOOKING_URL
