@@ -4,7 +4,7 @@ import Link from "next/link";
 import { RevealObserver } from "@/components/RevealObserver";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { createFormToken } from "@/lib/look-security";
+import { mintFormToken } from "@/lib/look-security";
 import { ChecklistForm } from "./ChecklistForm";
 
 const PAGE_TITLE = "Pre-quote checklist for custom jobs | BloomingRock Solutions";
@@ -29,7 +29,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function PreQuoteChecklistPage() {
+export default async function PreQuoteChecklistPage() {
+  const formToken = await mintFormToken();
+
   return (
     <div className="site">
       <RevealObserver />
@@ -88,7 +90,7 @@ export default function PreQuoteChecklistPage() {
         <section className="section section--moss" id="checklist-form">
           <div className="section__inner look-panel reveal">
             <ChecklistForm
-              formToken={createFormToken()}
+              formToken={formToken}
               turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
             />
           </div>

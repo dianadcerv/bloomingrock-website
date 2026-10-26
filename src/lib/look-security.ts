@@ -108,6 +108,24 @@ export function createFormToken(now = Date.now(), secret = tokenSecret()) {
   return `${payload}.${signPayload(payload, secret)}`;
 }
 
+async function runtimeTokenSecret() {
+  const { connection } = await import("next/server");
+  await connection();
+  return tokenSecret();
+}
+
+/** Mint a token at request time so signing uses runtime env (not build-inlined secrets). */
+export async function mintFormToken() {
+  const secret = await runtimeTokenSecret();
+  return createFormToken(Date.now(), secret);
+}
+
+/** Validate a submitted token using the same runtime secret as page render. */
+export async function validateFormToken(token: string) {
+  const secret = await runtimeTokenSecret();
+  return verifyFormToken(token, { secret, now: Date.now() });
+}
+
 export function verifyFormToken(
   token: string,
   {
