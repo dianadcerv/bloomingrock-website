@@ -1,4 +1,20 @@
-export type InboundSource = "website-look" | "website-checklist";
+import type { PaidLookInboundPayload } from "@/lib/intake/paid-look-sections";
+
+export type InboundSource =
+  | "website-look"
+  | "website-checklist"
+  | "website-paid-look";
+
+export type StandardInboundPayload = {
+  name: string;
+  email: string;
+  business: string;
+  details: string;
+  heardAbout?: string;
+  source: Exclude<InboundSource, "website-paid-look">;
+};
+
+export type InboundPayload = StandardInboundPayload | PaidLookInboundPayload;
 
 function commandCenterUrl() {
   return (
@@ -7,14 +23,7 @@ function commandCenterUrl() {
   );
 }
 
-export async function submitInboundIntake(payload: {
-  name: string;
-  email: string;
-  business: string;
-  details: string;
-  heardAbout?: string;
-  source: InboundSource;
-}): Promise<boolean> {
+export async function submitInboundIntake(payload: InboundPayload): Promise<boolean> {
   const secret = process.env.INTAKE_INBOUND_SECRET?.trim();
   if (!secret) return false;
 

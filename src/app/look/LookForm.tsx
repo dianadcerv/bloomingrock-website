@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState, useState } from "react";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { CONTACT_EMAIL } from "@/lib/contact";
@@ -56,6 +57,13 @@ export function LookForm({
             Pick a time on my calendar
           </a>
         ) : null}
+        <p className="look-form__fine">
+          Booked a Paid Look ($750 diagnostic)?{" "}
+          <Link className="text-link" href="/paid-look-intake">
+            Complete the client intake form
+          </Link>
+          .
+        </p>
       </div>
     );
   }
