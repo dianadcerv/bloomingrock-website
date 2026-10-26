@@ -377,6 +377,81 @@ img {
   text-decoration-color: var(--sage-300);
 }
 
+.section--moss .scope-list li {
+  color: rgba(236, 234, 228, 0.88);
+}
+
+.section--moss .scope-list--out li::before {
+  background: rgba(246, 245, 241, 0.45);
+}
+
+.section--moss .look-form__eyebrow {
+  color: var(--sage-300);
+}
+
+.section--moss .look-form__title {
+  color: var(--stone-50);
+  font-size: clamp(1.85rem, 3.5vw, 2.5rem);
+}
+
+.section--moss .look-form__lead {
+  color: rgba(236, 234, 228, 0.88);
+}
+
+.section--moss .look-field__label {
+  color: var(--stone-50);
+}
+
+.section--moss .look-field__optional {
+  color: rgba(236, 234, 228, 0.68);
+}
+
+.section--moss .look-field__hint {
+  color: rgba(236, 234, 228, 0.72);
+}
+
+.section--moss .look-field__input {
+  border-color: rgba(236, 234, 228, 0.35);
+}
+
+.section--moss .look-field__input::placeholder {
+  color: var(--stone-500);
+  opacity: 1;
+}
+
+.section--moss .look-field__input:focus {
+  outline-color: var(--sage-300);
+  border-color: var(--sage-300);
+}
+
+.section--moss .look-form__error {
+  color: #f0d8d5;
+}
+
+.section--moss .look-fallback,
+.section--moss .look-form__fine {
+  color: rgba(236, 234, 228, 0.72);
+}
+
+.section--moss .cta-email {
+  color: var(--stone-50);
+  border-bottom-color: rgba(246, 245, 241, 0.45);
+}
+
+.section--moss .cta-email:hover {
+  border-bottom-color: var(--sage-300);
+}
+
+.section--moss .btn--primary {
+  background: var(--stone-50);
+  color: var(--moss-800);
+}
+
+.section--moss .btn--primary:hover {
+  background: var(--stone-100);
+  color: var(--moss-800);
+}
+
 .divider {
   height: 1px;
   border: 0;
@@ -547,6 +622,58 @@ img {
   max-width: 40rem;
 }
 
+.look-panel--wide {
+  max-width: 44rem;
+}
+
+.look-form__section {
+  margin: 0.75rem 0 0;
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: var(--stone-900);
+}
+
+.look-choice-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.look-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  font-size: 0.98rem;
+  color: var(--stone-800);
+  cursor: pointer;
+}
+
+.look-choice input {
+  margin-top: 0.2rem;
+  accent-color: var(--lichen);
+}
+
+.look-form__note {
+  margin: 0;
+  padding: 0.75rem 0.9rem;
+  border-left: 3px solid var(--lichen);
+  background: rgb(61 107 90 / 0.08);
+  color: var(--stone-800);
+  font-size: 0.95rem;
+}
+
+fieldset.look-field {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+fieldset.look-field legend {
+  margin-bottom: 0.35rem;
+}
+
 .look-form {
   position: relative;
   display: flex;
@@ -651,6 +778,13 @@ img {
   color: var(--stone-500);
 }
 
+.look-form__fine {
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+  color: var(--stone-500);
+}
+
+.look-form__hp,
 .look-honeypot {
   position: absolute;
   left: -9999px;

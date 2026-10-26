@@ -1,0 +1,103 @@
+.checklist-print {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+  font-family: var(--font-body), system-ui, sans-serif;
+  color: var(--stone-900);
+  line-height: 1.5;
+}
+
+.checklist-print__brand {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lichen);
+  margin: 0 0 0.5rem;
+}
+
+.checklist-print h1 {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.75rem, 3vw, 2rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.75rem;
+}
+
+.checklist-print__intro {
+  margin: 0 0 1.25rem;
+  color: var(--stone-700);
+}
+
+.checklist-print__section {
+  margin-top: 1.5rem;
+  break-inside: avoid;
+}
+
+.checklist-print__section h2 {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 0 0 0.5rem;
+  color: var(--stone-900);
+}
+
+.checklist-print__section ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.checklist-print__section li {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+  margin-bottom: 0.45rem;
+  color: var(--stone-700);
+}
+
+.checklist-print__box {
+  flex-shrink: 0;
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-top: 0.2rem;
+  border: 1.5px solid var(--stone-900);
+}
+
+.checklist-print__footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--stone-300);
+  font-size: 0.85rem;
+  color: var(--stone-500);
+}
+
+.checklist-print__screen-only button {
+  font: inherit;
+  color: var(--lichen);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.checklist-print__screen-only a {
+  color: var(--lichen);
+}
+
+.checklist-print__screen-only button:focus-visible,
+.checklist-print__screen-only a:focus-visible {
+  outline: 2px solid var(--lichen);
+  outline-offset: 2px;
+}
+
+@media print {
+  .checklist-print__screen-only {
+    display: none;
+  }
+
+  .checklist-print {
+    padding: 0;
+    max-width: none;
+  }
+}

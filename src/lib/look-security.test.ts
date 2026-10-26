@@ -70,6 +70,15 @@ describe("form token", () => {
     assert.equal(verifyFormToken(token, { now: created + 200, secret }), false);
     assert.equal(verifyFormToken(`${created}.deadbeef`, { now: created + 3_000, secret }), false);
   });
+
+  it("rejects tokens when the signing secret does not match verification", () => {
+    const created = 1_000_000;
+    const token = createFormToken(created, "signing-secret");
+    assert.equal(
+      verifyFormToken(token, { now: created + 3_000, secret: "verification-secret" }),
+      false,
+    );
+  });
 });
 
 describe("SlidingWindowLimiter", () => {

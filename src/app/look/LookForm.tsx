@@ -1,32 +1,68 @@
 "use client";
 
-import { useActionState } from "react";
+import Link from "next/link";
+import { useActionState, useState } from "react";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import { submitLookRequest, type LookFormState } from "./actions";
+import { HEARD_ABOUT_OPTIONS } from "./heard-about-options";
 
 const initialState: LookFormState = { ok: false };
 
 export function LookForm({
   formToken,
   turnstileSiteKey,
+  bookingUrl,
 }: {
   formToken: string;
   turnstileSiteKey?: string;
+  bookingUrl?: string;
 }) {
   const [state, formAction, pending] = useActionState(
     submitLookRequest,
     initialState,
   );
+  const [heardAbout, setHeardAbout] = useState("");
 
   if (state.ok) {
     return (
       <div className="look-form look-form--success" role="status">
         <p className="look-form__eyebrow">You’re on the list</p>
         <h2 className="look-form__title">Got it. I’ll look before we talk.</h2>
-        <p className="look-form__lead">
-          I’ll review the business and reply to set a 15-minute time. No pitch
-          deck — just whether there’s a quick win worth doing.
+        {bookingUrl ? (
+          <p className="look-form__lead">
+            Thanks. I’ll look at your business first and send you a few
+            follow-up questions before we meet. Go ahead and pick a time on my
+            calendar for the 15-minute look. No pitch deck, just whether
+            there’s a quick win worth doing. Open times start a few days out, so
+            if you need to talk sooner, email me at{" "}
+            <a className="cta-email" href={`mailto:${CONTACT_EMAIL}`}>
+              {CONTACT_EMAIL}
+            </a>
+            .
+          </p>
+        ) : (
+          <p className="look-form__lead">
+            I’ll review the business and reply to set a 15-minute time. No pitch
+            deck — just whether there’s a quick win worth doing.
+          </p>
+        )}
+        {bookingUrl ? (
+          <a
+            className="btn btn--primary"
+            href={bookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Pick a time on my calendar
+          </a>
+        ) : null}
+        <p className="look-form__fine">
+          Booked a Paid Look ($750 diagnostic)?{" "}
+          <Link className="text-link" href="/paid-look-intake">
+            Complete the client intake form
+          </Link>
+          .
         </p>
       </div>
     );
@@ -38,7 +74,7 @@ export function LookForm({
       <p className="look-form__eyebrow">Free 15-minute look</p>
       <h2 className="look-form__title">Tell me enough to prepare.</h2>
       <p className="look-form__lead">
-        Four fields. I’ll use them to look at the business before we talk — not
+        A few fields. I’ll use them to look at your business before we talk, not
         to build a mailing list.
       </p>
 
@@ -113,6 +149,44 @@ export function LookForm({
           placeholder="Follow-up, scheduling, inbox, reporting…"
         />
       </label>
+
+      <label className="look-field">
+        <span className="look-field__label">
+          How did you hear about me?{" "}
+          <span className="look-field__optional">optional</span>
+        </span>
+        <select
+          className="look-field__input"
+          name="heard_about"
+          value={heardAbout}
+          onChange={(event) => setHeardAbout(event.target.value)}
+        >
+          <option value="">Choose one, or skip</option>
+          {HEARD_ABOUT_OPTIONS.map((option) => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      {heardAbout === "Other" ? (
+        <label className="look-field">
+          <span className="look-field__label">
+            Tell me in a few words{" "}
+            <span className="look-field__optional">optional</span>
+          </span>
+          <input
+            className="look-field__input"
+            type="text"
+            name="heard_about_other"
+            maxLength={200}
+            placeholder="Podcast, newsletter, a meetup..."
+          />
+        </label>
+      ) : (
+        <input type="hidden" name="heard_about_other" value="" />
+      )}
 
       {turnstileSiteKey ? <TurnstileWidget siteKey={turnstileSiteKey} /> : null}
 
