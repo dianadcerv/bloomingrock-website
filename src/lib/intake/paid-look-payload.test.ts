@@ -54,6 +54,7 @@ describe("buildPaidLookInboundPayload", () => {
     const files = [
       {
         url: "https://example.com/a.pdf",
+        pathname: "paid-look-intake/123-a.pdf",
         name: "a.pdf",
         contentType: "application/pdf",
         size: 100,

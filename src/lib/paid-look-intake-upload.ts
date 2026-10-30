@@ -11,6 +11,8 @@ const ALLOWED_MIME = new Set([
 
 export type PaidLookUploadedFile = {
   url: string;
+  /** Store pathname (with random suffix when enabled); used for authenticated download in Command Center. */
+  pathname?: string;
   name: string;
   contentType: string;
   size: number;
@@ -54,13 +56,14 @@ export async function uploadPaidLookFiles(
     const safeName = file.name.replace(/[^\w.\-()+ ]+/g, "_").slice(0, 120);
     const pathname = `paid-look-intake/${Date.now()}-${safeName}`;
     const blob = await put(pathname, file, {
-      access: "public",
+      access: "private",
       token,
       addRandomSuffix: true,
       contentType: file.type || undefined,
     });
     uploaded.push({
       url: blob.url,
+      pathname: blob.pathname,
       name: file.name,
       contentType: file.type || "application/octet-stream",
       size: file.size,
