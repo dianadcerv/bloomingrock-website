@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/about",
     "/capabilities",
     "/make-ai-stick",
+    "/product",
     "/quotes-stall",
     "/look",
     "/chicago-shops",
