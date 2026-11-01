@@ -127,7 +127,7 @@ export default function ProductPage() {
         </section>
 
         <section
-          className="section section--moss"
+          className="section section--stone"
           id="fit"
           aria-labelledby="fit-heading"
         >
@@ -161,7 +161,7 @@ export default function ProductPage() {
         <hr className="divider" />
 
         <section
-          className="section section--stone"
+          className="section section--moss"
           id="how-it-works"
           aria-labelledby="how-it-works-heading"
         >
@@ -291,10 +291,10 @@ export default function ProductPage() {
         <section className="section section--stone" id="contact">
           <div className="section__inner cta-panel reveal">
             <p className="section__eyebrow">Next step</p>
-            <h2 className="section__title">Want to see if this fits your shop?</h2>
+            <h2 className="section__title">Start with a free 15-minute look</h2>
             <p className="section__lead">
-              Book a free 15-minute look. I&apos;ll tell you honestly whether
-              intake is worth fixing before we talk about building anything.
+              Tell me how quotes come in today. I&apos;ll say whether fixing
+              intake is worth it, before anyone builds anything.
             </p>
             <Link className="btn btn--solid-light" href={LOOK_PATH}>
               Book a look
