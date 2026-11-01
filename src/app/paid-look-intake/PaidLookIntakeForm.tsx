@@ -17,7 +17,7 @@ import {
   REQUEST_TO_QUOTE_OPTIONS,
   VIEW_ONLY_OPTIONS,
 } from "@/lib/paid-look-intake";
-import { PAID_LOOK_MAX_FILES } from "@/lib/paid-look-intake-upload";
+import { PAID_LOOK_MAX_FILES } from "@/lib/paid-look-upload-limits";
 import {
   submitPaidLookIntake,
   type PaidLookIntakeFormState,

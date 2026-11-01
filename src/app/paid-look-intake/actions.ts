@@ -22,6 +22,7 @@ import {
 import {
   uploadPaidLookFiles,
   validatePaidLookUploads,
+  verifyPaidLookUploadContents,
 } from "@/lib/paid-look-intake-upload";
 
 export type PaidLookIntakeFormState = {
@@ -189,6 +190,11 @@ export async function submitPaidLookIntake(
   const uploadValidation = validatePaidLookUploads(uploadList);
   if (!uploadValidation.ok) {
     return { ok: false, formToken: nextToken, error: uploadValidation.error };
+  }
+
+  const uploadContents = await verifyPaidLookUploadContents(uploadList);
+  if (!uploadContents.ok) {
+    return { ok: false, formToken: nextToken, error: uploadContents.error };
   }
 
   const emailKey = parsed.answers.email.toLowerCase();
