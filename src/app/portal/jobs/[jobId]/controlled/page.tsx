@@ -17,7 +17,7 @@ export default async function ControlledJobPage({
 
   return (
     <PortalShell session={session} current="/jobs">
-      <JobHeader job={job} current={`/jobs/${job.id}/controlled`} />
+      <JobHeader job={job} current={`/jobs/${job.id}/controlled`} role={session.role} />
       <DraftNotice>Demo — audit and access rules for controlled jobs are not final.</DraftNotice>
       <JobControlledHoldBanner job={job} />
       <p>

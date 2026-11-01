@@ -6,6 +6,7 @@ import { jobsForSession } from "@/lib/portal/access";
 import { requireSession } from "@/lib/portal/auth";
 import { isShopStaff } from "@/lib/portal/roles";
 import { getCustomerForJob } from "@/lib/portal/demo-data";
+import { jobDocumentItems } from "@/lib/portal/job-documents";
 
 export const metadata: Metadata = { title: "Documents" };
 
@@ -23,18 +24,7 @@ export default async function DocumentsPage() {
       </PageIntro>
       {jobs.map((job) => {
         const customer = getCustomerForJob(job);
-        const items = [
-          { href: `/jobs/${job.id}/sign-off`, title: "Customer sign-off" },
-          { href: `/jobs/${job.id}/agreement`, title: "Work order agreement" },
-          { href: `/jobs/${job.id}/bom`, title: "Bill of materials" },
-          { href: `/jobs/${job.id}/pdf`, title: "Requirements PDF" },
-        ];
-        if (isShopStaff(session.role) && (job.controlledProposal || job.controlledHold)) {
-          items.push({
-            href: `/jobs/${job.id}/controlled`,
-            title: job.controlledHold ? "Controlled job hold" : "Controlled job (proposal)",
-          });
-        }
+        const items = jobDocumentItems(job, { includeControlled: isShopStaff(session.role) });
         return (
           <section key={job.id} className="portal-jobs-group">
             <h2>

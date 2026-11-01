@@ -18,7 +18,7 @@ export default async function TranscriptPage({
 
   return (
     <PortalShell session={session} current="/jobs">
-      <JobHeader job={job} current={`/jobs/${job.id}/transcript`} />
+      <JobHeader job={job} current={`/jobs/${job.id}/transcript`} role={session.role} />
       <DraftNotice>FAKE DATA, DEMO ONLY — uploads are not saved.</DraftNotice>
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.transcriptIntegration}</OpenQuestion>
       <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.transcriptionService}</OpenQuestion>

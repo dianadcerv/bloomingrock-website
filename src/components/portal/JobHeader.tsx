@@ -8,6 +8,9 @@ import {
   jobStatusPillTone,
   type DemoJob,
 } from "@/lib/portal/demo-data";
+import { isJobDocumentsNavActive } from "@/lib/portal/job-documents";
+import { getJobSubnavLinks } from "@/lib/portal/job-nav";
+import type { PortalRole } from "@/lib/portal/session";
 
 function JobBreadcrumb({ job }: { job: DemoJob }) {
   const project = getProjectForJob(job);
@@ -34,28 +37,11 @@ export function JobHeader({
 }: {
   job: DemoJob;
   current: string;
-  role?: "shop" | "shop-admin" | "superadmin" | "buyer";
+  role?: PortalRole;
 }) {
   const project = getProjectForJob(job);
   const customer = getCustomerForJob(job);
-
-  const links = [
-    { href: `/jobs/${job.id}`, label: "Workspace" },
-    ...(role !== "buyer"
-      ? [
-          { href: `/jobs/${job.id}/sources`, label: "Add source" },
-          { href: `/jobs/${job.id}/transcript`, label: "Transcript" },
-          { href: `/jobs/${job.id}/workflow`, label: "Workflow" },
-          { href: `/jobs/${job.id}/missing`, label: "Missing info" },
-          { href: `/jobs/${job.id}/knowledge`, label: "Knowledge" },
-          { href: `/jobs/${job.id}/audit`, label: "Audit log" },
-        ]
-      : [{ href: `/jobs/${job.id}/workflow`, label: "Workflow" }]),
-    { href: `/jobs/${job.id}/sign-off`, label: "Sign-off" },
-    { href: `/jobs/${job.id}/agreement`, label: "Agreement" },
-    { href: `/jobs/${job.id}/bom`, label: "BOM" },
-    { href: `/jobs/${job.id}/pdf`, label: "PDF" },
-  ];
+  const links = getJobSubnavLinks(job, role);
 
   return (
     <div className="job-head">
@@ -70,15 +56,16 @@ export function JobHeader({
       </div>
       <p className="job-head__summary">{job.summary}</p>
       <nav className="job-subnav" aria-label="Job sections">
-        {links.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={current === link.href ? "is-active" : undefined}
-          >
-            {link.label}
-          </Link>
-        ))}
+        {links.map((link) => {
+          const isActive =
+            current === link.href ||
+            (link.label === "Documents" && isJobDocumentsNavActive(current, job.id));
+          return (
+            <Link key={link.href} href={link.href} className={isActive ? "is-active" : undefined}>
+              {link.label}
+            </Link>
+          );
+        })}
       </nav>
     </div>
   );
