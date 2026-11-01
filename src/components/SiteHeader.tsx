@@ -7,7 +7,7 @@ export function SiteHeader({
   current,
 }: {
   onDark?: boolean;
-  current?: "home" | "capabilities" | "about" | "look";
+  current?: "capabilities" | "about" | "look";
 }) {
   return (
     <header className={`site-header${onDark ? " site-header--on-dark" : ""}`}>

@@ -24,7 +24,7 @@ export default function Home() {
           <div className="hero__veil" aria-hidden="true" />
           <div className="hero__fog" aria-hidden="true" />
 
-          <SiteHeader onDark current="home" />
+          <SiteHeader onDark />
 
           <div className="hero__content">
             <p

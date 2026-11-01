@@ -1,9 +1,15 @@
 "use server";
 
-import { createHash } from "node:crypto";
 import { headers } from "next/headers";
-import { Resend } from "resend";
 import { CONTACT_EMAIL } from "@/lib/contact";
+import {
+  escapeHtml,
+  intakeDeliveryNotConfigured,
+  resendIdempotencyKey,
+  resendMailer,
+  trimFormValue,
+} from "@/lib/form-server";
+import { submitInboundIntake } from "@/lib/intake-inbound";
 import {
   clientIp,
   isValidEmail,
@@ -16,7 +22,6 @@ import {
   validateFormToken,
   verifyTurnstile,
 } from "@/lib/look-security";
-import { submitInboundIntake } from "@/lib/intake-inbound";
 import { HEARD_ABOUT_OPTIONS } from "./heard-about-options";
 
 export type LookFormState = {
@@ -24,19 +29,6 @@ export type LookFormState = {
   error?: string;
   formToken?: string;
 };
-
-function trim(value: FormDataEntryValue | null) {
-  return typeof value === "string" ? value.trim() : "";
-}
-
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
 
 function websiteHref(url: string) {
   return escapeHtml(url);
@@ -90,22 +82,16 @@ async function sendLookEmailNotification({
   website: string;
   heardAbout?: string;
 }): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return false;
-
-  const domain = process.env.RESEND_EMAIL_DOMAIN?.trim();
-  const from = domain
-    ? `BloomingRock <look@${domain}>`
-    : "BloomingRock <onboarding@resend.dev>";
-  const resend = new Resend(apiKey);
+  const mailer = resendMailer();
+  if (!mailer) return false;
 
   const heardBlock = heardAbout
     ? `<p style="margin:0 0 16px"><strong>How they heard about us:</strong> ${escapeHtml(heardAbout)}</p>`
     : "";
 
-  const { error } = await resend.emails.send(
+  const { error } = await mailer.resend.emails.send(
     {
-      from,
+      from: mailer.from,
       to: CONTACT_EMAIL,
       replyTo: email,
       subject: `15-minute look: ${business}`,
@@ -132,10 +118,10 @@ async function sendLookEmailNotification({
     `,
     },
     {
-      idempotencyKey: `look-request/${createHash("sha256")
-        .update(`${email}|${business}|${week}`)
-        .digest("hex")
-        .slice(0, 32)}`,
+      idempotencyKey: resendIdempotencyKey(
+        "look-request",
+        `${email}|${business}|${week}`,
+      ),
     },
   );
 
@@ -146,11 +132,11 @@ export async function submitLookRequest(
   _prev: LookFormState,
   formData: FormData,
 ): Promise<LookFormState> {
-  const submittedToken = trim(formData.get("form_token"));
+  const submittedToken = trimFormValue(formData.get("form_token"));
   const tokenStillValid = await validateFormToken(submittedToken);
   const nextToken = tokenStillValid ? submittedToken : await mintFormToken();
 
-  if (trim(formData.get("company_fax"))) {
+  if (trimFormValue(formData.get("company_fax"))) {
     return { ok: true };
   }
 
@@ -164,7 +150,7 @@ export async function submitLookRequest(
     };
   }
 
-  const turnstileToken = trim(formData.get("cf-turnstile-response"));
+  const turnstileToken = trimFormValue(formData.get("cf-turnstile-response"));
   if (!(await verifyTurnstile(turnstileToken, ip))) {
     return {
       ok: false,
@@ -173,14 +159,14 @@ export async function submitLookRequest(
     };
   }
 
-  const name = sanitizeOneLine(trim(formData.get("name")));
-  const email = sanitizeOneLine(trim(formData.get("email")));
-  const business = sanitizeOneLine(trim(formData.get("business")));
-  const week = sanitizeMultiline(trim(formData.get("week")));
-  const websiteResult = normalizeWebsite(trim(formData.get("website")));
+  const name = sanitizeOneLine(trimFormValue(formData.get("name")));
+  const email = sanitizeOneLine(trimFormValue(formData.get("email")));
+  const business = sanitizeOneLine(trimFormValue(formData.get("business")));
+  const week = sanitizeMultiline(trimFormValue(formData.get("week")));
+  const websiteResult = normalizeWebsite(trimFormValue(formData.get("website")));
   const heardResult = parseHeardAbout(
-    trim(formData.get("heard_about")),
-    trim(formData.get("heard_about_other")),
+    trimFormValue(formData.get("heard_about")),
+    trimFormValue(formData.get("heard_about_other")),
   );
 
   if (heardResult.error) {
@@ -252,7 +238,7 @@ export async function submitLookRequest(
     return { ok: true };
   }
 
-  if (!process.env.RESEND_API_KEY && !process.env.INTAKE_INBOUND_SECRET?.trim()) {
+  if (intakeDeliveryNotConfigured()) {
     return {
       ok: false,
       formToken: nextToken,

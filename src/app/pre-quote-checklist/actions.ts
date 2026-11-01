@@ -1,9 +1,14 @@
 "use server";
 
-import { createHash } from "node:crypto";
 import { headers } from "next/headers";
-import { Resend } from "resend";
 import { CONTACT_EMAIL } from "@/lib/contact";
+import {
+  escapeHtml,
+  intakeDeliveryNotConfigured,
+  resendIdempotencyKey,
+  resendMailer,
+  trimFormValue,
+} from "@/lib/form-server";
 import { submitInboundIntake } from "@/lib/intake-inbound";
 import {
   clientIp,
@@ -24,19 +29,6 @@ export type ChecklistFormState = {
 
 const CHECKLIST_DETAILS = "Pre-quote checklist download";
 
-function trim(value: FormDataEntryValue | null) {
-  return typeof value === "string" ? value.trim() : "";
-}
-
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
 async function sendChecklistEmailNotification({
   name,
   email,
@@ -46,22 +38,16 @@ async function sendChecklistEmailNotification({
   email: string;
   business: string;
 }): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return false;
-
-  const domain = process.env.RESEND_EMAIL_DOMAIN?.trim();
-  const from = domain
-    ? `BloomingRock <look@${domain}>`
-    : "BloomingRock <onboarding@resend.dev>";
-  const resend = new Resend(apiKey);
+  const mailer = resendMailer();
+  if (!mailer) return false;
 
   const businessLine = business
     ? `<p style="margin:0 0 8px"><strong>Business:</strong> ${escapeHtml(business)}</p>`
     : "";
 
-  const { error } = await resend.emails.send(
+  const { error } = await mailer.resend.emails.send(
     {
-      from,
+      from: mailer.from,
       to: CONTACT_EMAIL,
       replyTo: email,
       subject: `Pre-quote checklist: ${name}`,
@@ -78,10 +64,10 @@ async function sendChecklistEmailNotification({
     `,
     },
     {
-      idempotencyKey: `checklist-request/${createHash("sha256")
-        .update(`${email}|${name}|${business}`)
-        .digest("hex")
-        .slice(0, 32)}`,
+      idempotencyKey: resendIdempotencyKey(
+        "checklist-request",
+        `${email}|${name}|${business}`,
+      ),
     },
   );
 
@@ -92,11 +78,11 @@ export async function submitChecklistRequest(
   _prev: ChecklistFormState,
   formData: FormData,
 ): Promise<ChecklistFormState> {
-  const submittedToken = trim(formData.get("form_token"));
+  const submittedToken = trimFormValue(formData.get("form_token"));
   const tokenStillValid = await validateFormToken(submittedToken);
   const nextToken = tokenStillValid ? submittedToken : await mintFormToken();
 
-  if (trim(formData.get("company_fax"))) {
+  if (trimFormValue(formData.get("company_fax"))) {
     return { ok: true };
   }
 
@@ -110,7 +96,7 @@ export async function submitChecklistRequest(
     };
   }
 
-  const turnstileToken = trim(formData.get("cf-turnstile-response"));
+  const turnstileToken = trimFormValue(formData.get("cf-turnstile-response"));
   if (!(await verifyTurnstile(turnstileToken, ip))) {
     return {
       ok: false,
@@ -120,9 +106,9 @@ export async function submitChecklistRequest(
     };
   }
 
-  const name = sanitizeOneLine(trim(formData.get("name")));
-  const email = sanitizeOneLine(trim(formData.get("email")));
-  const business = sanitizeOneLine(trim(formData.get("business")));
+  const name = sanitizeOneLine(trimFormValue(formData.get("name")));
+  const email = sanitizeOneLine(trimFormValue(formData.get("email")));
+  const business = sanitizeOneLine(trimFormValue(formData.get("business")));
 
   if (name.length < 2 || name.length > 80) {
     return { ok: false, formToken: nextToken, error: "Please add your name." };
@@ -171,10 +157,7 @@ export async function submitChecklistRequest(
     return { ok: true };
   }
 
-  if (
-    !process.env.RESEND_API_KEY &&
-    !process.env.INTAKE_INBOUND_SECRET?.trim()
-  ) {
+  if (intakeDeliveryNotConfigured()) {
     return {
       ok: false,
       formToken: nextToken,

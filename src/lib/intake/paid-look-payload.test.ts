@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import type { PaidLookAnswers } from "@/lib/paid-look-intake";
 import { PAID_LOOK_SECTIONS } from "@/lib/intake/paid-look-sections";
-import { buildPaidLookInboundPayload } from "@/lib/intake/paid-look-payload.ts";
+import { buildPaidLookInboundPayload } from "@/lib/intake/paid-look-payload";
 
 const sampleAnswers: PaidLookAnswers = {
   shopName: "Acme Fab",
