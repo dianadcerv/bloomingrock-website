@@ -258,10 +258,11 @@ export default function ProductPage() {
             </h2>
             <div className="about-copy">
               <p>
-                We keep each shop&apos;s files separate. Controlled jobs
-                (ITAR/CUI) are flagged and held before any AI processing.
-                Detailed security notes for the product are coming; this is our
-                commitment, not a description of what&apos;s deployed today.
+                We plan to keep each shop&apos;s files separate. Controlled
+                jobs (ITAR/CUI) will be flagged and held before any AI
+                processing. Detailed security notes for the product are coming;
+                that&apos;s our commitment, not a description of what&apos;s
+                deployed today.
               </p>
             </div>
           </div>
