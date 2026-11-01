@@ -85,7 +85,7 @@ export default function ProductPage() {
           <div className="page-hero__content">
             <p className="page-hero__brand">BloomingRock</p>
             <h1 className="page-hero__headline">
-              Quotes stall waiting on details. This fixes that.
+              Quotes stall waiting on details. We&apos;re building a fix.
             </h1>
             <p className="page-hero__support">
               Pull emails, uploads, and notes into one job. Flag what&apos;s
@@ -115,8 +115,8 @@ export default function ProductPage() {
               What it does
             </h2>
             <p className="section__lead">
-              Plain tools for small fab, machine, and maker shops — described
-              here as product intent, not something live in your shop yet.
+              Plain tools for small fab, machine, and maker shops. What&apos;s
+              below is product intent, not something live in your shop yet.
             </p>
             <ul className="scope-list scope-list--in" style={{ marginTop: "1.25rem" }}>
               {WHAT_IT_DOES.map((item) => (
@@ -171,7 +171,7 @@ export default function ProductPage() {
               From scattered details to a job you can review
             </h2>
             <p className="section__lead">
-              Three steps we&apos;re designing around — not a live flow in your
+              Three steps we&apos;re designing around. Not a live flow in your
               shop today.
             </p>
 
@@ -180,7 +180,7 @@ export default function ProductPage() {
                 <span className="steps__label">01</span>
                 <h3 className="steps__title">Job comes in</h3>
                 <p className="steps__body">
-                  Email, form, or upload — whatever channel the customer used
+                  Email, form, or upload. Whatever channel the customer used
                   lands on one job record instead of three inboxes.
                 </p>
               </li>
@@ -188,7 +188,7 @@ export default function ProductPage() {
                 <span className="steps__label">02</span>
                 <h3 className="steps__title">Shop sends a link for what&apos;s missing</h3>
                 <p className="steps__body">
-                  The customer gets a simple upload link tied to that job so
+                  The customer gets a simple upload link tied to that job, so
                   drawings and revisions don&apos;t get lost in reply-all.
                 </p>
               </li>
@@ -198,16 +198,17 @@ export default function ProductPage() {
                 <p className="steps__body">
                   Files and notes sit on the job with a checklist of what&apos;s
                   still open. You or your estimator review and sign off before
-                  anything goes out — no auto-send without a person in the loop.
+                  anything goes out. Nothing goes out without a person in the
+                  loop.
                 </p>
               </li>
             </ol>
 
             <div className="about-copy" style={{ marginTop: "1.5rem" }}>
               <p>
-                If you already mark up drawings on a tablet (for example
-                Goodnotes), you can export a PDF and drop it in the same upload
-                path. Optional — not required.
+                Already mark up drawings on a tablet (Goodnotes, for example)?
+                Export a PDF and drop it in the same upload path. Optional, not
+                required.
               </p>
             </div>
           </div>
@@ -224,7 +225,7 @@ export default function ProductPage() {
               Start with a look, build one intake fix
             </h2>
             <p className="section__lead">
-              Same path as the rest of the site — no app signup, no production
+              Same path as the rest of the site. No app signup, no production
               URL.
             </p>
 
@@ -260,8 +261,8 @@ export default function ProductPage() {
               <p>
                 We plan to keep each shop&apos;s files separate. Controlled
                 jobs (ITAR/CUI) will be flagged and held before any AI
-                processing. Detailed security notes for the product are coming;
-                that&apos;s our commitment, not a description of what&apos;s
+                processing. Detailed security notes for the product are coming.
+                This is our commitment, not a description of what&apos;s
                 deployed today.
               </p>
             </div>
