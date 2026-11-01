@@ -1266,9 +1266,33 @@ fieldset.look-field legend {
   font-weight: 600;
 }
 
-.portal-header__who a {
+.portal-header__who a,
+.portal-logout-form__button {
   color: var(--lichen);
   font-weight: 600;
+}
+
+.portal-logout-form {
+  display: inline;
+  margin: 0;
+  padding: 0;
+}
+
+.portal-logout-form__button {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+.portal-more-links .portal-logout-form__button {
+  color: var(--moss-700);
+  font-weight: 600;
+  text-decoration: none;
 }
 
 .portal-main {

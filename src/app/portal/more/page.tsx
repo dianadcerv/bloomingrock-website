@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { LogoutLink } from "@/components/portal/LogoutLink";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { PageIntro } from "@/components/portal/PortalUi";
 import { requireSession } from "@/lib/portal/auth";
@@ -43,7 +44,7 @@ export default async function PortalMorePage() {
           </li>
         ))}
         <li>
-          <Link href="/auth/logout">Log out</Link>
+          <LogoutLink />
         </li>
       </ul>
     </PortalShell>

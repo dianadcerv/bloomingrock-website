@@ -1,7 +1,8 @@
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 import { sessionCanAccessJob } from "@/lib/portal/access";
 import { getJob } from "@/lib/portal/demo-data";
+import { loginHrefWithNext } from "@/lib/portal/login-redirect";
 import { isShopAdmin, isShopStaff, isSuperAdmin } from "@/lib/portal/roles";
 import {
   readSessionToken,
@@ -19,7 +20,11 @@ export async function getSession(): Promise<PortalSession | null> {
 
 export async function requireSession(): Promise<PortalSession> {
   const session = await getSession();
-  if (!session) redirect("/login");
+  if (!session) {
+    const headerList = await headers();
+    const nextPath = headerList.get("x-pathname") ?? "";
+    redirect(loginHrefWithNext(nextPath || null));
+  }
   return session;
 }
 

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { AuthChrome } from "@/components/portal/AuthChrome";
 import { LoginForm } from "@/components/portal/LoginForm";
 import { getSession } from "@/lib/portal/auth";
+import { safePortalNextPath } from "@/lib/portal/login-redirect";
 import { roleDisplayLabel } from "@/lib/portal/roles";
 import { DEMO_USERS } from "@/lib/portal/session";
 
@@ -14,11 +15,12 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; next?: string }>;
 }) {
+  const { error, next: nextRaw } = await searchParams;
+  const next = safePortalNextPath(nextRaw);
   const session = await getSession();
-  if (session) redirect("/dashboard");
-  const { error } = await searchParams;
+  if (session) redirect(next ?? "/dashboard");
 
   return (
     <AuthChrome title="Sign in">
@@ -30,7 +32,7 @@ export default async function LoginPage({
           That link expired or was invalid. Request a new one.
         </p>
       ) : null}
-      <LoginForm />
+      <LoginForm next={next ?? undefined} />
       <aside className="portal-demo-accounts">
         <p className="portal-demo-accounts__label">Demo accounts</p>
         <ul>
