@@ -18,7 +18,7 @@ export default async function AddSourcePage({
 
   return (
     <PortalShell session={session} current="/jobs">
-      <JobHeader job={job} current={`/jobs/${job.id}/sources`} />
+      <JobHeader job={job} current={`/jobs/${job.id}/sources`} role={session.role} />
       <DraftNotice>
         FAKE DATA, DEMO ONLY — nothing is saved or sent from this screen.
       </DraftNotice>

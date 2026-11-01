@@ -19,7 +19,7 @@ export default async function KnowledgePage({
 
   return (
     <PortalShell session={session} current="/jobs">
-      <JobHeader job={job} current={`/jobs/${job.id}/knowledge`} />
+      <JobHeader job={job} current={`/jobs/${job.id}/knowledge`} role={session.role} />
       <DraftNotice>
         Internal only — customer logins cannot open this page. Knowledge is never applied
         automatically.

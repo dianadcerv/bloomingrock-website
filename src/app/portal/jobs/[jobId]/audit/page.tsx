@@ -16,7 +16,7 @@ export default async function AuditPage({
 
   return (
     <PortalShell session={session} current="/jobs">
-      <JobHeader job={job} current={`/jobs/${job.id}/audit`} />
+      <JobHeader job={job} current={`/jobs/${job.id}/audit`} role={session.role} />
       <DraftNotice>Demo audit entries only — who viewed and who sent what (proposal for controlled jobs).</DraftNotice>
       <ul className="portal-plain portal-audit">
         {job.auditLog.map((entry) => (
