@@ -14,9 +14,8 @@ const PAGE_DESCRIPTION =
 export const metadata: Metadata = {
   title: PAGE_TITLE,
   description: PAGE_DESCRIPTION,
-  robots: {
-    index: false,
-    follow: false,
+  alternates: {
+    canonical: "/product",
   },
   openGraph: {
     title: PAGE_TITLE,
@@ -215,7 +214,7 @@ export default function ProductPage() {
         </section>
 
         <section
-          className="section section--moss"
+          className="section section--stone"
           id="how-you-get-it"
           aria-labelledby="how-you-get-it-heading"
         >
