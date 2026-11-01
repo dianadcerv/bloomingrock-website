@@ -2,6 +2,7 @@ import Link from "next/link";
 import { BrandMark } from "@/components/BrandMark";
 import { DemoBanner } from "@/components/portal/AuthChrome";
 import { DemoNotesProvider, OpenQuestion } from "@/components/portal/DemoNotes";
+import { LogoutLink } from "@/components/portal/LogoutLink";
 import { WORKING_APP_TITLE } from "@/lib/portal/admin-demo-data";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 import { isSuperAdmin, roleDisplayLabel } from "@/lib/portal/roles";
@@ -62,7 +63,7 @@ export function AdminShell({
               {session.name} · {session.org}
             </span>
             <span className="portal-header__role">{roleDisplayLabel(session.role)}</span>
-            <Link href="/auth/logout">Log out</Link>
+            <LogoutLink className="portal-logout-form__button" />
           </p>
         </header>
         <main className="portal-main portal-main--admin">

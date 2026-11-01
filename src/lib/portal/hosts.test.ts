@@ -24,6 +24,7 @@ describe("portal paths", () => {
     assert.equal(isPortalPath("/activity"), true);
     assert.equal(isPortalPath("/admin/shops"), true);
     assert.equal(isPortalPath("/admin/branding"), true);
+    assert.equal(isPortalPath("/more"), true);
     assert.equal(isPortalPath("/about"), false);
     assert.equal(isMarketingPath("/capabilities"), true);
     assert.equal(toInternalPortalPath("/dashboard"), "/portal/dashboard");

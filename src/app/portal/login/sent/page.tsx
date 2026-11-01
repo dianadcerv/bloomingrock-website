@@ -3,6 +3,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { AuthChrome } from "@/components/portal/AuthChrome";
 import { getAppOrigin } from "@/lib/portal/hosts";
+import { safePortalNextPath } from "@/lib/portal/login-redirect";
 import { createMagicToken, findDemoUser } from "@/lib/portal/session";
 
 export const metadata: Metadata = {
@@ -22,14 +23,17 @@ async function requestOrigin() {
 export default async function LoginSentPage({
   searchParams,
 }: {
-  searchParams: Promise<{ email?: string }>;
+  searchParams: Promise<{ email?: string; next?: string }>;
 }) {
-  const { email = "" } = await searchParams;
+  const { email = "", next: nextRaw } = await searchParams;
+  const next = safePortalNextPath(nextRaw);
   const user = findDemoUser(email);
   const origin = await requestOrigin();
-  const magicHref = user
-    ? `${origin}/auth/verify?token=${encodeURIComponent(createMagicToken(user.email))}`
-    : "";
+  const magicParams = new URLSearchParams({
+    token: user ? createMagicToken(user.email) : "",
+  });
+  if (next) magicParams.set("next", next);
+  const magicHref = user ? `${origin}/auth/verify?${magicParams.toString()}` : "";
 
   return (
     <AuthChrome title="Check your email">
@@ -59,7 +63,9 @@ export default async function LoginSentPage({
         </p>
       )}
       <p>
-        <Link href="/login">Use a different email</Link>
+        <Link href={next ? `/login?next=${encodeURIComponent(next)}` : "/login"}>
+          Use a different email
+        </Link>
       </p>
     </AuthChrome>
   );

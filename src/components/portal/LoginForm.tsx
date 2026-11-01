@@ -5,11 +5,12 @@ import { requestMagicLink, type LoginState } from "@/app/portal/login/actions";
 
 const initial: LoginState = { ok: false };
 
-export function LoginForm() {
+export function LoginForm({ next }: { next?: string }) {
   const [state, formAction, pending] = useActionState(requestMagicLink, initial);
 
   return (
     <form className="portal-login" action={formAction}>
+      {next ? <input type="hidden" name="next" value={next} /> : null}
       <label className="look-field">
         <span className="look-field__label">Work email</span>
         <input

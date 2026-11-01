@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { isValidEmail, SlidingWindowLimiter } from "@/lib/look-security";
+import { safePortalNextPath } from "@/lib/portal/login-redirect";
 import { normalizeEmail } from "@/lib/portal/session";
 
 export type LoginState = { ok: boolean; error?: string };
@@ -13,6 +14,7 @@ export async function requestMagicLink(
   formData: FormData,
 ): Promise<LoginState> {
   const email = String(formData.get("email") ?? "");
+  const next = safePortalNextPath(String(formData.get("next") ?? ""));
   if (!isValidEmail(email)) {
     return { ok: false, error: "Enter a work email." };
   }
@@ -22,5 +24,7 @@ export async function requestMagicLink(
   }
 
   // Always continue — do not tell the visitor whether the email is enrolled.
-  redirect(`/login/sent?email=${encodeURIComponent(normalizeEmail(email))}`);
+  const sent = new URLSearchParams({ email: normalizeEmail(email) });
+  if (next) sent.set("next", next);
+  redirect(`/login/sent?${sent.toString()}`);
 }

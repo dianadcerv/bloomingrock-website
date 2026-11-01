@@ -38,7 +38,11 @@ export function proxy(request: NextRequest) {
   if (appHost || isPortalPath(pathname)) {
     const url = request.nextUrl.clone();
     url.pathname = toInternalPortalPath(pathname);
-    const response = NextResponse.rewrite(url);
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-pathname", pathname + search);
+    const response = NextResponse.rewrite(url, {
+      request: { headers: requestHeaders },
+    });
     response.headers.set("X-Robots-Tag", "noindex, nofollow");
     return response;
   }
