@@ -36,7 +36,10 @@ export default async function LookPage() {
     <div className="site">
       <SiteHeader current="look" />
       <main className="site-main">
-        <section className="moss r-section hero" aria-label="Book a look">
+        <section
+          className="moss r-section hero hero--compact"
+          aria-label="Book a look"
+        >
           <div className="wrap">
             <p className="label">Free 15-minute look</p>
             <h1>{headline}</h1>
