@@ -98,7 +98,7 @@ export function PaidLookIntakeForm({
     return (
       <div className="look-form look-form--success" role="status">
         <p className="look-form__eyebrow">Received</p>
-        <h2 className="look-form__title">Thanks — I&apos;ll show up ready.</h2>
+        <h2 className="look-form__title">Thanks. I&apos;ll show up ready.</h2>
         <p className="look-form__lead">
           I got your intake. If anything else comes up before the walkthrough,
           email me at{" "}
@@ -119,7 +119,7 @@ export function PaidLookIntakeForm({
         value={state.formToken ?? formToken}
       />
 
-      <p className="look-form__eyebrow">Paid Look ($750 diagnostic)</p>
+      <p className="look-form__eyebrow">Paid Look diagnostic</p>
       <h2 className="look-form__title">Client intake</h2>
       <p className="look-form__lead">
         This takes about 10 minutes. It helps me show up ready so our time goes
@@ -564,7 +564,7 @@ export function PaidLookIntakeForm({
           multiple
         />
         <span className="look-field__hint">
-          Optional — up to {PAID_LOOK_MAX_FILES} files, PDF or images, 5 MB each.
+          Optional. Up to {PAID_LOOK_MAX_FILES} files, PDF or images, 5 MB each.
         </span>
       </label>
 

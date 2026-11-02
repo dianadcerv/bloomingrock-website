@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Manrope } from "next/font/google";
+import { Inter } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import {
@@ -10,15 +10,9 @@ import {
   SITE_URL,
 } from "@/lib/site";
 import "./globals.css";
+import "./marketing.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const manrope = Manrope({
-  variable: "--font-manrope",
+const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
@@ -46,7 +40,7 @@ export const metadata: Metadata = {
         url: DEFAULT_OG_IMAGE,
         width: 1200,
         height: 630,
-        alt: "BloomingRock Solutions — AI that actually gets used",
+        alt: "BloomingRock Solutions: AI that actually gets used",
       },
     ],
   },
@@ -64,7 +58,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${manrope.variable} h-full`}>
+    <html lang="en" className={`${inter.className} h-full`}>
       <body className="min-h-full antialiased">
         {children}
         <Analytics />
