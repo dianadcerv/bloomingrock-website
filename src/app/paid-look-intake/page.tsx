@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import { RevealObserver } from "@/components/RevealObserver";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { mintFormToken } from "@/lib/look-security";
@@ -10,8 +8,7 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Paid Look client intake | BloomingRock Solutions",
-  description:
-    "Private client intake for the Paid Look ($750 diagnostic). Not indexed.",
+  description: "Private client intake for the Paid Look diagnostic. Not indexed.",
   robots: {
     index: false,
     follow: false,
@@ -23,34 +20,18 @@ export default async function PaidLookIntakePage() {
 
   return (
     <div className="site">
-      <RevealObserver />
+      <SiteHeader />
       <main className="site-main">
-        <section
-          className="page-hero page-hero--look"
-          aria-label="Paid Look client intake"
-        >
-          <div className="page-hero__media" aria-hidden="true">
-            <Image
-              src="/hero-stone-bloom.jpg"
-              alt=""
-              fill
-              priority
-              sizes="100vw"
-              quality={85}
-            />
-          </div>
-          <div className="page-hero__veil" aria-hidden="true" />
-
-          <SiteHeader onDark />
-
-          <div className="page-hero__content">
-            <p className="page-hero__brand">BloomingRock</p>
-            <h1 className="page-hero__headline">Paid Look intake</h1>
+        <section className="moss r-section hero" aria-label="Paid Look client intake">
+          <div className="wrap">
+            <p className="label">Paid Look</p>
+            <h1>Paid Look intake</h1>
+            <p className="sub">Private form for clients who booked a Paid Look.</p>
           </div>
         </section>
 
-        <section className="section section--moss" id="paid-look-intake-form">
-          <div className="section__inner look-panel look-panel--wide reveal">
+        <section className="moss r-section" id="paid-look-intake-form">
+          <div className="wrap look-panel">
             <PaidLookIntakeForm
               formToken={formToken}
               turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
@@ -58,7 +39,6 @@ export default async function PaidLookIntakePage() {
           </div>
         </section>
       </main>
-
       <SiteFooter />
     </div>
   );

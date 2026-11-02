@@ -85,11 +85,14 @@ export const lookEmailLimiter = new SlidingWindowLimiter(
 );
 
 function tokenSecret() {
-  return (
-    process.env.FORM_TOKEN_SECRET?.trim() ||
-    process.env.RESEND_API_KEY?.trim() ||
-    "bloomingrock-form-token"
-  );
+  const explicit = process.env.FORM_TOKEN_SECRET?.trim();
+  if (explicit) return explicit;
+
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("FORM_TOKEN_SECRET must be set in production");
+  }
+
+  return process.env.RESEND_API_KEY?.trim() || "bloomingrock-form-token-dev-only";
 }
 
 function signPayload(payload: string, secret: string) {
@@ -161,7 +164,11 @@ export async function verifyTurnstile(token: string, ip: string) {
   const secret = process.env.TURNSTILE_SECRET_KEY?.trim();
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.trim();
 
-  if (!secret && !siteKey) return true;
+  if (process.env.NODE_ENV === "production") {
+    if (!secret || !siteKey) return false;
+  } else if (!secret && !siteKey) {
+    return true;
+  }
   if (!secret || !token) return false;
 
   const body = new URLSearchParams({

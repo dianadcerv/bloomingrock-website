@@ -1,24 +1,30 @@
 import Link from "next/link";
-import { BrandMark } from "@/components/BrandMark";
+import { BrandLogo } from "@/components/BrandLogo";
 import { LOOK_PATH } from "@/lib/contact";
 
 export function SiteFooter() {
   return (
-    <footer className="site-footer">
-      <div className="site-footer__inner">
-        <Link href="/" aria-label="BloomingRock home">
-          <BrandMark onDark />
+    <footer className="site-footer-r">
+      <div className="wrap">
+        <Link href="/" className="brand" aria-label="BloomingRock home">
+          <BrandLogo />
+          <span>BloomingRock</span>
         </Link>
-        <nav className="site-footer__nav" aria-label="Footer">
+        <div className="flinks">
           <Link href="/capabilities">Capabilities</Link>
+          <Link href="/product">Product</Link>
+          <Link href="/quotes-stall">Why quotes stall</Link>
+          <Link href="/chicago-shops">Chicagoland shops</Link>
+          <Link href="/pre-quote-checklist">Pre-quote checklist</Link>
           <Link href="/about">About</Link>
           <Link href={LOOK_PATH}>Contact</Link>
-        </nav>
-        <p>© {new Date().getFullYear()} BloomingRock Solutions LLC</p>
+        </div>
+        <p>
+          © {new Date().getFullYear()} BloomingRock Solutions LLC
+          <br />
+          Built by Humans Using AI to Further Human Achievements
+        </p>
       </div>
-      <p className="site-footer__credo">
-        Built by Humans Using AI to Further Human Achievements
-      </p>
     </footer>
   );
 }
