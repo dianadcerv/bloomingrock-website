@@ -44,7 +44,7 @@ export function LookForm({
         ) : (
           <p className="look-form__lead">
             I’ll review the business and reply to set a 15-minute time. No pitch
-            deck — just whether there’s a quick win worth doing.
+            deck. Just whether there’s a quick win worth doing.
           </p>
         )}
         {bookingUrl ? (
@@ -58,7 +58,7 @@ export function LookForm({
           </a>
         ) : null}
         <p className="look-form__fine">
-          Booked a Paid Look ($750 diagnostic)?{" "}
+          Booked a Paid Look diagnostic?{" "}
           <Link className="text-link" href="/paid-look-intake">
             Complete the client intake form
           </Link>

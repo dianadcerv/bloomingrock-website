@@ -6,6 +6,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
+      disallow: ["/paid-look-intake"],
     },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };
