@@ -256,6 +256,17 @@ summary:focus-visible {
   padding-bottom: 120px;
 }
 
+/* Short intros (forms, private intake): skip full-viewport hero height */
+.hero.hero--compact {
+  min-height: 0;
+  padding-top: 120px;
+  padding-bottom: 48px;
+}
+
+section.r-section.hero.hero--compact + section.r-section.moss {
+  padding-top: 64px;
+}
+
 .acc {
   margin-top: 72px;
   border-top: 1px solid rgba(246, 245, 241, 0.28);
@@ -574,6 +585,16 @@ footer.site-footer-r p {
     min-height: 680px;
     padding-top: 180px;
     padding-bottom: 72px;
+  }
+
+  .hero.hero--compact {
+    min-height: 0;
+    padding-top: 108px;
+    padding-bottom: 40px;
+  }
+
+  section.r-section.hero.hero--compact + section.r-section.moss {
+    padding-top: 48px;
   }
 
   .acc summary {

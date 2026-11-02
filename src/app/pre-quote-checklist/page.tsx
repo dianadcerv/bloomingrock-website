@@ -27,7 +27,10 @@ export default async function PreQuoteChecklistPage() {
     <div className="site">
       <SiteHeader tone="on-moss" />
       <main className="site-main">
-        <section className="moss r-section hero" aria-label="Pre-quote checklist">
+        <section
+          className="moss r-section hero hero--compact"
+          aria-label="Pre-quote checklist"
+        >
           <div className="wrap">
             <p className="label">Free download</p>
             <h1>Gather the details before you quote.</h1>

@@ -22,7 +22,10 @@ export default async function PaidLookIntakePage() {
     <div className="site">
       <SiteHeader />
       <main className="site-main">
-        <section className="moss r-section hero" aria-label="Paid Look client intake">
+        <section
+          className="moss r-section hero hero--compact"
+          aria-label="Paid Look client intake"
+        >
           <div className="wrap">
             <p className="label">Paid Look</p>
             <h1>Paid Look intake</h1>
