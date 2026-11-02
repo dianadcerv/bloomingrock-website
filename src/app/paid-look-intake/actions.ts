@@ -1,9 +1,14 @@
 "use server";
 
-import { createHash } from "node:crypto";
 import { headers } from "next/headers";
-import { Resend } from "resend";
 import { CONTACT_EMAIL } from "@/lib/contact";
+import {
+  escapeHtml,
+  intakeDeliveryNotConfigured,
+  resendIdempotencyKey,
+  resendMailer,
+  trimFormValue,
+} from "@/lib/form-server";
 import { buildPaidLookInboundPayload } from "@/lib/intake/paid-look-payload";
 import { submitInboundIntake } from "@/lib/intake-inbound";
 import {
@@ -31,10 +36,6 @@ export type PaidLookIntakeFormState = {
   formToken?: string;
 };
 
-function trim(value: FormDataEntryValue | null) {
-  return typeof value === "string" ? value.trim() : "";
-}
-
 function checkbox(formData: FormData, name: string) {
   return formData.get(name) === "on";
 }
@@ -53,15 +54,6 @@ function files(formData: FormData, name: string) {
     .filter((value): value is File => value instanceof File && value.size > 0);
 }
 
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
-
 async function sendPaidLookEmailNotification({
   answers,
   attachments,
@@ -69,14 +61,8 @@ async function sendPaidLookEmailNotification({
   answers: PaidLookAnswers;
   attachments: { url: string; name: string }[];
 }): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return false;
-
-  const domain = process.env.RESEND_EMAIL_DOMAIN?.trim();
-  const from = domain
-    ? `BloomingRock <look@${domain}>`
-    : "BloomingRock <onboarding@resend.dev>";
-  const resend = new Resend(apiKey);
+  const mailer = resendMailer();
+  if (!mailer) return false;
 
   const attachmentBlock =
     attachments.length > 0
@@ -90,9 +76,9 @@ async function sendPaidLookEmailNotification({
 
   const body = buildPaidLookDetails(answers);
 
-  const { error } = await resend.emails.send(
+  const { error } = await mailer.resend.emails.send(
     {
-      from,
+      from: mailer.from,
       to: CONTACT_EMAIL,
       replyTo: answers.email,
       subject: `Paid Look intake: ${answers.shopName}`,
@@ -107,10 +93,10 @@ async function sendPaidLookEmailNotification({
     `,
     },
     {
-      idempotencyKey: `paid-look-intake/${createHash("sha256")
-        .update(`${answers.email}|${answers.shopName}|${body.slice(0, 200)}`)
-        .digest("hex")
-        .slice(0, 32)}`,
+      idempotencyKey: resendIdempotencyKey(
+        "paid-look-intake",
+        `${answers.email}|${answers.shopName}|${body.slice(0, 200)}`,
+      ),
     },
   );
 
@@ -121,11 +107,11 @@ export async function submitPaidLookIntake(
   _prev: PaidLookIntakeFormState,
   formData: FormData,
 ): Promise<PaidLookIntakeFormState> {
-  const submittedToken = trim(formData.get("form_token"));
+  const submittedToken = trimFormValue(formData.get("form_token"));
   const tokenStillValid = await validateFormToken(submittedToken);
   const nextToken = tokenStillValid ? submittedToken : await mintFormToken();
 
-  if (trim(formData.get("company_fax"))) {
+  if (trimFormValue(formData.get("company_fax"))) {
     return { ok: true };
   }
 
@@ -139,7 +125,7 @@ export async function submitPaidLookIntake(
     };
   }
 
-  const turnstileToken = trim(formData.get("cf-turnstile-response"));
+  const turnstileToken = trimFormValue(formData.get("cf-turnstile-response"));
   if (!(await verifyTurnstile(turnstileToken, ip))) {
     return {
       ok: false,
@@ -149,37 +135,37 @@ export async function submitPaidLookIntake(
   }
 
   const parsed = parsePaidLookIntake({
-    shopName: trim(formData.get("shop_name")),
-    nameAndRole: trim(formData.get("name_and_role")),
-    email: trim(formData.get("email")),
-    phone: trim(formData.get("phone")),
-    website: trim(formData.get("website")),
-    whatYouMake: trim(formData.get("what_you_make")),
-    teamAndQuotes: trim(formData.get("team_and_quotes")),
-    quotesPerWeek: trim(formData.get("quotes_per_week")),
+    shopName: trimFormValue(formData.get("shop_name")),
+    nameAndRole: trimFormValue(formData.get("name_and_role")),
+    email: trimFormValue(formData.get("email")),
+    phone: trimFormValue(formData.get("phone")),
+    website: trimFormValue(formData.get("website")),
+    whatYouMake: trimFormValue(formData.get("what_you_make")),
+    teamAndQuotes: trimFormValue(formData.get("team_and_quotes")),
+    quotesPerWeek: trimFormValue(formData.get("quotes_per_week")),
     quoteSources: list(formData, "quote_sources"),
-    quoteSourcesOther: trim(formData.get("quote_sources_other")),
+    quoteSourcesOther: trimFormValue(formData.get("quote_sources_other")),
     comesWith: list(formData, "comes_with"),
-    missingUnclear: trim(formData.get("missing_unclear")),
-    requestToQuote: trim(formData.get("request_to_quote")),
-    buildQuotes: trim(formData.get("build_quotes")),
-    buildQuotesErpName: trim(formData.get("build_quotes_erp_name")),
-    buildQuotesOther: trim(formData.get("build_quotes_other")),
+    missingUnclear: trimFormValue(formData.get("missing_unclear")),
+    requestToQuote: trimFormValue(formData.get("request_to_quote")),
+    buildQuotes: trimFormValue(formData.get("build_quotes")),
+    buildQuotesErpName: trimFormValue(formData.get("build_quotes_erp_name")),
+    buildQuotesOther: trimFormValue(formData.get("build_quotes_other")),
     keepRequests: list(formData, "keep_requests"),
-    emailProvider: trim(formData.get("email_provider")),
-    emailProviderOther: trim(formData.get("email_provider_other")),
+    emailProvider: trimFormValue(formData.get("email_provider")),
+    emailProviderOther: trimFormValue(formData.get("email_provider_other")),
     aiTools: list(formData, "ai_tools"),
-    aiToolsOther: trim(formData.get("ai_tools_other")),
-    itar: trim(formData.get("itar")),
-    viewOnlyAccount: trim(formData.get("view_only_account")),
-    loopIn: trim(formData.get("loop_in")),
-    stuckLongest: trim(formData.get("stuck_longest")),
-    lostJobSlowQuote: trim(formData.get("lost_job_slow_quote")),
-    trustNewTools: trim(formData.get("trust_new_tools")),
-    magicWand: trim(formData.get("magic_wand")),
+    aiToolsOther: trimFormValue(formData.get("ai_tools_other")),
+    itar: trimFormValue(formData.get("itar")),
+    viewOnlyAccount: trimFormValue(formData.get("view_only_account")),
+    loopIn: trimFormValue(formData.get("loop_in")),
+    stuckLongest: trimFormValue(formData.get("stuck_longest")),
+    lostJobSlowQuote: trimFormValue(formData.get("lost_job_slow_quote")),
+    trustNewTools: trimFormValue(formData.get("trust_new_tools")),
+    magicWand: trimFormValue(formData.get("magic_wand")),
     ackFilesHandling: checkbox(formData, "ack_files_handling"),
     ackNda: checkbox(formData, "ack_nda"),
-    walkthroughTimes: trim(formData.get("walkthrough_times")),
+    walkthroughTimes: trimFormValue(formData.get("walkthrough_times")),
   });
 
   if (!parsed.ok) {
@@ -241,10 +227,7 @@ export async function submitPaidLookIntake(
     return { ok: true };
   }
 
-  if (
-    !process.env.RESEND_API_KEY &&
-    !process.env.INTAKE_INBOUND_SECRET?.trim()
-  ) {
+  if (intakeDeliveryNotConfigured()) {
     return {
       ok: false,
       formToken: nextToken,

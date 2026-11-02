@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import { mintFormToken } from "@/lib/look-security";
 import { LOOK_FOR_YOU, LOOK_NOT_FOR_YOU } from "./fit-copy";
-import { activeLookHeadline } from "./headlines";
+import { LOOK_HEADLINE, LOOK_SUBHEAD } from "./headlines";
 import { LookForm } from "./LookForm";
 
 const DEFAULT_BOOKING_URL =
@@ -12,7 +12,8 @@ const DEFAULT_BOOKING_URL =
 
 export const dynamic = "force-dynamic";
 
-const { headline, subhead } = activeLookHeadline();
+const headline = LOOK_HEADLINE;
+const subhead = LOOK_SUBHEAD;
 
 export const metadata: Metadata = {
   title: "Book a 15-minute look | BloomingRock Solutions",
