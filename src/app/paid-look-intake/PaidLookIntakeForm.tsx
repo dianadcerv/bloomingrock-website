@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
-import { CONTACT_EMAIL } from "@/lib/contact";
+import { CONTACT_EMAIL, LOOK_PATH } from "@/lib/contact";
 import {
   AI_TOOL_OPTIONS,
   BUILD_QUOTES_OPTIONS,
@@ -618,7 +618,7 @@ export function PaidLookIntakeForm({
 
       <p className="look-form__fine">
         Questions?{" "}
-        <Link className="text-link" href="/look">
+        <Link className="text-link" href={LOOK_PATH}>
           Book a look
         </Link>{" "}
         or{" "}
