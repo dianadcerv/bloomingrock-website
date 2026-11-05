@@ -30,17 +30,22 @@ export function LookForm({
         <p className="look-form__eyebrow">You’re on the list</p>
         <h2 className="look-form__title">Got it. I’ll look before we talk.</h2>
         {bookingUrl ? (
-          <p className="look-form__lead">
-            Thanks. I’ll look at your business first and send you a few
-            follow-up questions before we meet. Go ahead and pick a time on my
-            calendar for the 15-minute look. No pitch deck, just whether
-            there’s a quick win worth doing. Open times start a few days out, so
-            if you need to talk sooner, email me at{" "}
-            <a className="cta-email" href={`mailto:${CONTACT_EMAIL}`}>
-              {CONTACT_EMAIL}
-            </a>
-            .
-          </p>
+          <>
+            <p className="look-form__lead">
+              Thanks. I’ll look at your business first and send you a few
+              follow-up questions before we meet. Go ahead and pick a time on my
+              calendar for the 15-minute look. No pitch deck, just whether
+              there’s a quick win worth doing.
+            </p>
+            <p className="look-form__note" role="note">
+              Open times start a few days out. If you need to talk sooner, email
+              me at{" "}
+              <a className="cta-email" href={`mailto:${CONTACT_EMAIL}`}>
+                {CONTACT_EMAIL}
+              </a>
+              .
+            </p>
+          </>
         ) : (
           <p className="look-form__lead">
             I’ll review the business and reply to set a 15-minute time. No pitch

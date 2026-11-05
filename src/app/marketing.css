@@ -642,6 +642,14 @@ footer.site-footer-r p {
   gap: 1.15rem;
 }
 
+.look-form--success {
+  gap: 1.45rem;
+}
+
+.look-form--success .look-form__lead {
+  margin-bottom: 0;
+}
+
 .look-form__eyebrow {
   margin: 0;
   font-size: 13px;
@@ -800,8 +808,16 @@ footer.site-footer-r p {
   padding: 0.75rem 0.9rem;
   border-left: 3px solid #c4c0b6;
   background: rgba(246, 245, 241, 0.08);
-  color: #eceae4;
+  color: rgba(236, 234, 228, 0.88);
   font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 50ch;
+}
+
+.stone .look-form__note {
+  border-left-color: var(--stone3);
+  background: rgba(44, 62, 50, 0.06);
+  color: var(--muted);
 }
 
 fieldset.look-field {
