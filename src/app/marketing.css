@@ -256,6 +256,54 @@ summary:focus-visible {
   padding-bottom: 120px;
 }
 
+.door-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 48px;
+  max-width: 640px;
+}
+
+.door-card {
+  display: flex;
+  align-items: center;
+  min-height: 72px;
+  padding: 20px 24px;
+  border: 1px solid rgba(246, 245, 241, 0.35);
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-decoration: none;
+  color: var(--stone);
+  transition: background 0.2s;
+}
+
+.door-card:hover {
+  background: rgba(246, 245, 241, 0.08);
+}
+
+.moss .cols--why {
+  border-top-color: rgba(246, 245, 241, 0.28);
+}
+
+.moss .cols--why p {
+  color: #eceae4;
+}
+
+.acc .body .btn--in-body {
+  margin-top: 28px;
+}
+
+.acc .body .more {
+  margin-top: 20px;
+}
+
+.read-more {
+  max-width: 66ch;
+  line-height: 1.6;
+}
+
 /* Short intros (forms, private intake): skip full-viewport hero height */
 .hero.hero--compact {
   min-height: 0;
@@ -568,6 +616,10 @@ footer.site-footer-r p {
 }
 
 @media (max-width: 700px) {
+  .door-cards {
+    grid-template-columns: 1fr;
+  }
+
   .wrap {
     padding: 0 22px;
   }

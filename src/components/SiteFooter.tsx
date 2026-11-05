@@ -12,6 +12,7 @@ export function SiteFooter() {
         </Link>
         <div className="flinks">
           <Link href="/capabilities">Capabilities</Link>
+          <Link href="/start-here">Start here</Link>
           <Link href="/product">Product</Link>
           <Link href="/quotes-stall">Why quotes stall</Link>
           <Link href="/chicago-shops">Chicagoland shops</Link>
