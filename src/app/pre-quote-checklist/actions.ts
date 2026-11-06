@@ -27,6 +27,8 @@ export type ChecklistFormState = {
   ok: boolean;
   error?: string;
   formToken?: string;
+  /** True when Resend delivered the visitor email (attachment + link). */
+  visitorEmailSent?: boolean;
 };
 
 const CHECKLIST_DETAILS = "Pre-quote checklist download";
@@ -58,7 +60,7 @@ async function sendChecklistVisitorEmail({
         <p style="margin:0 0 16px">
           Here's the pre-quote checklist you asked for. I've attached a copy you can save,
           and you can
-          <a href="${printUrl}" style="color:#3D6B5A">open the printable version</a>
+          <a href="${printUrl}" style="color:#243a2f">open the printable version</a>
           anytime if you'd rather print or save a PDF from your browser.
         </p>
         <p style="margin:0 0 16px">
@@ -212,14 +214,13 @@ export async function submitChecklistRequest(
   const leadCaptured = portalOk || ownerEmailOk;
 
   if (leadCaptured) {
-    const visitorEmailOk = await sendChecklistVisitorEmail({ name, email });
-    if (!visitorEmailOk) {
-      console.error(
-        "[pre-quote-checklist] Visitor checklist email failed",
-        { email: emailKey },
-      );
+    const visitorEmailSent = await sendChecklistVisitorEmail({ name, email });
+    if (!visitorEmailSent) {
+      console.error("[pre-quote-checklist] Visitor checklist email failed", {
+        email: emailKey,
+      });
     }
-    return { ok: true };
+    return { ok: true, visitorEmailSent };
   }
 
   if (intakeDeliveryNotConfigured()) {

@@ -11,6 +11,7 @@ export function SiteFooter() {
           <span>BloomingRock</span>
         </Link>
         <div className="flinks">
+          <Link href="/start-here">Start here</Link>
           <Link href="/capabilities">Capabilities</Link>
           <Link href="/product">Product</Link>
           <Link href="/quotes-stall">Why quotes stall</Link>

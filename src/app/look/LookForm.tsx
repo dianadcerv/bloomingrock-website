@@ -1,11 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState, useId, useState } from "react";
+import {
+  charCounterAriaLive,
+  formatCharCounter,
+  WEEK_FIELD_MAX_LENGTH,
+} from "@/lib/look-form-ui";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import { submitLookRequest, type LookFormState } from "./actions";
 import { HEARD_ABOUT_OPTIONS } from "./heard-about-options";
+import { LOOK_PAIN_TOPICS } from "./look-pain-topics";
 
 const initialState: LookFormState = { ok: false };
 
@@ -23,6 +29,10 @@ export function LookForm({
     initialState,
   );
   const [heardAbout, setHeardAbout] = useState("");
+  const [weekLength, setWeekLength] = useState(0);
+  const weekFieldId = useId();
+  const weekHintId = `${weekFieldId}-hint`;
+  const weekCounterId = `${weekFieldId}-counter`;
 
   if (state.ok) {
     return (
@@ -30,17 +40,22 @@ export function LookForm({
         <p className="look-form__eyebrow">You’re on the list</p>
         <h2 className="look-form__title">Got it. I’ll look before we talk.</h2>
         {bookingUrl ? (
-          <p className="look-form__lead">
-            Thanks. I’ll look at your business first and send you a few
-            follow-up questions before we meet. Go ahead and pick a time on my
-            calendar for the 15-minute look. No pitch deck, just whether
-            there’s a quick win worth doing. Open times start a few days out, so
-            if you need to talk sooner, email me at{" "}
-            <a className="cta-email" href={`mailto:${CONTACT_EMAIL}`}>
-              {CONTACT_EMAIL}
-            </a>
-            .
-          </p>
+          <>
+            <p className="look-form__lead">
+              Thanks. I’ll look at your business first and send you a few
+              follow-up questions before we meet. Go ahead and pick a time on my
+              calendar for the 15-minute look. No pitch deck, just whether
+              there’s a quick win worth doing.
+            </p>
+            <p className="look-form__note" role="note">
+              Open times start a few days out. If you need to talk sooner, email
+              me at{" "}
+              <a className="cta-email" href={`mailto:${CONTACT_EMAIL}`}>
+                {CONTACT_EMAIL}
+              </a>
+              .
+            </p>
+          </>
         ) : (
           <p className="look-form__lead">
             I’ll review the business and reply to set a 15-minute time. No pitch
@@ -80,7 +95,10 @@ export function LookForm({
 
       <div className="look-form__grid">
         <label className="look-field">
-          <span className="look-field__label">Your name</span>
+          <span className="look-field__label">
+            Your name{" "}
+            <span className="look-field__required">Required</span>
+          </span>
           <input
             className="look-field__input"
             type="text"
@@ -92,7 +110,10 @@ export function LookForm({
         </label>
 
         <label className="look-field">
-          <span className="look-field__label">Work email</span>
+          <span className="look-field__label">
+            Work email{" "}
+            <span className="look-field__required">Required</span>
+          </span>
           <input
             className="look-field__input"
             type="email"
@@ -105,7 +126,10 @@ export function LookForm({
         </label>
 
         <label className="look-field">
-          <span className="look-field__label">Business name</span>
+          <span className="look-field__label">
+            Business name{" "}
+            <span className="look-field__required">Required</span>
+          </span>
           <input
             className="look-field__input"
             type="text"
@@ -137,18 +161,54 @@ export function LookForm({
 
       <label className="look-field">
         <span className="look-field__label">
-          Where does your week get eaten up?
+          Where does your week get eaten up?{" "}
+          <span className="look-field__required">Required</span>
         </span>
         <textarea
+          id={weekFieldId}
           className="look-field__input look-field__input--area"
           name="week"
           required
           minLength={8}
-          maxLength={800}
+          maxLength={WEEK_FIELD_MAX_LENGTH}
           rows={4}
           placeholder="Follow-up, scheduling, inbox, reporting…"
+          aria-describedby={`${weekHintId} ${weekCounterId}`}
+          onChange={(event) => setWeekLength(event.target.value.length)}
         />
+        <div className="look-field__below">
+          <span className="look-field__hint" id={weekHintId}>
+            A sentence or two is plenty. Up to {WEEK_FIELD_MAX_LENGTH}{" "}
+            characters.
+          </span>
+          <span
+            className="look-field__counter"
+            id={weekCounterId}
+            aria-live={charCounterAriaLive(weekLength, WEEK_FIELD_MAX_LENGTH)}
+          >
+            {formatCharCounter(weekLength, WEEK_FIELD_MAX_LENGTH)}
+          </span>
+        </div>
       </label>
+
+      <fieldset className="look-field">
+        <legend className="look-field__label">
+          What&apos;s eating your week? Pick any that fit{" "}
+          <span className="look-field__optional">optional</span>
+        </legend>
+        <div className="look-choice-group">
+          {LOOK_PAIN_TOPICS.map((topic) => (
+            <label key={topic.id} className="look-choice">
+              <input
+                type="checkbox"
+                name="pain_topics"
+                value={topic.id}
+              />
+              {topic.label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
       <label className="look-field">
         <span className="look-field__label">
