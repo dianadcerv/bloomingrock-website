@@ -765,12 +765,32 @@ footer.site-footer-r p {
   color: var(--moss);
 }
 
-.look-field__optional {
+.look-field__optional,
+.look-field__required {
   font-weight: 500;
   color: rgba(236, 234, 228, 0.68);
 }
 
-.stone .look-field__optional {
+.stone .look-field__optional,
+.stone .look-field__required {
+  color: var(--muted);
+}
+
+.look-field__below {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+}
+
+.look-field__counter {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: rgba(236, 234, 228, 0.72);
+  font-variant-numeric: tabular-nums;
+}
+
+.stone .look-field__counter {
   color: var(--muted);
 }
 
