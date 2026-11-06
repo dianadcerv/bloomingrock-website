@@ -6,6 +6,7 @@ import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import { submitLookRequest, type LookFormState } from "./actions";
 import { HEARD_ABOUT_OPTIONS } from "./heard-about-options";
+import { LOOK_PAIN_TOPICS } from "./look-pain-topics";
 
 const initialState: LookFormState = { ok: false };
 
@@ -154,6 +155,25 @@ export function LookForm({
           placeholder="Follow-up, scheduling, inbox, reporting…"
         />
       </label>
+
+      <fieldset className="look-field">
+        <legend className="look-field__label">
+          What&apos;s eating your week? Pick any that fit{" "}
+          <span className="look-field__optional">optional</span>
+        </legend>
+        <div className="look-choice-group">
+          {LOOK_PAIN_TOPICS.map((topic) => (
+            <label key={topic.value} className="look-choice">
+              <input
+                type="checkbox"
+                name="pain_topics"
+                value={topic.value}
+              />
+              {topic.label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
       <label className="look-field">
         <span className="look-field__label">

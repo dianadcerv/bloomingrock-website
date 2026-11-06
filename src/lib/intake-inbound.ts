@@ -11,6 +11,7 @@ export type StandardInboundPayload = {
   business: string;
   details: string;
   heardAbout?: string;
+  painTopics?: string[];
   source: Exclude<InboundSource, "website-paid-look">;
 };
 
