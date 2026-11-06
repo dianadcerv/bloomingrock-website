@@ -1,7 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useState } from "react";
+import { useActionState, useId, useState } from "react";
+import {
+  charCounterAriaLive,
+  formatCharCounter,
+  WEEK_FIELD_MAX_LENGTH,
+} from "@/lib/look-form-ui";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import { submitLookRequest, type LookFormState } from "./actions";
@@ -24,6 +29,10 @@ export function LookForm({
     initialState,
   );
   const [heardAbout, setHeardAbout] = useState("");
+  const [weekLength, setWeekLength] = useState(0);
+  const weekFieldId = useId();
+  const weekHintId = `${weekFieldId}-hint`;
+  const weekCounterId = `${weekFieldId}-counter`;
 
   if (state.ok) {
     return (
@@ -86,7 +95,10 @@ export function LookForm({
 
       <div className="look-form__grid">
         <label className="look-field">
-          <span className="look-field__label">Your name</span>
+          <span className="look-field__label">
+            Your name{" "}
+            <span className="look-field__required">Required</span>
+          </span>
           <input
             className="look-field__input"
             type="text"
@@ -98,7 +110,10 @@ export function LookForm({
         </label>
 
         <label className="look-field">
-          <span className="look-field__label">Work email</span>
+          <span className="look-field__label">
+            Work email{" "}
+            <span className="look-field__required">Required</span>
+          </span>
           <input
             className="look-field__input"
             type="email"
@@ -111,7 +126,10 @@ export function LookForm({
         </label>
 
         <label className="look-field">
-          <span className="look-field__label">Business name</span>
+          <span className="look-field__label">
+            Business name{" "}
+            <span className="look-field__required">Required</span>
+          </span>
           <input
             className="look-field__input"
             type="text"
@@ -143,17 +161,34 @@ export function LookForm({
 
       <label className="look-field">
         <span className="look-field__label">
-          Where does your week get eaten up?
+          Where does your week get eaten up?{" "}
+          <span className="look-field__required">Required</span>
         </span>
         <textarea
+          id={weekFieldId}
           className="look-field__input look-field__input--area"
           name="week"
           required
           minLength={8}
-          maxLength={800}
+          maxLength={WEEK_FIELD_MAX_LENGTH}
           rows={4}
           placeholder="Follow-up, scheduling, inbox, reporting…"
+          aria-describedby={`${weekHintId} ${weekCounterId}`}
+          onChange={(event) => setWeekLength(event.target.value.length)}
         />
+        <div className="look-field__below">
+          <span className="look-field__hint" id={weekHintId}>
+            A sentence or two is plenty. Up to {WEEK_FIELD_MAX_LENGTH}{" "}
+            characters.
+          </span>
+          <span
+            className="look-field__counter"
+            id={weekCounterId}
+            aria-live={charCounterAriaLive(weekLength, WEEK_FIELD_MAX_LENGTH)}
+          >
+            {formatCharCounter(weekLength, WEEK_FIELD_MAX_LENGTH)}
+          </span>
+        </div>
       </label>
 
       <fieldset className="look-field">
