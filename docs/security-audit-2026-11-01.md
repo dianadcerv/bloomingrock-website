@@ -25,7 +25,7 @@ Forms and server actions are in good shape overall (signed runtime form tokens, 
 | **Medium** | CSP allows `'unsafe-inline'` and `'unsafe-eval'` (Next/Tailwind/Turnstile) | `next.config.ts` | Tighten with nonces/hashes when Next 16 CSP story stabilizes | **Open — accept risk for now** |
 | **Low** | No `Strict-Transport-Security` in app config (Vercel also sends HSTS on custom domains) | `next.config.ts` | Add HSTS header | **Fixed in PR** |
 | **Low** | `/paid-look-intake` relied on page `robots` metadata only | `paid-look-intake/page.tsx` `noindex` | Add `robots.txt` `Disallow` (defense in depth) | **Fixed in PR** |
-| **Low** | Resend email fallback includes private Blob URLs when Command Center intake fails | `paid-look-intake/actions.ts` `sendPaidLookEmailNotification` | Prefer portal-only delivery for uploads; omit URLs from email or use signed short-lived links | **Open** |
+| **Low** | Resend email fallback includes private Blob URLs when Command Center intake fails | `paid-look-intake/actions.ts` `sendPaidLookEmailNotification` | Prefer portal-only delivery for uploads; omit URLs from email or use signed short-lived links | **Fixed** (names/count only; no URLs; controlled submissions omit names) |
 | **Info** | Secrets not in client bundles | Grep `.next/static` for API keys; only `NEXT_PUBLIC_TURNSTILE_SITE_KEY` passed to client | Keep server-only env for `FORM_TOKEN_SECRET`, `TURNSTILE_SECRET_KEY`, `RESEND_*`, `BLOB_*`, `INTAKE_*` | **Verified OK** |
 | **Info** | Runtime form tokens via `connection()` + `mintFormToken()` | `look-security.ts` | Avoid minting tokens at static build time | **Verified OK** |
 | **Info** | `/product` indexable; `/paid-look-intake` not in sitemap | `sitemap.ts`, page metadata | No change needed | **Verified OK** |
@@ -42,7 +42,7 @@ Ensure these env vars are set in **Production** (not only Preview):
 - `FORM_TOKEN_SECRET` — dedicated secret for HMAC form tokens (required after this PR)
 - `NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY`
 - `RESEND_API_KEY`, `RESEND_EMAIL_DOMAIN` (optional but recommended)
-- `INTAKE_INBOUND_SECRET` (+ `COMMAND_CENTER_URL` if not default)
+- `INTAKE_INBOUND_SECRET` and `COMMAND_CENTER_URL` (required in production for Command Center POST; local dev defaults to `http://localhost:3001` when unset)
 - `BLOB_READ_WRITE_TOKEN` for Paid Look file uploads
 
 ---

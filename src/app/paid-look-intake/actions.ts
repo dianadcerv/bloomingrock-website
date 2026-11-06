@@ -19,6 +19,7 @@ import {
   validateFormToken,
   verifyTurnstile,
 } from "@/lib/look-security";
+import { buildPaidLookFallbackUploadsHtml } from "@/lib/paid-look-fallback-email";
 import {
   buildPaidLookDetails,
   parsePaidLookIntake,
@@ -64,15 +65,11 @@ async function sendPaidLookEmailNotification({
   const mailer = resendMailer();
   if (!mailer) return false;
 
-  const attachmentBlock =
-    attachments.length > 0
-      ? `<p style="margin:16px 0 0"><strong>Uploads:</strong></p><ul>${attachments
-          .map(
-            (file) =>
-              `<li><a href="${escapeHtml(file.url)}">${escapeHtml(file.name)}</a></li>`,
-          )
-          .join("")}</ul>`
-      : "";
+  const uploadBlock = buildPaidLookFallbackUploadsHtml(
+    attachments.length,
+    attachments.map((file) => file.name),
+    answers.itar,
+  );
 
   const body = buildPaidLookDetails(answers);
 
@@ -88,7 +85,7 @@ async function sendPaidLookEmailNotification({
           Paid Look intake
         </p>
         <pre style="margin:0;white-space:pre-wrap;font-family:Georgia,serif">${escapeHtml(body)}</pre>
-        ${attachmentBlock}
+        ${uploadBlock}
       </div>
     `,
     },
