@@ -136,6 +136,10 @@ section.r-section {
   overflow: hidden;
 }
 
+#book.look-book {
+  scroll-margin-top: 88px;
+}
+
 .moss {
   background: var(--moss);
   color: var(--stone);
@@ -682,7 +686,7 @@ footer.site-footer-r p {
   }
 }
 
-/* —— Intake forms on moss/stone —— */
+/* Intake forms on moss/stone */
 .look-panel {
   max-width: 44rem;
 }

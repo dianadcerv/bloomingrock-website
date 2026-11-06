@@ -5,6 +5,7 @@ import { CONTACT_EMAIL } from "@/lib/contact";
 import { mintFormToken } from "@/lib/look-security";
 import { LOOK_FOR_YOU, LOOK_NOT_FOR_YOU } from "./fit-copy";
 import { LOOK_HEADLINE, LOOK_SUBHEAD } from "./headlines";
+import { LookBookScroll } from "./LookBookScroll";
 import { LookForm } from "./LookForm";
 
 const DEFAULT_BOOKING_URL =
@@ -36,6 +37,7 @@ export default async function LookPage() {
     <div className="site">
       <SiteHeader current="look" />
       <main className="site-main">
+        <LookBookScroll />
         <section
           className="moss r-section hero hero--compact"
           aria-label="Book a look"
@@ -72,7 +74,7 @@ export default async function LookPage() {
           </div>
         </section>
 
-        <section className="moss r-section" id="look-form">
+        <section className="moss r-section look-book" id="book">
           <div className="wrap look-panel">
             <LookForm
               formToken={formToken}
