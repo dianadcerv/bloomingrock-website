@@ -1,6 +1,7 @@
 "use server";
 
 import { headers } from "next/headers";
+import { buildChecklistPlainText } from "./checklist-content";
 import { CONTACT_EMAIL } from "@/lib/contact";
 import {
   escapeHtml,
@@ -9,6 +10,7 @@ import {
   resendMailer,
   trimFormValue,
 } from "@/lib/form-server";
+import { SITE_URL } from "@/lib/site";
 import { submitInboundIntake } from "@/lib/intake-inbound";
 import {
   clientIp,
@@ -25,9 +27,65 @@ export type ChecklistFormState = {
   ok: boolean;
   error?: string;
   formToken?: string;
+  /** True when Resend delivered the visitor email (attachment + link). */
+  visitorEmailSent?: boolean;
 };
 
 const CHECKLIST_DETAILS = "Pre-quote checklist download";
+const CHECKLIST_PRINT_URL = `${SITE_URL}/pre-quote-checklist/print`;
+const CHECKLIST_ATTACHMENT_NAME = "bloomingrock-pre-quote-checklist.txt";
+
+async function sendChecklistVisitorEmail({
+  name,
+  email,
+}: {
+  name: string;
+  email: string;
+}): Promise<boolean> {
+  const mailer = resendMailer();
+  if (!mailer) return false;
+
+  const firstName = escapeHtml(name.split(/\s+/)[0] || name);
+  const printUrl = escapeHtml(CHECKLIST_PRINT_URL);
+
+  const { error } = await mailer.resend.emails.send(
+    {
+      from: mailer.from,
+      to: email,
+      replyTo: CONTACT_EMAIL,
+      subject: "Your pre-quote checklist",
+      html: `
+      <div style="font-family:Georgia,serif;color:#2C2A26;line-height:1.6;max-width:32em">
+        <p style="margin:0 0 16px">Hi ${firstName},</p>
+        <p style="margin:0 0 16px">
+          Here's the pre-quote checklist you asked for. I've attached a copy you can save,
+          and you can
+          <a href="${printUrl}" style="color:#243a2f">open the printable version</a>
+          anytime if you'd rather print or save a PDF from your browser.
+        </p>
+        <p style="margin:0 0 16px">
+          If something's missing for your shop, just reply and tell me.
+        </p>
+        <p style="margin:0">~Diana</p>
+      </div>
+    `,
+      attachments: [
+        {
+          filename: CHECKLIST_ATTACHMENT_NAME,
+          content: Buffer.from(buildChecklistPlainText(), "utf8"),
+        },
+      ],
+    },
+    {
+      idempotencyKey: resendIdempotencyKey(
+        "checklist-visitor",
+        email.toLowerCase(),
+      ),
+    },
+  );
+
+  return !error;
+}
 
 async function sendChecklistEmailNotification({
   name,
@@ -148,13 +206,21 @@ export async function submitChecklistRequest(
     source: "website-checklist",
   });
 
-  let emailOk = false;
+  let ownerEmailOk = false;
   if (!portalOk) {
-    emailOk = await sendChecklistEmailNotification({ name, email, business });
+    ownerEmailOk = await sendChecklistEmailNotification({ name, email, business });
   }
 
-  if (portalOk || emailOk) {
-    return { ok: true };
+  const leadCaptured = portalOk || ownerEmailOk;
+
+  if (leadCaptured) {
+    const visitorEmailSent = await sendChecklistVisitorEmail({ name, email });
+    if (!visitorEmailSent) {
+      console.error("[pre-quote-checklist] Visitor checklist email failed", {
+        email: emailKey,
+      });
+    }
+    return { ok: true, visitorEmailSent };
   }
 
   if (intakeDeliveryNotConfigured()) {

@@ -39,3 +39,25 @@ export const CHECKLIST_SECTIONS = [
     ],
   },
 ] as const;
+
+const CHECKBOX = "[ ]";
+
+export function buildChecklistPlainText(): string {
+  const lines: string[] = [
+    CHECKLIST_TITLE,
+    "",
+    CHECKLIST_INTRO,
+    "",
+  ];
+
+  for (const section of CHECKLIST_SECTIONS) {
+    lines.push(section.title);
+    for (const item of section.items) {
+      lines.push(`${CHECKBOX} ${item}`);
+    }
+    lines.push("");
+  }
+
+  lines.push("BloomingRock Solutions · bloomingrocksolutions.com");
+  return lines.join("\n").trimEnd();
+}
