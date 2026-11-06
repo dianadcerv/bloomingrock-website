@@ -260,6 +260,54 @@ summary:focus-visible {
   padding-bottom: 120px;
 }
 
+.door-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin-top: 48px;
+  max-width: 640px;
+}
+
+.door-card {
+  display: flex;
+  align-items: center;
+  min-height: 72px;
+  padding: 20px 24px;
+  border: 1px solid rgba(246, 245, 241, 0.35);
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.35;
+  text-decoration: none;
+  color: var(--stone);
+  transition: background 0.2s;
+}
+
+.door-card:hover {
+  background: rgba(246, 245, 241, 0.08);
+}
+
+.moss .cols--why {
+  border-top-color: rgba(246, 245, 241, 0.28);
+}
+
+.moss .cols--why p {
+  color: #eceae4;
+}
+
+.acc .body .btn--in-body {
+  margin-top: 28px;
+}
+
+.acc .body .more {
+  margin-top: 20px;
+}
+
+.read-more {
+  max-width: 66ch;
+  line-height: 1.6;
+}
+
 /* Short intros (forms, private intake): skip full-viewport hero height */
 .hero.hero--compact {
   min-height: 0;
@@ -572,6 +620,10 @@ footer.site-footer-r p {
 }
 
 @media (max-width: 700px) {
+  .door-cards {
+    grid-template-columns: 1fr;
+  }
+
   .wrap {
     padding: 0 22px;
   }
@@ -646,6 +698,14 @@ footer.site-footer-r p {
   gap: 1.15rem;
 }
 
+.look-form--success {
+  gap: 1.45rem;
+}
+
+.look-form--success .look-form__lead {
+  margin-bottom: 0;
+}
+
 .look-form__eyebrow {
   margin: 0;
   font-size: 13px;
@@ -709,12 +769,32 @@ footer.site-footer-r p {
   color: var(--moss);
 }
 
-.look-field__optional {
+.look-field__optional,
+.look-field__required {
   font-weight: 500;
   color: rgba(236, 234, 228, 0.68);
 }
 
-.stone .look-field__optional {
+.stone .look-field__optional,
+.stone .look-field__required {
+  color: var(--muted);
+}
+
+.look-field__below {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+}
+
+.look-field__counter {
+  margin-left: auto;
+  font-size: 0.85rem;
+  color: rgba(236, 234, 228, 0.72);
+  font-variant-numeric: tabular-nums;
+}
+
+.stone .look-field__counter {
   color: var(--muted);
 }
 
@@ -804,8 +884,16 @@ footer.site-footer-r p {
   padding: 0.75rem 0.9rem;
   border-left: 3px solid #c4c0b6;
   background: rgba(246, 245, 241, 0.08);
-  color: #eceae4;
+  color: rgba(236, 234, 228, 0.88);
   font-size: 0.95rem;
+  line-height: 1.5;
+  max-width: 50ch;
+}
+
+.stone .look-form__note {
+  border-left-color: var(--stone3);
+  background: rgba(44, 62, 50, 0.06);
+  color: var(--muted);
 }
 
 fieldset.look-field {
