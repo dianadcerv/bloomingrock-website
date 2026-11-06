@@ -23,7 +23,7 @@ import {
   verifyTurnstile,
 } from "@/lib/look-security";
 import { HEARD_ABOUT_OPTIONS } from "./heard-about-options";
-import { parseLookPainTopics } from "./look-pain-topics";
+import { lookPainTopicLabels, parseLookPainTopics } from "./look-pain-topics";
 
 export type LookFormState = {
   ok: boolean;
@@ -63,10 +63,10 @@ function parseHeardAbout(
   return { heardAbout: match };
 }
 
-function buildDetails(week: string, website: string, painTopics: string[]) {
+function buildDetails(week: string, website: string, painTopicLabels: string[]) {
   const parts = [week];
-  if (painTopics.length > 0) {
-    parts.push(`Topics: ${painTopics.join(", ")}`);
+  if (painTopicLabels.length > 0) {
+    parts.push(`Topics: ${painTopicLabels.join(", ")}`);
   }
   if (website) {
     parts.push(`Website: ${website}`);
@@ -81,7 +81,7 @@ async function sendLookEmailNotification({
   week,
   website,
   heardAbout,
-  painTopics,
+  painTopicLabels,
 }: {
   name: string;
   email: string;
@@ -89,7 +89,7 @@ async function sendLookEmailNotification({
   week: string;
   website: string;
   heardAbout?: string;
-  painTopics: string[];
+  painTopicLabels: string[];
 }): Promise<boolean> {
   const mailer = resendMailer();
   if (!mailer) return false;
@@ -99,8 +99,8 @@ async function sendLookEmailNotification({
     : "";
 
   const topicsBlock =
-    painTopics.length > 0
-      ? `<p style="margin:0 0 16px"><strong>Pain topics:</strong> ${escapeHtml(painTopics.join(", "))}</p>`
+    painTopicLabels.length > 0
+      ? `<p style="margin:0 0 16px"><strong>Pain topics:</strong> ${escapeHtml(painTopicLabels.join(", "))}</p>`
       : "";
 
   const { error } = await mailer.resend.emails.send(
@@ -183,7 +183,8 @@ export async function submitLookRequest(
     trimFormValue(formData.get("heard_about")),
     trimFormValue(formData.get("heard_about_other")),
   );
-  const painTopics = parseLookPainTopics(formData.getAll("pain_topics"));
+  const painTopicIds = parseLookPainTopics(formData.getAll("pain_topics"));
+  const painTopicLabels = lookPainTopicLabels(painTopicIds);
 
   if (heardResult.error) {
     return { ok: false, formToken: nextToken, error: heardResult.error };
@@ -228,14 +229,16 @@ export async function submitLookRequest(
     };
   }
 
-  const details = buildDetails(week, website, painTopics);
+  const details = buildDetails(week, website, painTopicLabels);
   const portalOk = await submitInboundIntake({
     name,
     email,
     business,
     details,
     ...(heardAbout ? { heardAbout } : {}),
-    ...(painTopics.length > 0 ? { painTopics } : {}),
+    ...(painTopicIds.length > 0
+      ? { inboundExtras: { painTopics: painTopicIds } }
+      : {}),
     source: "website-look",
   });
 
@@ -248,7 +251,7 @@ export async function submitLookRequest(
       week,
       website,
       heardAbout,
-      painTopics,
+      painTopicLabels,
     });
   }
 

@@ -163,11 +163,11 @@ export function LookForm({
         </legend>
         <div className="look-choice-group">
           {LOOK_PAIN_TOPICS.map((topic) => (
-            <label key={topic.value} className="look-choice">
+            <label key={topic.id} className="look-choice">
               <input
                 type="checkbox"
                 name="pain_topics"
-                value={topic.value}
+                value={topic.id}
               />
               {topic.label}
             </label>
