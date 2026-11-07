@@ -448,6 +448,55 @@ section.r-section.hero.hero--compact + section.r-section.moss {
   margin-top: 20px;
 }
 
+.prose-article h2 {
+  font-size: clamp(28px, 3.2vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  max-width: none;
+  margin: 56px 0 20px;
+  color: var(--moss);
+}
+
+.prose-article h2:first-child {
+  margin-top: 0;
+}
+
+.prose-article h3 {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 48px 0 20px;
+  color: var(--moss);
+}
+
+.prose-article p.example-label {
+  margin-top: 16px;
+}
+
+.prose blockquote {
+  margin: 24px 0 0;
+  padding: 0 0 0 20px;
+  border-left: 2px solid var(--stone3);
+}
+
+.prose blockquote p {
+  margin: 0;
+}
+
+.prose ol.sources {
+  list-style: decimal;
+  margin: 20px 0 0;
+  padding-left: 1.35em;
+}
+
+.prose ol.sources li {
+  border-bottom: none;
+  padding: 12px 0;
+  font-size: 17px;
+  line-height: 1.55;
+}
+
 .updates {
   list-style: none;
   margin: 48px 0 0;
