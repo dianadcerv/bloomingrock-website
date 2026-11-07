@@ -165,9 +165,9 @@ export default function MakeAiStickPage() {
                 to the work your team already does Monday through Friday.
               </p>
               <p>
-                Small manufacturers, trades, and family-run shops feel this fast.
-                Your week&apos;s already full. AI only helps when it fits into work
-                people were already going to do, in software they already open.
+                Your week{"\u2019"}s already full. AI helps most when it fits into
+                work people were already going to do, ideally in tools they already
+                use.
               </p>
               <p>
                 <Link

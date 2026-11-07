@@ -454,7 +454,7 @@ section.r-section.hero.hero--compact + section.r-section.moss {
   letter-spacing: -0.02em;
   line-height: 1.15;
   max-width: none;
-  margin: 56px 0 0;
+  margin: 56px 0 20px;
   color: var(--moss);
 }
 
@@ -466,7 +466,7 @@ section.r-section.hero.hero--compact + section.r-section.moss {
   font-size: 22px;
   font-weight: 500;
   letter-spacing: -0.01em;
-  margin: 48px 0 0;
+  margin: 48px 0 20px;
   color: var(--moss);
 }
 
