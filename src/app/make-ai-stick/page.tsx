@@ -169,6 +169,14 @@ export default function MakeAiStickPage() {
                 Your week&apos;s already full. AI only helps when it fits into work
                 people were already going to do, in software they already open.
               </p>
+              <p>
+                <Link
+                  className="text-link"
+                  href="/make-ai-stick/why-setups-gather-dust"
+                >
+                  What the research says about making AI stick
+                </Link>
+              </p>
             </div>
           </div>
         </section>
