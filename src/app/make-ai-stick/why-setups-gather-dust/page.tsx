@@ -298,12 +298,12 @@ export default function WhySetupsGatherDustPage() {
                   .
                 </li>
                 <li>
-                  NIST,{" "}
+                  NIST MEP National Network,{" "}
                   <em>
                     Artificial Intelligence: Key Consideration and Effective
                     Implementation Strategies
                   </em>
-                  , hosted July 2025.{" "}
+                  , July 2025.{" "}
                   <a href="https://www.nist.gov/system/files/documents/2025/07/11/Artificial%20Intelligence-%20Key%20Consideration%20and%20Effective%20Implementation%20Strategies%20508%20Compliant.pdf">
                     Guide
                   </a>
