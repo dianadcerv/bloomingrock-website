@@ -86,11 +86,11 @@ export function LookForm({
   return (
     <form className="look-form" action={formAction}>
       <input type="hidden" name="form_token" value={state.formToken ?? formToken} />
-      <p className="look-form__eyebrow">Free 15-minute look</p>
-      <h2 className="look-form__title">Tell me enough to prepare.</h2>
+      <p className="look-form__eyebrow">Complimentary 15-minute call</p>
+      <h2 className="look-form__title">Book your complimentary call</h2>
       <p className="look-form__lead">
-        A few fields. I’ll use them to look at your business before we talk, not
-        to build a mailing list.
+        A few fields. I&apos;ll use them to get a feel for your business before we
+        talk, not to build a mailing list.
       </p>
 
       <div className="look-form__grid">
