@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { StatusPill } from "@/components/portal/PortalUi";
+import { WorkflowChangeThreadReply } from "@/components/portal/WorkflowChangeThreadReply";
 import { isShopStaff } from "@/lib/portal/roles";
 import type { PortalSession } from "@/lib/portal/session";
 import { normalizeEmail } from "@/lib/portal/session";
@@ -211,27 +212,11 @@ export function WorkflowMutualPanel({
               ))}
             </ul>
             {change.status === "rejected-in-discussion" || change.comments.length ? (
-              <div className="portal-wf-change__reply">
-                <label className="look-field">
-                  <span className="look-field__label">Add to thread</span>
-                  <textarea
-                    className="look-field__input look-field__input--area"
-                    rows={2}
-                    value={replyDraft[change.id] ?? ""}
-                    onChange={(e) =>
-                      setReplyDraft((d) => ({ ...d, [change.id]: e.target.value }))
-                    }
-                  />
-                </label>
-                <button
-                  type="button"
-                  className="btn btn--primary"
-                  disabled={!replyDraft[change.id]?.trim()}
-                  onClick={() => addReply(change.id)}
-                >
-                  Post comment
-                </button>
-              </div>
+              <WorkflowChangeThreadReply
+                value={replyDraft[change.id] ?? ""}
+                onChange={(next) => setReplyDraft((d) => ({ ...d, [change.id]: next }))}
+                onPost={() => addReply(change.id)}
+              />
             ) : null}
             <p className="look-field__hint portal-wf-change__notify-hint">
               Notified on this thread:{" "}

@@ -2625,6 +2625,24 @@ fieldset.look-field legend {
   align-items: flex-start;
 }
 
+.portal-wf-thread-reply__field {
+  width: 100%;
+  max-width: 100%;
+}
+
+.portal-wf-thread-reply__input {
+  width: 100%;
+  min-height: 12rem;
+  resize: vertical;
+}
+
+@media (min-width: 640px) {
+  .portal-wf-thread-reply__field {
+    width: 50%;
+    max-width: 50%;
+  }
+}
+
 .portal-admin-app-title {
   margin: 0;
   font-size: 0.85rem;
