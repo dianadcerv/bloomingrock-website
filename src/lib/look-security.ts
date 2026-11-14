@@ -2,10 +2,14 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export const LOOK_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
-export const LOOK_RATE_LIMIT_MAX_PER_IP = 5;
-export const LOOK_EMAIL_LIMIT_WINDOW_MS = 60 * 60 * 1000;
-export const LOOK_EMAIL_LIMIT_MAX = 3;
+export {
+  FORM_SUBMIT_RATE_LIMIT_ERROR,
+  LOOK_EMAIL_LIMIT_MAX,
+  LOOK_EMAIL_LIMIT_WINDOW_MS,
+  LOOK_RATE_LIMIT_MAX_PER_IP,
+  LOOK_RATE_LIMIT_WINDOW_MS,
+} from "@/lib/form-rate-limit";
+
 export const FORM_TOKEN_MIN_AGE_MS = 2_500;
 export const FORM_TOKEN_MAX_AGE_MS = 2 * 60 * 60 * 1000;
 
@@ -52,44 +56,22 @@ export function normalizeWebsite(value: string): { ok: true; url: string } | { o
   return { ok: true, url: parsed.toString() };
 }
 
-export class SlidingWindowLimiter {
-  private readonly windowMs: number;
-  private readonly max: number;
-  private readonly store: Map<string, number[]>;
+export { SlidingWindowLimiter } from "@/lib/sliding-window-limiter";
 
-  constructor(windowMs: number, max: number, store = new Map<string, number[]>()) {
-    this.windowMs = windowMs;
-    this.max = max;
-    this.store = store;
-  }
+let loggedMissingFormTokenSecret = false;
 
-  consume(key: string, now = Date.now()): boolean {
-    const recent = (this.store.get(key) ?? []).filter((ts) => now - ts < this.windowMs);
-    if (recent.length >= this.max) {
-      this.store.set(key, recent);
-      return false;
-    }
-    recent.push(now);
-    this.store.set(key, recent);
-    return true;
-  }
-}
-
-export const lookIpLimiter = new SlidingWindowLimiter(
-  LOOK_RATE_LIMIT_WINDOW_MS,
-  LOOK_RATE_LIMIT_MAX_PER_IP,
-);
-export const lookEmailLimiter = new SlidingWindowLimiter(
-  LOOK_EMAIL_LIMIT_WINDOW_MS,
-  LOOK_EMAIL_LIMIT_MAX,
-);
-
-function tokenSecret() {
+function tokenSecret(): string | null {
   const explicit = process.env.FORM_TOKEN_SECRET?.trim();
   if (explicit) return explicit;
 
   if (process.env.NODE_ENV === "production") {
-    throw new Error("FORM_TOKEN_SECRET must be set in production");
+    if (!loggedMissingFormTokenSecret) {
+      console.error(
+        "[form-security] FORM_TOKEN_SECRET is not set in production; form tokens are disabled.",
+      );
+      loggedMissingFormTokenSecret = true;
+    }
+    return null;
   }
 
   return process.env.RESEND_API_KEY?.trim() || "bloomingrock-form-token-dev-only";
@@ -106,9 +88,11 @@ function safeEqual(a: string, b: string) {
   return timingSafeEqual(left, right);
 }
 
-export function createFormToken(now = Date.now(), secret = tokenSecret()) {
+export function createFormToken(now = Date.now(), secret?: string | null) {
+  const resolved = secret ?? tokenSecret();
+  if (!resolved) return "0.invalid";
   const payload = String(now);
-  return `${payload}.${signPayload(payload, secret)}`;
+  return `${payload}.${signPayload(payload, resolved)}`;
 }
 
 async function runtimeTokenSecret() {
@@ -133,19 +117,22 @@ export function verifyFormToken(
   token: string,
   {
     now = Date.now(),
-    secret = tokenSecret(),
+    secret,
     minAgeMs = FORM_TOKEN_MIN_AGE_MS,
     maxAgeMs = FORM_TOKEN_MAX_AGE_MS,
   }: {
     now?: number;
-    secret?: string;
+    secret?: string | null;
     minAgeMs?: number;
     maxAgeMs?: number;
   } = {},
 ) {
+  const resolved = secret ?? tokenSecret();
+  if (!resolved) return false;
+
   const [payload, sig] = token.split(".");
   if (!payload || !sig || !/^\d+$/.test(payload)) return false;
-  if (!safeEqual(sig, signPayload(payload, secret))) return false;
+  if (!safeEqual(sig, signPayload(payload, resolved))) return false;
 
   const createdAt = Number(payload);
   const age = now - createdAt;
