@@ -59,7 +59,6 @@
 
 .checklist-doc__section {
   margin-top: 1.75rem;
-  break-inside: avoid;
 }
 
 .checklist-doc__section h2,
@@ -69,6 +68,13 @@
   font-weight: 500;
   margin: 0 0 0.65rem;
   color: var(--stone-900);
+  break-after: avoid;
+  page-break-after: avoid;
+}
+
+.checklist-doc__section-title + .checklist-doc__items {
+  break-before: avoid;
+  page-break-before: avoid;
 }
 
 .checklist-doc__items {
@@ -120,26 +126,29 @@
 
 .checklist-doc__notes {
   margin: 0.85rem 0 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.35rem 0.75rem;
   font-size: 0.95rem;
   color: var(--stone-700);
 }
 
 .checklist-doc__notes-label {
+  display: block;
   font-weight: 600;
-  flex-shrink: 0;
+  margin: 0 0 0.35rem;
+}
+
+.checklist-doc__notes-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
 }
 
 .checklist-doc__notes-line {
-  flex: 1 1 12rem;
-  min-width: 8rem;
+  display: block;
+  width: 100%;
   border: none;
   border-bottom: 1px solid var(--stone-300);
   background: transparent;
-  min-height: 1.25rem;
+  min-height: 1.35rem;
 }
 
 .checklist-doc__footer {

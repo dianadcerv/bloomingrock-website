@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import {
   CHECKLIST_INTRO,
   CHECKLIST_META_FIELDS,
-  CHECKLIST_SECTION_NOTES_LABEL,
   CHECKLIST_SECTIONS,
   CHECKLIST_TITLE,
 } from "../checklist-content";
+import { ChecklistSectionNotes } from "../ChecklistSectionNotes";
 import "../checklist.css";
 import { PrintControls } from "./PrintControls";
 import "./print.css";
@@ -46,12 +46,7 @@ export default function PreQuoteChecklistPrintPage() {
               </li>
             ))}
           </ul>
-          <p className="checklist-doc__notes">
-            <span className="checklist-doc__notes-label">
-              {CHECKLIST_SECTION_NOTES_LABEL}
-            </span>
-            <span className="checklist-doc__notes-line" aria-hidden="true" />
-          </p>
+          <ChecklistSectionNotes />
         </section>
       ))}
 

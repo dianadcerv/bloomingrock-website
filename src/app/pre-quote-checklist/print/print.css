@@ -33,6 +33,20 @@
   outline-offset: 2px;
 }
 
+.checklist-print .checklist-doc__notes-lines {
+  gap: 0;
+}
+
+.checklist-print .checklist-doc__notes-line {
+  min-height: 0.35in;
+  border-bottom-color: var(--stone-800);
+}
+
+.checklist-print .checklist-doc__notes {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
 @media print {
   .checklist-print__screen-only {
     display: none;
@@ -45,5 +59,16 @@
 
   .checklist-doc__checkbox {
     print-color-adjust: exact;
+  }
+
+  .checklist-print .checklist-doc__notes-line {
+    min-height: 0.35in;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .checklist-doc__section-title {
+    break-after: avoid;
+    page-break-after: avoid;
   }
 }
