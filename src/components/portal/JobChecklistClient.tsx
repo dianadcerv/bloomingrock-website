@@ -35,11 +35,21 @@ function ConflictChoices({
   right: { sourceId: string; value: string };
   resolved: ConflictResolution | undefined;
   who: string;
+  resolveConflicts: boolean;
 }) {
   if (resolved) {
     return (
       <p className="portal-conflict-resolved">
         Using <strong>{resolved.chosenValue}</strong> ({sourceShortLabel(resolved.chosenSourceId)})
+      </p>
+    );
+  }
+
+  if (!resolveConflicts) {
+    return (
+      <p className="look-field__hint">
+        Conflicting values: {left.value} ({sourceShortLabel(left.sourceId)}) vs {right.value} (
+        {sourceShortLabel(right.sourceId)}). Your shop will pick one before sign-off.
       </p>
     );
   }
@@ -72,7 +82,15 @@ function ConflictChoices({
   );
 }
 
-export function JobChecklistClient({ job, who }: { job: DemoJob; who: string }) {
+export function JobChecklistClient({
+  job,
+  who,
+  resolveConflicts = true,
+}: {
+  job: DemoJob;
+  who: string;
+  resolveConflicts?: boolean;
+}) {
   const [resolutions, setResolutions] = useState<ConflictResolution[]>(() =>
     typeof window === "undefined" ? [] : getResolutions(job.id),
   );
@@ -130,6 +148,7 @@ export function JobChecklistClient({ job, who }: { job: DemoJob; who: string }) 
                     right={conflict.right}
                     resolved={resolution}
                     who={who}
+                    resolveConflicts={resolveConflicts}
                   />
                 ) : null}
                 {item.provenance?.length ? (

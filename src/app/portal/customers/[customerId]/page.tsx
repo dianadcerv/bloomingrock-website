@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { PageIntro, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireSession } from "@/lib/portal/auth";
-import { getCustomer, getProject, projectRollup } from "@/lib/portal/demo-data";
+import { requireCustomer } from "@/lib/portal/auth";
+import { getProject, projectRollup } from "@/lib/portal/demo-data";
 
 export const metadata: Metadata = { title: "Customer" };
 
@@ -13,10 +12,8 @@ export default async function CustomerPage({
 }: {
   params: Promise<{ customerId: string }>;
 }) {
-  const session = await requireSession();
   const { customerId } = await params;
-  const customer = getCustomer(customerId);
-  if (!customer) notFound();
+  const { session, customer } = await requireCustomer(customerId);
 
   const projects = customer.projectIds
     .map((id) => getProject(id))

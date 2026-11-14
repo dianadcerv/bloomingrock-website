@@ -3,9 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OpenQuestion, PageIntro, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { requireSession } from "@/lib/portal/auth";
+import { requireCustomer } from "@/lib/portal/auth";
 import {
-  getCustomer,
   getJob,
   getProject,
   jobStatusLabel,
@@ -20,11 +19,10 @@ export default async function ProjectPage({
 }: {
   params: Promise<{ customerId: string; projectId: string }>;
 }) {
-  const session = await requireSession();
   const { customerId, projectId } = await params;
-  const customer = getCustomer(customerId);
+  const { session, customer } = await requireCustomer(customerId);
   const project = getProject(projectId);
-  if (!customer || !project || project.customerId !== customerId) notFound();
+  if (!project || project.customerId !== customerId) notFound();
 
   const jobs = project.jobIds.map((id) => getJob(id)).filter(Boolean);
 

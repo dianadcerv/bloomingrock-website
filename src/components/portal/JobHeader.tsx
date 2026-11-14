@@ -10,12 +10,25 @@ import {
 } from "@/lib/portal/demo-data";
 import { isJobDocumentsNavActive } from "@/lib/portal/job-documents";
 import { getJobSubnavLinks } from "@/lib/portal/job-nav";
+import { isShopStaff } from "@/lib/portal/roles";
 import type { PortalRole } from "@/lib/portal/session";
 
-function JobBreadcrumb({ job }: { job: DemoJob }) {
+function JobBreadcrumb({ job, role }: { job: DemoJob; role: PortalRole }) {
   const project = getProjectForJob(job);
   const customer = getCustomerForJob(job);
   if (!project || !customer) return null;
+
+  if (!isShopStaff(role)) {
+    return (
+      <nav className="portal-breadcrumb" aria-label="Customer and project">
+        <span>{customer.name}</span>
+        <span aria-hidden="true">/</span>
+        <span>{project.name}</span>
+        <span aria-hidden="true">/</span>
+        <span>Job</span>
+      </nav>
+    );
+  }
 
   return (
     <nav className="portal-breadcrumb" aria-label="Customer and project">
@@ -45,7 +58,7 @@ export function JobHeader({
 
   return (
     <div className="job-head">
-      <JobBreadcrumb job={job} />
+      <JobBreadcrumb job={job} role={role} />
       <CustomerProjectSwitcher job={job} role={role} />
       <p className="portal-intro__eyebrow">
         {customer?.name ?? "Customer"} · {project?.name ?? "Project"}

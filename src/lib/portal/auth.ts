@@ -1,7 +1,7 @@
 import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { sessionCanAccessJob } from "@/lib/portal/access";
-import { getJob } from "@/lib/portal/demo-data";
+import { sessionCanAccessCustomer, sessionCanAccessJob } from "@/lib/portal/access";
+import { getCustomer, getJob } from "@/lib/portal/demo-data";
 import { loginHrefWithNext } from "@/lib/portal/login-redirect";
 import { isShopAdmin, isShopStaff, isSuperAdmin } from "@/lib/portal/roles";
 import {
@@ -58,6 +58,13 @@ export async function requireJob(jobId: string) {
   const job = getJob(jobId);
   if (!job || !sessionCanAccessJob(session, jobId)) notFound();
   return { session, job };
+}
+
+export async function requireCustomer(customerId: string) {
+  const session = await requireSession();
+  const customer = getCustomer(customerId);
+  if (!customer || !sessionCanAccessCustomer(session, customerId)) notFound();
+  return { session, customer };
 }
 
 export async function requireJobForShop(jobId: string) {

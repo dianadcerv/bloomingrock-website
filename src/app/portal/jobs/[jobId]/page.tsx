@@ -33,7 +33,11 @@ export default async function JobWorkspacePage({
 
       <JobSourcesClient job={job} showShopLinks={isShopStaff(session.role)} />
 
-      <JobChecklistClient job={job} who={session.name} />
+      <JobChecklistClient
+        job={job}
+        who={session.name}
+        resolveConflicts={isShopStaff(session.role)}
+      />
 
       <section className="portal-section">
         <h2>Open questions (job)</h2>

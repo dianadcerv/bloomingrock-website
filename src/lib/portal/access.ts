@@ -27,6 +27,11 @@ export function sessionCanAccessJob(session: PortalSession, jobId: string) {
   return jobCustomerId(job) === buyerCustomerId;
 }
 
+export function sessionCanAccessCustomer(session: PortalSession, customerId: string) {
+  if (isShopStaff(session.role)) return true;
+  return buyerCustomerIdForEmail(session.email) === customerId;
+}
+
 export function jobsForSession(session: PortalSession) {
   if (isShopStaff(session.role)) return JOBS;
   const buyerCustomerId = buyerCustomerIdForEmail(session.email);

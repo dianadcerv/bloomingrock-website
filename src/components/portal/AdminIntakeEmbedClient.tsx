@@ -1,18 +1,28 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { OpenQuestion } from "@/components/portal/DemoNotes";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
+function useClientOrigin() {
+  return useSyncExternalStore(
+    () => () => {},
+    () => window.location.origin,
+    () => "",
+  );
+}
+
 export function AdminIntakeEmbedClient() {
   const [copied, setCopied] = useState(false);
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://app.bloomingrocksolutions.com";
-  const embedSrc = `${origin}/intake/quote`;
-  const snippet = `<iframe src="${embedSrc}" title="Quote request" width="100%" height="520" style="border:1px solid #c4c0b6;border-radius:4px;" loading="lazy"></iframe>`;
+  const origin = useClientOrigin();
+  const embedSrc = origin ? `${origin}/intake/quote` : "";
 
-  const previewUrl = useMemo(() => embedSrc, [embedSrc]);
+  const snippet = embedSrc
+    ? `<iframe src="${embedSrc}" title="Quote request" width="100%" height="520" style="border:1px solid #c4c0b6;border-radius:4px;" loading="lazy"></iframe>`
+    : "";
 
   const copy = async () => {
+    if (!snippet) return;
     try {
       await navigator.clipboard.writeText(snippet);
       setCopied(true);
@@ -32,17 +42,21 @@ export function AdminIntakeEmbedClient() {
           suggested customer match (demo).
         </p>
         <textarea className="look-field__input portal-embed-snippet" readOnly rows={4} value={snippet} />
-        <button type="button" className="btn btn--primary" onClick={copy}>
+        <button type="button" className="btn btn--primary" onClick={copy} disabled={!snippet}>
           {copied ? "Copied" : "Copy snippet"}
         </button>
       </section>
       <section className="portal-section">
         <h2>Preview</h2>
-        <iframe
-          className="portal-embed-preview"
-          src={previewUrl}
-          title="Quote request form preview"
-        />
+        {embedSrc ? (
+          <iframe
+            className="portal-embed-preview"
+            src={embedSrc}
+            title="Quote request form preview"
+          />
+        ) : (
+          <p className="look-field__hint">Loading preview…</p>
+        )}
       </section>
     </>
   );
