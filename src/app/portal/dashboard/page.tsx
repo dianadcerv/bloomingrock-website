@@ -29,6 +29,7 @@ export default async function DashboardPage() {
     return (
       <PortalShell session={session} current="/dashboard">
         <ShopDashboardHome
+          org={session.org}
           firstName={firstName}
           email={session.email}
           notifications={getDashboardNotificationsForEmail(session.email)}

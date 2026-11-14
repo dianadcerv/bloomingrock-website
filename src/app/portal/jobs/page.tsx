@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { PageIntro, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
-import { jobsForSession } from "@/lib/portal/access";
+import { customersForSession, jobsForSession } from "@/lib/portal/access";
 import { requireSession } from "@/lib/portal/auth";
 import {
   DEMO_CUSTOMERS,
@@ -135,7 +135,8 @@ export default async function JobsPage({ searchParams }: { searchParams: SearchP
     );
   }
 
-  const byCustomer = DEMO_CUSTOMERS.map((customer) => ({
+  const visibleJobIds = new Set(visibleJobs.map((job) => job.id));
+  const byCustomer = customersForSession(session).map((customer) => ({
     customer,
     projects: DEMO_PROJECTS.filter((p) => p.customerId === customer.id),
   }));
@@ -154,7 +155,9 @@ export default async function JobsPage({ searchParams }: { searchParams: SearchP
             <Link href={`/customers/${customer.id}`}>{customer.name}</Link>
           </h2>
           {projects.map((project) => {
-            const jobs = project.jobIds.map((id) => getJob(id)).filter(Boolean);
+            const jobs = project.jobIds
+              .map((id) => getJob(id))
+              .filter((job): job is NonNullable<typeof job> => Boolean(job) && visibleJobIds.has(job.id));
             return (
               <div key={project.id} className="portal-section">
                 <h3>

@@ -4,11 +4,9 @@ import { PrintButton } from "@/components/portal/PrintButton";
 import { DraftNotice, OpenQuestion } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
-import {
-  DEMO_SHOP,
-  getCustomerForJob,
-  getProjectForJob,
-} from "@/lib/portal/demo-data";
+import { getCustomerForJob, getProjectForJob, jobShopId } from "@/lib/portal/demo-data";
+import { getDemoShopBranding, getDemoShopBrandingById } from "@/lib/portal/demo-shop";
+import { isShopStaff } from "@/lib/portal/roles";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "Work order" };
@@ -20,6 +18,9 @@ export default async function AgreementPage({
 }) {
   const { jobId } = await params;
   const { session, job } = await requireJob(jobId);
+  const shop = isShopStaff(session.role)
+    ? getDemoShopBranding(session)
+    : getDemoShopBrandingById(jobShopId(job));
   const customer = getCustomerForJob(job);
   const project = getProjectForJob(job);
 
@@ -35,9 +36,9 @@ export default async function AgreementPage({
       </p>
       <article
         className="portal-shop-doc"
-        style={{ borderTop: `4px solid ${DEMO_SHOP.brandColor}` }}
+        style={{ borderTop: `4px solid ${shop.brandColor}` }}
       >
-        <p className="portal-shop-doc__name">{DEMO_SHOP.legal}</p>
+        <p className="portal-shop-doc__name">{shop.legal}</p>
         <h2>Work order agreement</h2>
         <p>
           {customer?.name ?? "Customer"} · {project?.name ?? "Project"} · {job.name}

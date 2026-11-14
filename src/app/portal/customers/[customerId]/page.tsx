@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PageIntro, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
+import { customersForSession } from "@/lib/portal/access";
 import { requireSession } from "@/lib/portal/auth";
 import { getCustomer, getProject, projectRollup } from "@/lib/portal/demo-data";
 
@@ -16,7 +17,7 @@ export default async function CustomerPage({
   const session = await requireSession();
   const { customerId } = await params;
   const customer = getCustomer(customerId);
-  if (!customer) notFound();
+  if (!customer || !customersForSession(session).some((c) => c.id === customerId)) notFound();
 
   const projects = customer.projectIds
     .map((id) => getProject(id))

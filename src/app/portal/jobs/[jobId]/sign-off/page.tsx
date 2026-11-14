@@ -11,12 +11,14 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
 import {
   checkStatusLabel,
-  DEMO_SHOP,
   getCustomerForJob,
   getProjectForJob,
   getSource,
+  jobShopId,
   type CheckStatus,
 } from "@/lib/portal/demo-data";
+import { getDemoShopBranding, getDemoShopBrandingById } from "@/lib/portal/demo-shop";
+import { isShopStaff } from "@/lib/portal/roles";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "Sign-off" };
@@ -36,6 +38,9 @@ export default async function SignOffPage({
   const { jobId } = await params;
   const { session, job } = await requireJob(jobId);
   const buyer = session.role === "buyer";
+  const shop = isShopStaff(session.role)
+    ? getDemoShopBranding(session)
+    : getDemoShopBrandingById(jobShopId(job));
   const customer = getCustomerForJob(job);
   const project = getProjectForJob(job);
 
@@ -67,7 +72,7 @@ export default async function SignOffPage({
             {customer?.name ?? "Customer"} · {project?.name ?? "Project"} · {job.name}
           </p>
           <p className="look-field__hint">
-            Revision {job.revision} · {new Date().toLocaleDateString("en-US")} · {DEMO_SHOP.name}
+            Revision {job.revision} · {new Date().toLocaleDateString("en-US")} · {shop.name}
           </p>
         </header>
 

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { OpenQuestion, PageIntro, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
+import { customersForSession, jobsForSession } from "@/lib/portal/access";
 import { requireSession } from "@/lib/portal/auth";
 import {
   getCustomer,
@@ -24,9 +25,19 @@ export default async function ProjectPage({
   const { customerId, projectId } = await params;
   const customer = getCustomer(customerId);
   const project = getProject(projectId);
-  if (!customer || !project || project.customerId !== customerId) notFound();
+  if (
+    !customer ||
+    !project ||
+    project.customerId !== customerId ||
+    !customersForSession(session).some((c) => c.id === customerId)
+  ) {
+    notFound();
+  }
 
-  const jobs = project.jobIds.map((id) => getJob(id)).filter(Boolean);
+  const visibleJobIds = new Set(jobsForSession(session).map((job) => job.id));
+  const jobs = project.jobIds
+    .map((id) => getJob(id))
+    .filter((job): job is NonNullable<typeof job> => Boolean(job) && visibleJobIds.has(job.id));
 
   return (
     <PortalShell session={session} current="/customers">

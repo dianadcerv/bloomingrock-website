@@ -45,6 +45,7 @@ function WipMobileList({ jobs }: { jobs: WorkJobRow[] }) {
 }
 
 export function ShopDashboardHome({
+  org,
   firstName,
   email,
   notifications,
@@ -55,6 +56,7 @@ export function ShopDashboardHome({
   navModules,
   customerFilterOptions,
 }: {
+  org: string;
   firstName: string;
   email: string;
   notifications: DashboardNotification[];
@@ -90,7 +92,7 @@ export function ShopDashboardHome({
     <div className="portal-dashboard">
       <header className="portal-dashboard__hero">
         <div>
-          <p className="portal-intro__eyebrow">Northridge Steel · Shop home</p>
+          <p className="portal-intro__eyebrow">{org} · Shop home</p>
           <h1 className="portal-intro__title">Good morning, {firstName}</h1>
           <p className="portal-dashboard__lede">What needs you today?</p>
         </div>
