@@ -1,11 +1,13 @@
 import type { PortalSession } from "@/lib/portal/session";
-import { jobsForSession } from "./access";
+import { customersForSession, inboxForSession, jobsForSession, jobsInShop } from "./access";
+import { shopIdForSession } from "./demo-shop";
 import type { AuditEntry, DemoJob, StatusPillTone } from "./demo-data";
 import {
+  DEMO_CUSTOMER,
   DEMO_CUSTOMERS,
+  DEMO_PROJECT,
   getCustomerForJob,
   getProjectForJob,
-  INBOX_ITEMS,
   JOBS,
   jobOwnerRole,
   jobStatusLabel,
@@ -57,18 +59,20 @@ function countDraftQuestions(jobs: DemoJob[]) {
   return jobs.reduce((n, job) => n + job.questions.length, 0);
 }
 
-export function getShopSummaryTiles(): SummaryTile[] {
-  const conflictJobs = JOBS.filter((j) => j.status === "conflict" || j.conflicts.length > 0);
-  const waitingJobs = JOBS.filter((j) => j.status === "waiting-on-customer");
-  const needsReview = countNeedsReview(JOBS);
-  const drafts = countDraftQuestions(JOBS);
+export function getShopSummaryTiles(session: PortalSession): SummaryTile[] {
+  const jobs = jobsInShop(session);
+  const inbox = inboxForSession(session);
+  const conflictJobs = jobs.filter((j) => j.status === "conflict" || j.conflicts.length > 0);
+  const waitingJobs = jobs.filter((j) => j.status === "waiting-on-customer");
+  const needsReview = countNeedsReview(jobs);
+  const drafts = countDraftQuestions(jobs);
 
   return [
     {
       id: "inbox",
       label: "New emails to match",
       shortLabel: "Emails",
-      count: INBOX_ITEMS.length,
+      count: inbox.length,
       href: "/inbox",
       tone: "draft",
     },
@@ -107,10 +111,72 @@ export function getShopSummaryTiles(): SummaryTile[] {
   ];
 }
 
+function getHeaterShopAttentionItems(limit?: number): AttentionRow[] {
+  const job = JOBS.find((j) => j.id === "lakeshore-cartridge-heaters")!;
+  const rows: AttentionRow[] = [
+    {
+      id: "hc-att-in",
+      urgency: 1,
+      title: "Confirm inbox match",
+      detail: "RFQ: 12 cartridge heaters — Lakeshore Mold Systems",
+      statusLabel: "Needs confirm",
+      tone: "draft",
+      actionLabel: "Confirm match",
+      href: "/inbox/hc-in-1",
+    },
+    {
+      id: "hc-att-conflicts",
+      urgency: 2,
+      title: "Resolve RFQ conflicts",
+      detail: `${job.name}: voltage, wattage, temp, leads, and hole fit across sources`,
+      statusLabel: jobStatusLabel(job.status),
+      tone: jobStatusPillTone(job.status),
+      actionLabel: "Open job",
+      href: "/jobs/lakeshore-cartridge-heaters",
+    },
+    {
+      id: "hc-att-missing",
+      urgency: 3,
+      title: "Missing-info checklist",
+      detail: "Prior part number, environment, new design vs replacement",
+      statusLabel: "Missing",
+      tone: "missing",
+      actionLabel: "Review",
+      href: "/jobs/lakeshore-cartridge-heaters/missing",
+    },
+    {
+      id: "hc-att-drafts",
+      urgency: 4,
+      title: "Clarifying question drafts",
+      detail: "Voltage, wattage/temp, hole, leads, prior part, UL — DRAFT, NOT SENT",
+      statusLabel: "DRAFT, NOT SENT",
+      tone: "draft",
+      actionLabel: "Edit drafts",
+      href: "/jobs/lakeshore-cartridge-heaters/missing",
+    },
+    {
+      id: "hc-att-handoff",
+      urgency: 5,
+      title: "Ready for handoff (blocked)",
+      detail: "Sign-off blocked until voltage, wattage/temp/material, hole fit, and leads are cleared",
+      statusLabel: "Blocked",
+      tone: "conflict",
+      actionLabel: "Preview packet",
+      href: "/jobs/lakeshore-cartridge-heaters/handoff",
+    },
+  ];
+  return limit ? rows.slice(0, limit) : rows;
+}
+
 export function getShopAttentionItems(
+  session: PortalSession,
   limit?: number,
-  shopEmail = "maya@northridge.demo",
 ): AttentionRow[] {
+  if (shopIdForSession(session) === "heaterco") {
+    return getHeaterShopAttentionItems(limit);
+  }
+
+  const shopEmail = session.email;
   const platform = JOBS.find((j) => j.id === "access-platform")!;
   const guard = JOBS.find((j) => j.id === "machine-guard")!;
   const stair = JOBS.find((j) => j.id === "warehouse-b-stair")!;
@@ -214,8 +280,11 @@ export function getShopAttentionItems(
   return limit ? rows.slice(0, limit) : rows;
 }
 
-export function getWorkInProgressRows(customerId?: string): WorkJobRow[] {
-  return JOBS.filter((job) => {
+export function getWorkInProgressRows(
+  session: PortalSession,
+  customerId?: string,
+): WorkJobRow[] {
+  return jobsInShop(session).filter((job) => {
     if (!customerId || customerId === "all") return true;
     const customer = getCustomerForJob(job);
     return customer?.id === customerId;
@@ -248,8 +317,11 @@ export function groupJobsByStage(rows: WorkJobRow[]) {
   return [...map.entries()];
 }
 
-export function getRecentAuditAcrossJobs(limit = 7): (AuditEntry & { jobId: string; jobName: string })[] {
-  const merged = JOBS.flatMap((job) =>
+export function getRecentAuditAcrossJobs(
+  session: PortalSession,
+  limit = 7,
+): (AuditEntry & { jobId: string; jobName: string })[] {
+  const merged = jobsInShop(session).flatMap((job) =>
     job.auditLog.map((entry) => ({
       ...entry,
       jobId: job.id,
@@ -312,12 +384,19 @@ export function getCustomerWaitingItems(session: PortalSession): AttentionRow[] 
 
   for (const job of jobs) {
     if (job.status === "conflict") {
+      const conflictDetail =
+        job.id === "lakeshore-cartridge-heaters"
+          ? `${job.name}: your shop is reconciling the RFQ sources before handoff to CPQ (demo).`
+          : `${job.name}: your shop is reconciling sources before sign-off (demo: width conflict on the access platform).`;
       rows.push({
         id: `conflict-${job.id}`,
         urgency: 0,
         title: "Requirements under review",
-        detail: `${job.name}: your shop is reconciling sources before sign-off (demo: width conflict on the access platform).`,
-        statusLabel: jobStatusLabel(job.status),
+        detail: conflictDetail,
+        statusLabel: jobStatusLabel(job.status, {
+          role: "buyer",
+          buyerLabel: job.buyerStatusLabel,
+        }),
         tone: jobStatusPillTone(job.status),
         actionLabel: "View status",
         href: `/jobs/${job.id}`,
@@ -377,7 +456,10 @@ export function getCustomerJobRows(session: PortalSession): WorkJobRow[] {
       project: project?.name ?? "—",
       jobName: job.name,
       status: job.status,
-      statusLabel: jobStatusLabel(job.status),
+      statusLabel: jobStatusLabel(job.status, {
+        role: session.role === "buyer" ? "buyer" : undefined,
+        buyerLabel: job.buyerStatusLabel,
+      }),
       tone: jobStatusPillTone(job.status),
       ownerRole: jobOwnerRole(job),
       stageSince: job.stageSince,
@@ -385,6 +467,80 @@ export function getCustomerJobRows(session: PortalSession): WorkJobRow[] {
   });
 }
 
+export function customerFilterOptions(session: PortalSession) {
+  return [
+    { id: "all", label: "All customers" },
+    ...customersForSession(session).map((c) => ({ id: c.id, label: c.name })),
+  ];
+}
+
+export type ShopNavModule = {
+  href: string;
+  eyebrow: string;
+  title: string;
+  body: string;
+};
+
+export function getShopNavModules(session: PortalSession): ShopNavModule[] {
+  const inbox = inboxForSession(session);
+  if (shopIdForSession(session) === "heaterco") {
+    return [
+      {
+        href: "/inbox",
+        eyebrow: "Inbox",
+        title: `${inbox.length} to match`,
+        body: "Pre-CPQ RFQ intake — confirm customer, then reconcile sources",
+      },
+      {
+        href: "/customers/lakeshore",
+        eyebrow: "Jobs / projects",
+        title: "Lakeshore new injection mold",
+        body: "12 cartridge heaters — conflicts open across email, drawing, spreadsheet",
+      },
+      {
+        href: "/jobs/lakeshore-cartridge-heaters/workflow",
+        eyebrow: "Workflows",
+        title: "RFQ to confirmed packet",
+        body: "Does not replace Infor CPQ, CRM, or ERP",
+      },
+      {
+        href: "/jobs/lakeshore-cartridge-heaters/handoff",
+        eyebrow: "Handoff",
+        title: "Ready for Infor CPQ (demo)",
+        body: "Confirmed packet preview — send button disabled",
+      },
+    ];
+  }
+
+  return [
+    {
+      href: "/inbox",
+      eyebrow: "Inbox",
+      title: `${inbox.length} to match`,
+      body: "Suggested customer and job matches to confirm",
+    },
+    {
+      href: `/customers/${DEMO_CUSTOMER.id}/projects/${DEMO_PROJECT.id}`,
+      eyebrow: "Jobs / projects",
+      title: DEMO_PROJECT.name,
+      body: "Meridian Line 3: platform + machine guard",
+    },
+    {
+      href: "/workflows",
+      eyebrow: "Workflows",
+      title: "Steps by job",
+      body: "Minimum, ideal, and added steps",
+    },
+    {
+      href: "/documents",
+      eyebrow: "Sign-off / documents",
+      title: "Draft outputs",
+      body: "Sign-off, agreement, BOM, and PDF",
+    },
+  ];
+}
+
+/** @deprecated Use customerFilterOptions(session) */
 export const CUSTOMER_FILTER_OPTIONS = [
   { id: "all", label: "All customers" },
   ...DEMO_CUSTOMERS.map((c) => ({ id: c.id, label: c.name })),

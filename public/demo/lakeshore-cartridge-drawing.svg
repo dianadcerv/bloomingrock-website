@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 520" role="img" aria-label="FAKE DATA demo drawing">
+  <rect width="720" height="520" fill="#f4f4f0"/>
+  <rect x="24" y="24" width="672" height="80" fill="#1a1a1a"/>
+  <text x="40" y="58" fill="#ff6b6b" font-family="system-ui,sans-serif" font-size="22" font-weight="700">FAKE DATA — DEMO ONLY</text>
+  <text x="40" y="86" fill="#e8e8e8" font-family="system-ui,sans-serif" font-size="14">Cartridge heater in mold plate — Lakeshore Mold Systems (fictional)</text>
+  <rect x="80" y="140" width="520" height="280" fill="#e0e0d8" stroke="#333" stroke-width="2"/>
+  <circle cx="340" cy="280" r="90" fill="none" stroke="#555" stroke-width="3"/>
+  <text x="300" y="285" font-family="system-ui,sans-serif" font-size="13" fill="#333">Ø 0.506 HOLE</text>
+  <rect x="310" y="200" width="60" height="120" fill="#888" stroke="#333"/>
+  <text x="315" y="195" font-family="system-ui,sans-serif" font-size="11" fill="#333">1/2" CART.</text>
+  <text x="290" y="340" font-family="system-ui,sans-serif" font-size="11" fill="#333">SHEATH 4.00"</text>
+  <text x="390" y="230" font-family="system-ui,sans-serif" font-size="13" fill="#c00" font-weight="600">480 V</text>
+  <path d="M 370 200 L 420 170 L 450 170" fill="none" stroke="#333" stroke-width="2"/>
+  <text x="455" y="175" font-family="system-ui,sans-serif" font-size="11">Right-angle lead</text>
+  <text x="100" y="450" font-family="system-ui,sans-serif" font-size="12" fill="#333">NOTE: open hole 0.530 after rework, see Rev B</text>
+  <text x="100" y="475" font-family="system-ui,sans-serif" font-size="12" fill="#666">No manufacturer part number on drawing</text>
+</svg>

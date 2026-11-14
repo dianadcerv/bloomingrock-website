@@ -5,15 +5,16 @@ import { PortalShell } from "@/components/portal/PortalShell";
 import { requireSession } from "@/lib/portal/auth";
 import { isShopStaff } from "@/lib/portal/roles";
 import {
+  customerFilterOptions,
   getCustomerJobRows,
   getCustomerSummaryTiles,
   getCustomerWaitingItems,
   getRecentAuditAcrossJobs,
   getShopAttentionItems,
+  getShopNavModules,
   getShopSummaryTiles,
   getWorkInProgressRows,
 } from "@/lib/portal/dashboard-data";
-import { DEMO_CUSTOMER, DEMO_PROJECT, INBOX_ITEMS } from "@/lib/portal/demo-data";
 import { getDashboardNotificationsForEmail } from "@/lib/portal/workflow-changes";
 
 export const metadata: Metadata = {
@@ -25,44 +26,18 @@ export default async function DashboardPage() {
   const firstName = session.name.split(" ")[0];
 
   if (isShopStaff(session.role)) {
-    const navModules = [
-      {
-        href: "/inbox",
-        eyebrow: "Inbox",
-        title: `${INBOX_ITEMS.length} to match`,
-        body: "Suggested customer and job matches to confirm",
-      },
-      {
-        href: `/customers/${DEMO_CUSTOMER.id}/projects/${DEMO_PROJECT.id}`,
-        eyebrow: "Jobs / projects",
-        title: DEMO_PROJECT.name,
-        body: "Meridian Line 3: platform + machine guard",
-      },
-      {
-        href: "/workflows",
-        eyebrow: "Workflows",
-        title: "Steps by job",
-        body: "Minimum, ideal, and added steps",
-      },
-      {
-        href: "/documents",
-        eyebrow: "Sign-off / documents",
-        title: "Draft outputs",
-        body: "Sign-off, agreement, BOM, and PDF",
-      },
-    ];
-
     return (
       <PortalShell session={session} current="/dashboard">
         <ShopDashboardHome
           firstName={firstName}
           email={session.email}
           notifications={getDashboardNotificationsForEmail(session.email)}
-          summaryTiles={getShopSummaryTiles()}
-          attention={getShopAttentionItems(7)}
-          workJobs={getWorkInProgressRows()}
-          recentActivity={getRecentAuditAcrossJobs(7)}
-          navModules={navModules}
+          summaryTiles={getShopSummaryTiles(session)}
+          attention={getShopAttentionItems(session, 7)}
+          workJobs={getWorkInProgressRows(session)}
+          recentActivity={getRecentAuditAcrossJobs(session, 7)}
+          navModules={getShopNavModules(session)}
+          customerFilterOptions={customerFilterOptions(session)}
         />
       </PortalShell>
     );

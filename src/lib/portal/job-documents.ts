@@ -19,6 +19,12 @@ export function jobDocumentItems(
       title: job.controlledHold ? "Controlled job hold" : "Controlled job (proposal)",
     });
   }
+  if (job.cpqHandoff && options?.includeControlled) {
+    items.unshift({
+      href: `/jobs/${job.id}/handoff`,
+      title: "Ready for handoff (Infor CPQ)",
+    });
+  }
   return items;
 }
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { JobChecklistClient } from "@/components/portal/JobChecklistClient";
+import { JobCommercialExportNote } from "@/components/portal/JobCommercialExportNote";
 import { JobConflictBanner } from "@/components/portal/JobConflictBanner";
 import { JobControlledHoldBanner } from "@/components/portal/JobControlledHoldBanner";
 import { JobHeader } from "@/components/portal/JobHeader";
@@ -25,6 +26,7 @@ export default async function JobWorkspacePage({
     <PortalShell session={session} current="/jobs">
       <JobHeader job={job} current={`/jobs/${job.id}`} role={session.role} />
       <JobControlledHoldBanner job={job} />
+      <JobCommercialExportNote job={job} />
       {!job.controlledHold ? <JobConflictBanner job={job} /> : null}
 
       {isShopStaff(session.role) ? (

@@ -23,6 +23,10 @@ export function getJobSubnavLinks(job: DemoJob, role: PortalRole): JobSubnavLink
     links.push({ href: `/jobs/${job.id}/workflow`, label: "Workflow" });
   }
 
+  if (role !== "buyer" && job.cpqHandoff) {
+    links.push({ href: `/jobs/${job.id}/handoff`, label: "Handoff" });
+  }
+
   links.push({ href: jobDocumentsHref(job.id), label: "Documents" });
   return links;
 }

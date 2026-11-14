@@ -72,7 +72,10 @@ export default async function JobsPage({ searchParams }: { searchParams: SearchP
               </div>
               <div className="portal-list__actions">
                 <StatusPill tone={jobStatusPillTone(job.status)}>
-                  {jobStatusLabel(job.status)}
+                  {jobStatusLabel(job.status, {
+                    role: "buyer",
+                    buyerLabel: job.buyerStatusLabel,
+                  })}
                 </StatusPill>
                 <Link className="btn btn--primary" href={`/jobs/${job.id}`}>
                   Open workspace

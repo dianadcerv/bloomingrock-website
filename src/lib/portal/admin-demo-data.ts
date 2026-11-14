@@ -1,5 +1,7 @@
 /** Phase 2 admin — fake demo data only (BLO-29). */
 
+import { HEATER_DEMO_SHOP_DISPLAY_NAME } from "./demo-shop-constants";
+
 /** Lifecycle phase (NOT the same as billing plan). */
 export type ShopLifecyclePhase = "onboarding" | "build-out" | "ongoing-success";
 
@@ -79,6 +81,43 @@ export const DEMO_ADMIN_SHOPS: DemoShopRecord[] = [
         label: "Add initial users",
         done: true,
         detail: "Maya (admin), Riley (engineer), sales/materials slots open.",
+      },
+    ],
+  },
+  {
+    id: "heaterco",
+    name: HEATER_DEMO_SHOP_DISPLAY_NAME,
+    phase: "ongoing-success",
+    engagement: "project-based",
+    primaryContact: "Alex Kim",
+    exitCriteria: {
+      workflowSetUp: true,
+      firstProjectSuccess: true,
+    },
+    onboarding: [
+      {
+        id: "wf",
+        label: "Pre-CPQ RFQ intake workflow",
+        done: true,
+        detail: "Match, extract, conflict review, handoff to Infor CPQ (demo).",
+      },
+      {
+        id: "cat",
+        label: "Cartridge heater category",
+        done: true,
+        detail: "Checklist tuned for custom heater RFQs.",
+      },
+      {
+        id: "brand",
+        label: "Branding setup",
+        done: true,
+        detail: "Demo palette only — fictional shop name.",
+      },
+      {
+        id: "users",
+        label: "Add initial users",
+        done: true,
+        detail: "Alex Kim (applications engineer).",
       },
     ],
   },
@@ -302,5 +341,6 @@ export function getAdminShop(shopId: string) {
 
 export function shopIdForSessionOrg(org: string) {
   if (org === "Northridge Steel") return "northridge";
+  if (org === HEATER_DEMO_SHOP_DISPLAY_NAME) return "heaterco";
   return null;
 }

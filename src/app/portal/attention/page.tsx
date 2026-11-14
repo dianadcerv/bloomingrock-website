@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Needs attention" };
 
 export default async function AttentionPage() {
   const session = await requireShopStaff();
-  const rows = getShopAttentionItems();
+  const rows = getShopAttentionItems(session);
 
   return (
     <PortalShell session={session} current="/dashboard">

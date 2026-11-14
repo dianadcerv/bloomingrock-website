@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="FAKE DATA demo spreadsheet">
+  <rect width="640" height="360" fill="#fff"/>
+  <rect x="0" y="0" width="640" height="48" fill="#1a1a1a"/>
+  <text x="16" y="32" fill="#ff6b6b" font-family="system-ui,sans-serif" font-size="18" font-weight="700">FAKE DATA — RFQ spreadsheet (demo)</text>
+  <rect x="16" y="64" width="608" height="32" fill="#e8e4dc"/>
+  <text x="24" y="85" font-family="monospace" font-size="13" fill="#222">Item | Qty | Description | Watt | Material | UL | Temp | Voltage | Leads</text>
+  <rect x="16" y="96" width="608" height="40" fill="#f8f8f6" stroke="#ccc"/>
+  <text x="24" y="122" font-family="monospace" font-size="13" fill="#222">1 | 12 | cart. heater, 1/2 x 4 | 1500 W | SS | UL | up to 1200 F | (blank) | (blank)</text>
+  <text x="24" y="170" font-family="system-ui,sans-serif" font-size="12" fill="#555">Email body referenced 240 V, 1000 W, 600 F operating temp — conflicts with this row.</text>
+</svg>

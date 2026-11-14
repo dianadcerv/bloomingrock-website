@@ -3,7 +3,7 @@ import { InboxListClient } from "@/components/portal/InboxListClient";
 import { PageIntro } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireShopStaff } from "@/lib/portal/auth";
-import { INBOX_ITEMS } from "@/lib/portal/demo-data";
+import { inboxForSession } from "@/lib/portal/access";
 
 export const metadata: Metadata = { title: "Inbox" };
 
@@ -18,7 +18,7 @@ export default async function InboxPage() {
           Customer uploads and website forms appear here too (demo).
         </p>
       </PageIntro>
-      <InboxListClient seedItems={INBOX_ITEMS} />
+      <InboxListClient seedItems={inboxForSession(session)} />
     </PortalShell>
   );
 }
