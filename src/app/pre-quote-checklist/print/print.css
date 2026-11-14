@@ -33,6 +33,29 @@
   outline-offset: 2px;
 }
 
+.checklist-print .checklist-doc__empty-box {
+  width: 0.2in;
+  height: 0.2in;
+  margin-top: 0.06in;
+}
+
+.checklist-print .checklist-doc__meta-rule {
+  padding-bottom: 0.12rem;
+}
+
+.checklist-print .checklist-doc__rule-line-stroke {
+  stroke: #4a4844;
+}
+
+.checklist-print .checklist-doc__notes-line {
+  height: 0.35in;
+}
+
+.checklist-print .checklist-doc__notes {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
 @media print {
   .checklist-print__screen-only {
     display: none;
@@ -43,7 +66,38 @@
     max-width: none;
   }
 
-  .checklist-doc__checkbox {
+  .checklist-print .checklist-doc__empty-box {
+    width: 0.2in;
+    height: 0.2in;
+    -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  .checklist-print .checklist-doc__empty-box rect {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .checklist-print .checklist-doc__empty-box-check {
+    opacity: 0;
+  }
+
+  .checklist-print .checklist-doc__notes-line {
+    height: 0.35in;
+  }
+
+  .checklist-print .checklist-doc__rule-line,
+  .checklist-print .checklist-doc__rule-line-stroke {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .checklist-print .checklist-doc__rule-line-stroke {
+    stroke: #4a4844;
+  }
+
+  .checklist-doc__section-title {
+    break-after: avoid;
+    page-break-after: avoid;
   }
 }

@@ -10,6 +10,9 @@ export const CHECKLIST_META_FIELDS = [
 
 export const CHECKLIST_SECTION_NOTES_LABEL = "Notes";
 
+/** Writable ruled lines under each section (print, email attachment, and web). */
+export const CHECKLIST_SECTION_NOTES_LINE_COUNT = 2;
+
 export const CHECKLIST_SECTIONS = [
   {
     title: "Drawings and files",
@@ -64,7 +67,11 @@ export function buildChecklistPlainText(): string {
     for (const item of section.items) {
       lines.push(`${PLAIN_TEXT_CHECKBOX} ${item}`);
     }
-    lines.push(`${CHECKLIST_SECTION_NOTES_LABEL}: ${PLAIN_TEXT_BLANK_LINE}`, "");
+    lines.push(`${CHECKLIST_SECTION_NOTES_LABEL}:`);
+    for (let i = 0; i < CHECKLIST_SECTION_NOTES_LINE_COUNT; i += 1) {
+      lines.push(PLAIN_TEXT_BLANK_LINE);
+    }
+    lines.push("");
   }
 
   lines.push("BloomingRock Solutions · bloomingrocksolutions.com");
