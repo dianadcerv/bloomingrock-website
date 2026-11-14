@@ -118,7 +118,7 @@ function getHeaterShopAttentionItems(limit?: number): AttentionRow[] {
       id: "hc-att-in",
       urgency: 1,
       title: "Confirm inbox match",
-      detail: "RFQ: 12 cartridge heaters — Lakeshore Mold Systems",
+      detail: "RFQ: 12 cartridge heaters - Lakeshore Mold Systems",
       statusLabel: "Needs confirm",
       tone: "draft",
       actionLabel: "Confirm match",
@@ -148,7 +148,7 @@ function getHeaterShopAttentionItems(limit?: number): AttentionRow[] {
       id: "hc-att-drafts",
       urgency: 4,
       title: "Clarifying question drafts",
-      detail: "Voltage, wattage/temp, hole, leads, prior part, UL — DRAFT, NOT SENT",
+      detail: "Voltage, wattage/temp, hole, leads, prior part, UL - DRAFT, NOT SENT",
       statusLabel: "DRAFT, NOT SENT",
       tone: "draft",
       actionLabel: "Edit drafts",
@@ -489,13 +489,13 @@ export function getShopNavModules(session: PortalSession): ShopNavModule[] {
         href: "/inbox",
         eyebrow: "Inbox",
         title: `${inbox.length} to match`,
-        body: "Pre-CPQ RFQ intake — confirm customer, then reconcile sources",
+        body: "Pre-CPQ RFQ intake - confirm customer, then reconcile sources",
       },
       {
         href: "/customers/lakeshore",
         eyebrow: "Jobs / projects",
         title: "Lakeshore new injection mold",
-        body: "12 cartridge heaters — conflicts open across email, drawing, spreadsheet",
+        body: "12 cartridge heaters - conflicts open across email, drawing, spreadsheet",
       },
       {
         href: "/jobs/lakeshore-cartridge-heaters/workflow",
@@ -507,7 +507,7 @@ export function getShopNavModules(session: PortalSession): ShopNavModule[] {
         href: "/jobs/lakeshore-cartridge-heaters/handoff",
         eyebrow: "Handoff",
         title: "Ready for Infor CPQ (demo)",
-        body: "Confirmed packet preview — send button disabled",
+        body: "Confirmed packet preview - send button disabled",
       },
     ];
   }

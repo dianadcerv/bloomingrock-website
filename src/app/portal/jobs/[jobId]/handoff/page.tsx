@@ -49,7 +49,7 @@ export default async function JobHandoffPage({
   return (
     <PortalShell session={session} current="/documents">
       <JobHeader job={job} current={`/jobs/${job.id}/handoff`} role={session.role} />
-      <DraftNotice>FAKE DATA, DEMO ONLY — nothing is sent to Infor CPQ or your CRM.</DraftNotice>
+      <DraftNotice>FAKE DATA, DEMO ONLY - nothing is sent to Infor CPQ or your CRM.</DraftNotice>
       <JobCommercialExportNote job={job} />
 
       <section className="portal-section">
@@ -96,7 +96,7 @@ export default async function JobHandoffPage({
           <ul>
             {openConflicts.map((c) => (
               <li key={c.id}>
-                {c.label}: {c.value ?? "—"}
+                {c.label}: {c.value ?? "-"}
               </li>
             ))}
           </ul>
@@ -138,7 +138,7 @@ export default async function JobHandoffPage({
       <section className="portal-section">
         <h3>BOM (no prices)</h3>
         <p>
-          <Link href={`/jobs/${job.id}/bom`}>Open BOM tab</Link> — {job.bom.length} lines, options
+          <Link href={`/jobs/${job.id}/bom`}>Open BOM tab</Link> - {job.bom.length} lines, options
           only.
         </p>
       </section>

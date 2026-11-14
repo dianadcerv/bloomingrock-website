@@ -54,7 +54,7 @@ const HEATER_AUDIT: AuditEntry[] = [
     at: "2026-11-10 09:40 CT",
     who: "Alex Kim",
     action: "Drafted clarifying questions",
-    detail: "Voltage, wattage/temp/sheath, hole size, leads, prior part, UL — DRAFT, NOT SENT.",
+    detail: "Voltage, wattage/temp/sheath, hole size, leads, prior part, UL - DRAFT, NOT SENT.",
   },
 ];
 
@@ -98,7 +98,7 @@ const HEATER_WORKFLOW: WorkflowStep[] = [
     kind: "ideal",
     done: false,
     ownerRole: "Applications engineer",
-    outputs: "Draft email — person sends",
+    outputs: "Draft email - person sends",
   },
   {
     id: "eng-confirm",
@@ -114,7 +114,7 @@ const HEATER_WORKFLOW: WorkflowStep[] = [
     kind: "minimum",
     done: false,
     ownerRole: "Applications engineer",
-    notes: "Demo button only — nothing is sent.",
+    notes: "Demo button only - nothing is sent.",
   },
 ];
 
@@ -154,7 +154,7 @@ export const HEATER_JOBS: DemoJob[] = [
         status: "conflict",
         readByApp: true,
         quote:
-          "FAKE DATA / DEMO — 1/2\" cartridge · sheath 4.00\" · VOLTAGE 480 V · hole Ø 0.506\" · note: open hole 0.530 after rework, see Rev B",
+          "FAKE DATA / DEMO - 1/2\" cartridge · sheath 4.00\" · VOLTAGE 480 V · hole Ø 0.506\" · note: open hole 0.530 after rework, see Rev B",
         assetPath: "/demo/lakeshore-cartridge-drawing.svg",
       },
       {
@@ -236,7 +236,7 @@ export const HEATER_JOBS: DemoJob[] = [
         reviewState: "needs-review",
         value: "~182 W/in² at 1000 W vs ~273 W/in² at 1500 W (heated length ~3.5 in., calculated)",
         sourceIds: [],
-        note: "Unconfirmed calculation — engineer must review.",
+        note: "Unconfirmed calculation - engineer must review.",
       },
       {
         id: "hc-sheath-mat",
@@ -351,7 +351,7 @@ export const HEATER_JOBS: DemoJob[] = [
         askedOf: "customer",
         owner: "Alex Kim (applications engineer)",
         draft:
-          "Hi Priya — quick confirm on the 12 cartridge heaters for the new mold. Your email lists 240 V but the drawing shows 480 V. Which voltage should we build to, and is that the heater voltage or your plant supply?",
+          "Hi Priya - quick confirm on the 12 cartridge heaters for the new mold. Your email lists 240 V but the drawing shows 480 V. Which voltage should we build to, and is that the heater voltage or your plant supply?",
         sent: false,
       },
       {
@@ -361,7 +361,7 @@ export const HEATER_JOBS: DemoJob[] = [
         askedOf: "customer",
         owner: "Alex Kim (applications engineer)",
         draft:
-          "We also see 1000 W in the email vs 1500 W on the spreadsheet, and 600 F vs 1200 F. Which values should we hold? Stainless sheath is typically rated nearer 1000 F — if 1200 F is required we may need a different alloy.",
+          "We also see 1000 W in the email vs 1500 W on the spreadsheet, and 600 F vs 1200 F. Which values should we hold? Stainless sheath is typically rated nearer 1000 F - if 1200 F is required we may need a different alloy.",
         sent: false,
       },
       {
@@ -388,7 +388,7 @@ export const HEATER_JOBS: DemoJob[] = [
         askedOf: "customer",
         owner: "Alex Kim (applications engineer)",
         draft:
-          "You mentioned these are about the same as last year's order — do you have the old part number or PO line we can reference?",
+          "You mentioned these are about the same as last year's order - do you have the old part number or PO line we can reference?",
         sent: false,
       },
       {
@@ -410,7 +410,7 @@ export const HEATER_JOBS: DemoJob[] = [
         qty: "12",
         material: "Options TBD after voltage/wattage/temp confirm",
         vendor: HEATER_DEMO_SHOP_DISPLAY_NAME,
-        vendorPart: "—",
+        vendorPart: "-",
         notes: "No prices in intake demo. Configuration continues in Infor CPQ.",
       },
       {
@@ -419,8 +419,8 @@ export const HEATER_JOBS: DemoJob[] = [
         description: "Lead style and length (straight fiberglass vs right-angle)",
         qty: "12",
         material: "Fiberglass leads, optional moisture protection",
-        vendor: "—",
-        vendorPart: "—",
+        vendor: "-",
+        vendorPart: "-",
         notes: "Conflict not resolved.",
       },
       {
@@ -428,9 +428,9 @@ export const HEATER_JOBS: DemoJob[] = [
         group: "Marking",
         description: "UL marking (if confirmed)",
         qty: "12",
-        material: "—",
-        vendor: "—",
-        vendorPart: "—",
+        material: "-",
+        vendor: "-",
+        vendorPart: "-",
         notes: "Review if 480 V construction is chosen.",
       },
     ],
@@ -465,7 +465,7 @@ export const HEATER_INBOX_ITEMS: InboxItem[] = [
     snippet:
       "Need 12 cartridge heaters… 1/2 in. dia, 4 in. sheath, 240 V, 1000 W… configurator could not get wattage/voltage/fitting…",
     bodyPreview:
-      "Hi — we need a quote this week for 12 cartridge heaters on a new injection mold.\n\n1/2 in. diameter, 4.00 in. sheath length, 240 V, 1000 W, stainless sheath, 12 in. fiberglass leads. About the same as last year's order for the 200-ton press.\n\nOperating temp is around 600 F but our process group wrote 1200 F on the spreadsheet — please check.\n\nDrawing and spreadsheet attached. Ship in about three weeks. UL marking required.\n\nWe tried the online configurator and could not get the wattage/voltage/fitting combo to work.\n\nThanks,\nPriya",
+      "Hi - we need a quote this week for 12 cartridge heaters on a new injection mold.\n\n1/2 in. diameter, 4.00 in. sheath length, 240 V, 1000 W, stainless sheath, 12 in. fiberglass leads. About the same as last year's order for the 200-ton press.\n\nOperating temp is around 600 F but our process group wrote 1200 F on the spreadsheet - please check.\n\nDrawing and spreadsheet attached. Ship in about three weeks. UL marking required.\n\nWe tried the online configurator and could not get the wattage/voltage/fitting combo to work.\n\nThanks,\nPriya",
     attachments: ["lakeshore-mold-heater-layout.pdf", "lakeshore-heater-rfq.xlsx"],
   },
 ];
