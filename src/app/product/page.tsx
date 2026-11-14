@@ -35,6 +35,33 @@ const WHAT_IT_DOES = [
   },
 ] as const;
 
+const PRODUCT_UPDATES = [
+  {
+    date: "Nov 13, 2026",
+    body:
+      "Security check on our site and client portal after a November FBI alert about AI-driven attacks on small business portals and suppliers. We're tightening request limits, keeping error messages from showing technical details, and checking for exposed keys.",
+  },
+  {
+    date: "Nov 13, 2026",
+    body:
+      "Twice-monthly code audits keep our code simple and easier to keep secure.",
+  },
+  {
+    date: "Nov 7, 2026",
+    body:
+      "Intake now offers a quick summary or a full report, so we come to your first conversation already knowing your shop.",
+  },
+  {
+    date: "Nov 1, 2026",
+    body:
+      "Files uploaded through our site are private and only reachable after login. Our website forms check for bots before they accept a submission.",
+  },
+  {
+    date: "Oct 31, 2026",
+    body: "Page launched. Product descriptions live here as we ship.",
+  },
+] as const;
+
 export default function ProductPage() {
   return (
     <div className="site">
@@ -207,10 +234,12 @@ export default function ProductPage() {
             <p className="label">What&apos;s new</p>
             <h2>Product updates.</h2>
             <ul className="updates">
-              <li>
-                <span>Oct 31, 2026</span>
-                Page launched. Product descriptions live here as we ship.
-              </li>
+              {PRODUCT_UPDATES.map((item, index) => (
+                <li key={index}>
+                  <span>{item.date}</span>
+                  {item.body}
+                </li>
+              ))}
             </ul>
           </div>
         </section>
