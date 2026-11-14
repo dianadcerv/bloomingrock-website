@@ -12,13 +12,19 @@ import {
 import { buildPaidLookInboundPayload } from "@/lib/intake/paid-look-payload";
 import { submitInboundIntake } from "@/lib/intake-inbound";
 import {
+  consumeFormSubmitLimits,
+  consumePaidLookUploadLimit,
+  FORM_SUBMIT_RATE_LIMIT_ERROR,
+  UPLOAD_RATE_LIMIT_ERROR,
+} from "@/lib/form-rate-limit";
+import {
   clientIp,
-  lookEmailLimiter,
-  lookIpLimiter,
   mintFormToken,
+  sanitizeOneLine,
   validateFormToken,
   verifyTurnstile,
 } from "@/lib/look-security";
+import { genericFormErrorMessage, logServerError } from "@/lib/server-log";
 import { buildPaidLookFallbackUploadsHtml } from "@/lib/paid-look-fallback-email";
 import {
   buildPaidLookDetails,
@@ -104,6 +110,19 @@ export async function submitPaidLookIntake(
   _prev: PaidLookIntakeFormState,
   formData: FormData,
 ): Promise<PaidLookIntakeFormState> {
+  try {
+    return await submitPaidLookIntakeInner(formData);
+  } catch (error) {
+    logServerError("paid-look-intake", error);
+    return {
+      ok: false,
+      formToken: await mintFormToken(),
+      error: genericFormErrorMessage,
+    };
+  }
+}
+
+async function submitPaidLookIntakeInner(formData: FormData): Promise<PaidLookIntakeFormState> {
   const submittedToken = trimFormValue(formData.get("form_token"));
   const tokenStillValid = await validateFormToken(submittedToken);
   const nextToken = tokenStillValid ? submittedToken : await mintFormToken();
@@ -128,6 +147,24 @@ export async function submitPaidLookIntake(
       ok: false,
       formToken: nextToken,
       error: "Please confirm you’re human and try again.",
+    };
+  }
+
+  const rawEmail = sanitizeOneLine(trimFormValue(formData.get("email")));
+  if (!consumeFormSubmitLimits(ip, rawEmail)) {
+    return {
+      ok: false,
+      formToken: nextToken,
+      error: FORM_SUBMIT_RATE_LIMIT_ERROR,
+    };
+  }
+
+  const uploadList = files(formData, "uploads");
+  if (uploadList.length > 0 && !consumePaidLookUploadLimit(ip)) {
+    return {
+      ok: false,
+      formToken: nextToken,
+      error: UPLOAD_RATE_LIMIT_ERROR,
     };
   }
 
@@ -169,7 +206,6 @@ export async function submitPaidLookIntake(
     return { ok: false, formToken: nextToken, error: parsed.error };
   }
 
-  const uploadList = files(formData, "uploads");
   const uploadValidation = validatePaidLookUploads(uploadList);
   if (!uploadValidation.ok) {
     return { ok: false, formToken: nextToken, error: uploadValidation.error };
@@ -180,23 +216,12 @@ export async function submitPaidLookIntake(
     return { ok: false, formToken: nextToken, error: uploadContents.error };
   }
 
-  const emailKey = parsed.answers.email.toLowerCase();
-  if (
-    !lookIpLimiter.consume(`ip:${ip}`) ||
-    !lookEmailLimiter.consume(`email:${emailKey}`)
-  ) {
-    return {
-      ok: false,
-      formToken: nextToken,
-      error: "Please wait a few minutes before sending another request.",
-    };
-  }
-
   let attachments: Awaited<ReturnType<typeof uploadPaidLookFiles>> = [];
   if (uploadList.length > 0) {
     try {
       attachments = await uploadPaidLookFiles(uploadList);
-    } catch {
+    } catch (error) {
+      logServerError("paid-look-upload", error);
       return {
         ok: false,
         formToken: nextToken,

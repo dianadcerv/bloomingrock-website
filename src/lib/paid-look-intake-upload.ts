@@ -2,6 +2,7 @@ import {
   PAID_LOOK_ALLOWED_MIME,
   PAID_LOOK_MAX_FILE_BYTES,
   PAID_LOOK_MAX_FILES,
+  PAID_LOOK_MAX_TOTAL_BYTES,
 } from "@/lib/paid-look-upload-limits";
 
 export { PAID_LOOK_MAX_FILES, PAID_LOOK_MAX_FILE_BYTES } from "@/lib/paid-look-upload-limits";
@@ -65,6 +66,11 @@ export function validatePaidLookUploads(files: File[]): { ok: true } | { ok: fal
   if (files.length === 0) return { ok: true };
   if (files.length > PAID_LOOK_MAX_FILES) {
     return { ok: false, error: "Please upload no more than three files." };
+  }
+
+  const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+  if (totalBytes > PAID_LOOK_MAX_TOTAL_BYTES) {
+    return { ok: false, error: "The combined upload is too large (15 MB max across files)." };
   }
 
   for (const file of files) {

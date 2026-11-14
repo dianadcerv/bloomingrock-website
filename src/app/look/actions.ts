@@ -11,10 +11,12 @@ import {
 } from "@/lib/form-server";
 import { submitInboundIntake } from "@/lib/intake-inbound";
 import {
+  consumeFormSubmitLimits,
+  FORM_SUBMIT_RATE_LIMIT_ERROR,
+} from "@/lib/form-rate-limit";
+import {
   clientIp,
   isValidEmail,
-  lookEmailLimiter,
-  lookIpLimiter,
   mintFormToken,
   normalizeWebsite,
   sanitizeMultiline,
@@ -22,6 +24,7 @@ import {
   validateFormToken,
   verifyTurnstile,
 } from "@/lib/look-security";
+import { genericFormErrorMessage, logServerError } from "@/lib/server-log";
 import { HEARD_ABOUT_OPTIONS } from "./heard-about-options";
 import { lookPainTopicLabels, parseLookPainTopics } from "./look-pain-topics";
 
@@ -147,6 +150,19 @@ export async function submitLookRequest(
   _prev: LookFormState,
   formData: FormData,
 ): Promise<LookFormState> {
+  try {
+    return await submitLookRequestInner(formData);
+  } catch (error) {
+    logServerError("look-request", error);
+    return {
+      ok: false,
+      formToken: await mintFormToken(),
+      error: genericFormErrorMessage,
+    };
+  }
+}
+
+async function submitLookRequestInner(formData: FormData): Promise<LookFormState> {
   const submittedToken = trimFormValue(formData.get("form_token"));
   const tokenStillValid = await validateFormToken(submittedToken);
   const nextToken = tokenStillValid ? submittedToken : await mintFormToken();
@@ -171,6 +187,15 @@ export async function submitLookRequest(
       ok: false,
       formToken: nextToken,
       error: "Please confirm you’re human and try again.",
+    };
+  }
+
+  const rawEmail = sanitizeOneLine(trimFormValue(formData.get("email")));
+  if (!consumeFormSubmitLimits(ip, rawEmail)) {
+    return {
+      ok: false,
+      formToken: nextToken,
+      error: FORM_SUBMIT_RATE_LIMIT_ERROR,
     };
   }
 
@@ -220,14 +245,6 @@ export async function submitLookRequest(
 
   const website = websiteResult.url;
   const heardAbout = heardResult.heardAbout;
-  const emailKey = email.toLowerCase();
-  if (!lookIpLimiter.consume(`ip:${ip}`) || !lookEmailLimiter.consume(`email:${emailKey}`)) {
-    return {
-      ok: false,
-      formToken: nextToken,
-      error: "Please wait a few minutes before sending another request.",
-    };
-  }
 
   const details = buildDetails(week, website, painTopicLabels);
   const portalOk = await submitInboundIntake({

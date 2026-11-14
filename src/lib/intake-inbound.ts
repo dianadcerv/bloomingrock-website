@@ -57,8 +57,15 @@ export async function submitInboundIntake(payload: InboundPayload): Promise<bool
       },
       body: JSON.stringify(payload),
     });
+    if (!response.ok) {
+      console.error("[intake-inbound] Command Center returned", response.status);
+    }
     return response.ok;
-  } catch {
+  } catch (error) {
+    console.error(
+      "[intake-inbound] Command Center request failed",
+      error instanceof Error ? error.message : "unknown",
+    );
     return false;
   }
 }

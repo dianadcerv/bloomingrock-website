@@ -13,15 +13,18 @@ import {
 import { SITE_URL } from "@/lib/site";
 import { submitInboundIntake } from "@/lib/intake-inbound";
 import {
+  consumeFormSubmitLimits,
+  FORM_SUBMIT_RATE_LIMIT_ERROR,
+} from "@/lib/form-rate-limit";
+import {
   clientIp,
   isValidEmail,
-  lookEmailLimiter,
-  lookIpLimiter,
   mintFormToken,
   sanitizeOneLine,
   validateFormToken,
   verifyTurnstile,
 } from "@/lib/look-security";
+import { genericFormErrorMessage, logServerError } from "@/lib/server-log";
 
 export type ChecklistFormState = {
   ok: boolean;
@@ -136,6 +139,19 @@ export async function submitChecklistRequest(
   _prev: ChecklistFormState,
   formData: FormData,
 ): Promise<ChecklistFormState> {
+  try {
+    return await submitChecklistRequestInner(formData);
+  } catch (error) {
+    logServerError("pre-quote-checklist", error);
+    return {
+      ok: false,
+      formToken: await mintFormToken(),
+      error: genericFormErrorMessage,
+    };
+  }
+}
+
+async function submitChecklistRequestInner(formData: FormData): Promise<ChecklistFormState> {
   const submittedToken = trimFormValue(formData.get("form_token"));
   const tokenStillValid = await validateFormToken(submittedToken);
   const nextToken = tokenStillValid ? submittedToken : await mintFormToken();
@@ -164,6 +180,15 @@ export async function submitChecklistRequest(
     };
   }
 
+  const rawEmail = sanitizeOneLine(trimFormValue(formData.get("email")));
+  if (!consumeFormSubmitLimits(ip, rawEmail)) {
+    return {
+      ok: false,
+      formToken: nextToken,
+      error: FORM_SUBMIT_RATE_LIMIT_ERROR,
+    };
+  }
+
   const name = sanitizeOneLine(trimFormValue(formData.get("name")));
   const email = sanitizeOneLine(trimFormValue(formData.get("email")));
   const business = sanitizeOneLine(trimFormValue(formData.get("business")));
@@ -187,16 +212,6 @@ export async function submitChecklistRequest(
   }
 
   const emailKey = email.toLowerCase();
-  if (
-    !lookIpLimiter.consume(`ip:${ip}`) ||
-    !lookEmailLimiter.consume(`email:${emailKey}`)
-  ) {
-    return {
-      ok: false,
-      formToken: nextToken,
-      error: "Please wait a few minutes before sending another request.",
-    };
-  }
 
   const portalOk = await submitInboundIntake({
     name,
