@@ -3,6 +3,13 @@ export const CHECKLIST_TITLE = "Pre-quote checklist";
 export const CHECKLIST_INTRO =
   "Before anyone opens the quoting sheet, get these details in one place. If a line is blank, ask the customer before you price the job.";
 
+export const CHECKLIST_META_FIELDS = [
+  { id: "prepared-by", label: "Prepared by" },
+  { id: "date", label: "Date" },
+] as const;
+
+export const CHECKLIST_SECTION_NOTES_LABEL = "Notes";
+
 export const CHECKLIST_SECTIONS = [
   {
     title: "Drawings and files",
@@ -40,22 +47,24 @@ export const CHECKLIST_SECTIONS = [
   },
 ] as const;
 
-const CHECKBOX = "[ ]";
+export const PLAIN_TEXT_CHECKBOX = "[ ]";
+const PLAIN_TEXT_BLANK_LINE = "________________________________________";
 
 export function buildChecklistPlainText(): string {
-  const lines: string[] = [
-    CHECKLIST_TITLE,
-    "",
-    CHECKLIST_INTRO,
-    "",
-  ];
+  const lines: string[] = [CHECKLIST_TITLE, ""];
+
+  for (const field of CHECKLIST_META_FIELDS) {
+    lines.push(`${field.label}: ${PLAIN_TEXT_BLANK_LINE}`);
+  }
+
+  lines.push("", CHECKLIST_INTRO, "");
 
   for (const section of CHECKLIST_SECTIONS) {
     lines.push(section.title);
     for (const item of section.items) {
-      lines.push(`${CHECKBOX} ${item}`);
+      lines.push(`${PLAIN_TEXT_CHECKBOX} ${item}`);
     }
-    lines.push("");
+    lines.push(`${CHECKLIST_SECTION_NOTES_LABEL}: ${PLAIN_TEXT_BLANK_LINE}`, "");
   }
 
   lines.push("BloomingRock Solutions · bloomingrocksolutions.com");

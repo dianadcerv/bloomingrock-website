@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
 import { CONTACT_EMAIL } from "@/lib/contact";
+import { ChecklistInteractive } from "./ChecklistInteractive";
 import { submitChecklistRequest, type ChecklistFormState } from "./actions";
 
 const initialState: ChecklistFormState = { ok: false };
@@ -48,6 +49,9 @@ export function ChecklistForm({
           </a>
           .
         </p>
+        <div className="checklist-preview-panel" style={{ margin: "1.25rem 0" }}>
+          <ChecklistInteractive variant="embedded" showBrand />
+        </div>
         <Link className="btn btn--primary" href={PRINT_PATH}>
           Open printable checklist
         </Link>
@@ -62,7 +66,7 @@ export function ChecklistForm({
         name="form_token"
         value={state.formToken ?? formToken}
       />
-      <p className="look-form__eyebrow">Free download</p>
+      <p className="look-form__eyebrow">Email me a copy</p>
       <h2 className="look-form__title">Get the checklist.</h2>
       <p className="look-form__lead">
         Just your name and email, then I&apos;ll take you straight to the
