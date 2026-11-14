@@ -1,7 +1,7 @@
 .checklist-doc {
   max-width: 42rem;
-  font-family: var(--font-body), system-ui, sans-serif;
-  color: var(--stone-900);
+  font-family: system-ui, sans-serif;
+  color: #2c2a26;
   line-height: 1.5;
 }
 
@@ -9,22 +9,24 @@
   font-size: 0.75rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--lichen);
+  color: #3d6b5a;
   margin: 0 0 0.5rem;
 }
 
 .checklist-doc h1,
-.checklist-doc__title {
-  font-family: var(--font-display), Georgia, serif;
+.checklist-doc h2.checklist-doc__title {
+  font-family: Georgia, serif;
   font-size: clamp(1.75rem, 3vw, 2rem);
   font-weight: 500;
   letter-spacing: -0.02em;
+  line-height: 1.5;
+  max-width: none;
   margin: 0 0 0.75rem;
 }
 
 .checklist-doc__intro {
   margin: 0 0 1.25rem;
-  color: var(--stone-700);
+  color: var(--muted);
 }
 
 .checklist-doc__meta {
@@ -40,7 +42,7 @@
   gap: 0.35rem 0.75rem;
   margin: 0;
   font-size: 0.95rem;
-  color: var(--stone-800);
+  color: #2c2a26;
 }
 
 .checklist-doc__meta-label {
@@ -52,7 +54,7 @@
   flex: 1 1 12rem;
   min-width: 8rem;
   border: none;
-  border-bottom: 1px solid var(--stone-400);
+  border-bottom: 1px solid var(--stone3);
   background: transparent;
   padding: 0.15rem 0;
 }
@@ -62,13 +64,15 @@
   break-inside: avoid;
 }
 
-.checklist-doc__section h2,
-.checklist-doc__section-title {
-  font-family: var(--font-display), Georgia, serif;
+.checklist-doc h3.checklist-doc__section-title {
+  font-family: Georgia, serif;
   font-size: 1.15rem;
   font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.5;
+  max-width: none;
   margin: 0 0 0.65rem;
-  color: var(--stone-900);
+  color: #2c2a26;
 }
 
 .checklist-doc__items {
@@ -84,7 +88,7 @@
   gap: 0.55rem;
   align-items: flex-start;
   margin: 0;
-  color: var(--stone-700);
+  color: var(--muted);
 }
 
 .checklist-doc__item-label {
@@ -100,7 +104,7 @@
   width: 1.05rem;
   height: 1.05rem;
   margin-top: 0.15rem;
-  border: 1.5px solid var(--stone-900);
+  border: 1.5px solid #2c2a26;
   border-radius: 2px;
   background: #fff;
 }
@@ -110,11 +114,11 @@
   width: 1.05rem;
   height: 1.05rem;
   margin-top: 0.2rem;
-  accent-color: var(--lichen);
+  accent-color: #3d6b5a;
 }
 
 .checklist-doc__checkbox:focus-visible {
-  outline: 2px solid var(--lichen);
+  outline: 2px solid #3d6b5a;
   outline-offset: 2px;
 }
 
@@ -125,7 +129,7 @@
   align-items: baseline;
   gap: 0.35rem 0.75rem;
   font-size: 0.95rem;
-  color: var(--stone-700);
+  color: var(--muted);
 }
 
 .checklist-doc__notes-label {
@@ -137,7 +141,7 @@
   flex: 1 1 12rem;
   min-width: 8rem;
   border: none;
-  border-bottom: 1px solid var(--stone-300);
+  border-bottom: 1px solid var(--stone3);
   background: transparent;
   min-height: 1.25rem;
 }
@@ -145,21 +149,21 @@
 .checklist-doc__footer {
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid var(--stone-300);
+  border-top: 1px solid var(--stone3);
   font-size: 0.85rem;
-  color: var(--stone-500);
+  color: #7a766c;
 }
 
 .checklist-doc--embedded {
   padding: 1.25rem 0 0;
 }
 
-.checklist-doc--embedded .checklist-doc__title {
+.checklist-doc--embedded h2.checklist-doc__title {
   font-size: 1.35rem;
 }
 
 .checklist-preview-panel {
-  border: 1px solid var(--stone-300);
+  border: 1px solid var(--stone3);
   border-radius: 8px;
   padding: 1.5rem 1.25rem;
   background: #fff;

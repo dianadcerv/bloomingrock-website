@@ -25,30 +25,32 @@ export function ChecklistForm({
 
   if (state.ok) {
     return (
-      <div className="look-form look-form--success" role="status">
-        <p className="look-form__eyebrow">Checklist ready</p>
-        <h2 className="look-form__title">Here&apos;s your copy.</h2>
-        <p className="look-form__lead">
-          {state.visitorEmailSent ? (
-            <>
-              I also sent a copy to your inbox with the checklist attached.
-              Print it or save it as a PDF from your browser using the button
-              below.
-            </>
-          ) : (
-            <>
-              Your printable checklist is ready below. If you don&apos;t see a
-              copy in your inbox soon, use the button or email me and I&apos;ll
-              send it.
-            </>
-          )}{" "}
-          I&apos;m still working on this list, so if something&apos;s missing for
-          your shop, email me at{" "}
-          <a className="cta-email" href={`mailto:${CONTACT_EMAIL}`}>
-            {CONTACT_EMAIL}
-          </a>
-          .
-        </p>
+      <div className="look-form look-form--success">
+        <div role="status">
+          <p className="look-form__eyebrow">Checklist ready</p>
+          <h2 className="look-form__title">Here&apos;s your copy.</h2>
+          <p className="look-form__lead">
+            {state.visitorEmailSent ? (
+              <>
+                I also sent a copy to your inbox with the checklist attached.
+                Print it or save it as a PDF from your browser using the button
+                below.
+              </>
+            ) : (
+              <>
+                Your printable checklist is ready below. If you don&apos;t see a
+                copy in your inbox soon, use the button or email me and I&apos;ll
+                send it.
+              </>
+            )}{" "}
+            I&apos;m still working on this list, so if something&apos;s missing for
+            your shop, email me at{" "}
+            <a className="cta-email" href={`mailto:${CONTACT_EMAIL}`}>
+              {CONTACT_EMAIL}
+            </a>
+            .
+          </p>
+        </div>
         <div className="checklist-preview-panel" style={{ margin: "1.25rem 0" }}>
           <ChecklistInteractive variant="embedded" showBrand />
         </div>
