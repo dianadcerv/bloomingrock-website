@@ -17,7 +17,7 @@ export default async function MissingInfoPage({
   return (
     <PortalShell session={session} current="/jobs">
       <JobHeader job={job} current={`/jobs/${job.id}/missing`} role={session.role} />
-      <DraftNotice>DRAFT, NOT SENT — a person always sends.</DraftNotice>
+      <DraftNotice>DRAFT, NOT SENT. A person always sends.</DraftNotice>
       {job.questions.map((question) => (
         <article key={question.id} className="portal-letter">
           <h2>{question.prompt}</h2>

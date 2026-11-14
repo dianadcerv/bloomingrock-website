@@ -95,7 +95,7 @@ export function JobChecklistClient({ job, who }: { job: DemoJob; who: string }) 
       <section className="portal-section" id="requirements-checklist">
         <h2>Requirements checklist</h2>
         <p className="look-field__hint">
-          No checklist for this job — controlled hold. Nothing was extracted or suggested.
+          No checklist for this job (controlled hold). Nothing was extracted or suggested.
         </p>
       </section>
     );

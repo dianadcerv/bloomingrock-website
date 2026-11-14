@@ -49,7 +49,7 @@ export function InboxDetailClient({
     <>
       {item.kind === "customer-upload" ? (
         <p className="portal-conflict-banner" role="status">
-          <strong>New files from customer</strong> — match suggested from secure upload link (confirm
+          <strong>New files from customer</strong>. Match suggested from secure upload link (confirm
           to attach to job sources).
         </p>
       ) : null}
@@ -93,12 +93,12 @@ export function InboxDetailClient({
             jobName={item.suggested.jobs[0] ?? jobId}
             createdBy={sessionName}
             inboxItemId={item.id}
-            defaultTitle={`More files — ${item.subject}`}
+            defaultTitle={`More files: ${item.subject}`}
           />
         ) : null}
-        {item.suggested.jobIds.map((jid) => (
+        {item.suggested.jobIds.map((jid, index) => (
           <Link key={jid} className="btn btn--primary" href={`/jobs/${jid}`}>
-            Confirm → {jid === "access-platform" ? "Platform" : jid}
+            Confirm match{item.suggested.jobs[index] ? `: ${item.suggested.jobs[index]}` : ""}
           </Link>
         ))}
         <Link className="btn btn--quiet portal-btn-quiet" href="/inbox">

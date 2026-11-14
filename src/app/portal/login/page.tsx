@@ -25,7 +25,7 @@ export default async function LoginPage({
   return (
     <AuthChrome title="Sign in">
       <p className="portal-auth__lead">
-        Enter your work email. We’ll send a link — no password.
+        Enter your work email. We&apos;ll send a link. No password.
       </p>
       {error === "expired" ? (
         <p className="look-form__error" role="alert">

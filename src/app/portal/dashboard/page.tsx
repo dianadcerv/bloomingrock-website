@@ -13,13 +13,7 @@ import {
   getShopSummaryTiles,
   getWorkInProgressRows,
 } from "@/lib/portal/dashboard-data";
-import {
-  DEMO_CUSTOMER,
-  DEMO_CUSTOMER_HARBORVIEW,
-  DEMO_PROJECT,
-  DEMO_PROJECT_WAREHOUSE_B,
-  INBOX_ITEMS,
-} from "@/lib/portal/demo-data";
+import { DEMO_CUSTOMER, DEMO_PROJECT, INBOX_ITEMS } from "@/lib/portal/demo-data";
 import { getDashboardNotificationsForEmail } from "@/lib/portal/workflow-changes";
 
 export const metadata: Metadata = {
@@ -36,25 +30,25 @@ export default async function DashboardPage() {
         href: "/inbox",
         eyebrow: "Inbox",
         title: `${INBOX_ITEMS.length} to match`,
-        body: "Meridian + Harborview",
+        body: "Suggested customer and job matches to confirm",
       },
       {
-        href: `/customers/${DEMO_CUSTOMER.id}`,
-        eyebrow: "Meridian",
+        href: `/customers/${DEMO_CUSTOMER.id}/projects/${DEMO_PROJECT.id}`,
+        eyebrow: "Jobs / projects",
         title: DEMO_PROJECT.name,
-        body: "Line 3 jobs",
+        body: "Meridian Line 3: platform + machine guard",
       },
       {
-        href: `/customers/${DEMO_CUSTOMER_HARBORVIEW.id}`,
-        eyebrow: "Harborview",
-        title: DEMO_PROJECT_WAREHOUSE_B.name,
-        body: "Warehouse B stair",
+        href: "/workflows",
+        eyebrow: "Workflows",
+        title: "Steps by job",
+        body: "Minimum, ideal, and added steps",
       },
       {
-        href: "/knowledge/library",
-        eyebrow: "Knowledge",
-        title: "Expert tips",
-        body: "Internal library",
+        href: "/documents",
+        eyebrow: "Sign-off / documents",
+        title: "Draft outputs",
+        body: "Sign-off, agreement, BOM, and PDF",
       },
     ];
 

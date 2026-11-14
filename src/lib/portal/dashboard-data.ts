@@ -311,6 +311,18 @@ export function getCustomerWaitingItems(session: PortalSession): AttentionRow[] 
   }
 
   for (const job of jobs) {
+    if (job.status === "conflict") {
+      rows.push({
+        id: `conflict-${job.id}`,
+        urgency: 0,
+        title: "Requirements under review",
+        detail: `${job.name}: your shop is reconciling sources before sign-off (demo: width conflict on the access platform).`,
+        statusLabel: jobStatusLabel(job.status),
+        tone: jobStatusPillTone(job.status),
+        actionLabel: "View status",
+        href: `/jobs/${job.id}`,
+      });
+    }
     if (job.status === "waiting-on-customer") {
       rows.push({
         id: `wait-${job.id}`,

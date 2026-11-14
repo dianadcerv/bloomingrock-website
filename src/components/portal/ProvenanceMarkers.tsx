@@ -9,15 +9,15 @@ export function ProvenanceLegend() {
       <p className="portal-provenance-legend__title">How values are labeled</p>
       <ul>
         <li>
-          <Badge tone="neutral">Your team added</Badge> — someone on your team entered this on the
+          <Badge tone="neutral">Your team added</Badge>: someone on your team entered this on the
           job (who + when).
         </li>
         <li>
-          <Badge tone="info">Pulled from a source</Badge> — quoted from email, drawing, transcript,
+          <Badge tone="info">Pulled from a source</Badge>: quoted from email, drawing, transcript,
           or another file (link back).
         </li>
         <li>
-          <Badge tone="info">Needs a check</Badge> — inferred or summarized; a person should
+          <Badge tone="info">Needs a check</Badge>: inferred or summarized; a person should
           confirm before sign-off.
         </li>
       </ul>
