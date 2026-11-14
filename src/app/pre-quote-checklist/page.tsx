@@ -5,6 +5,8 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { mintFormToken } from "@/lib/look-security";
 import { ChecklistForm } from "./ChecklistForm";
+import { ChecklistInteractive } from "./ChecklistInteractive";
+import "./checklist.css";
 
 const PAGE_TITLE = "Pre-quote checklist for custom jobs | BloomingRock Solutions";
 const PAGE_DESCRIPTION =
@@ -32,7 +34,7 @@ export default async function PreQuoteChecklistPage() {
           aria-label="Pre-quote checklist"
         >
           <div className="wrap">
-            <p className="label">Free download</p>
+            <p className="label">Printable checklist</p>
             <h1>Gather the details before you quote.</h1>
             <p className="sub">
               A quote can sit for days waiting on a missing drawing, revision, or
@@ -43,6 +45,21 @@ export default async function PreQuoteChecklistPage() {
               </Link>
               .
             </p>
+          </div>
+        </section>
+
+        <section className="stone r-section" id="checklist-preview">
+          <div className="wrap">
+            <p className="label">On the page</p>
+            <h2>What&apos;s on the list</h2>
+            <p className="sub" style={{ maxWidth: "36rem", marginBottom: "1.25rem" }}>
+              Tick boxes as you gather details. Nothing you check here is saved or
+              sent anywhere — it&apos;s just for you on this screen and when you
+              print.
+            </p>
+            <div className="checklist-preview-panel">
+              <ChecklistInteractive />
+            </div>
           </div>
         </section>
 
