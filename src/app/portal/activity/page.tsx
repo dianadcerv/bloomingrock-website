@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "Activity" };
 
 export default async function ActivityPage() {
   const session = await requireShopStaff();
-  const all = getRecentAuditAcrossJobs(999);
+  const all = getRecentAuditAcrossJobs(session, 999);
 
   return (
     <PortalShell session={session} current="/dashboard">

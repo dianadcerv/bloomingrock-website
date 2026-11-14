@@ -1,4 +1,12 @@
 import type { ProvenanceMark } from "./provenance";
+import {
+  DEMO_CUSTOMER_LAKESHORE,
+  DEMO_PROJECT_LAKESHORE_MOLD,
+  HEATER_INBOX_ITEMS,
+  HEATER_JOBS,
+} from "./demo-heater-data";
+import type { DemoShopId } from "./demo-shop";
+import { DEMO_SHOP_NORTHRIDGE, HEATER_DEMO_SHOP_DISPLAY_NAME } from "./demo-shop-constants";
 
 export type SourceKind = "email" | "sketch" | "pdf" | "call" | "note" | "cad" | "zip";
 export type SourceStatus = "reviewed" | "needs-review" | "conflict";
@@ -92,9 +100,17 @@ export type StatusPillTone = "conflict" | "missing" | "ok" | "draft" | "assumed"
 
 export type DemoJob = {
   id: string;
+  /** Demo shop tenant; defaults to northridge when omitted. */
+  shopId?: DemoShopId;
   name: string;
   projectId: string;
   status: JobStatus;
+  /** Buyer dashboard label override (demo). */
+  buyerStatusLabel?: string;
+  /** CPQ handoff flow instead of customer sign-off only (demo). */
+  cpqHandoff?: boolean;
+  /** Fields that block handoff until resolved or deferred (demo). */
+  handoffBlockers?: string[];
   /** Demo-only label for time in current stage. */
   stageSince: string;
   summary: string;
@@ -126,6 +142,7 @@ export type DemoProject = {
   customerId: string;
   site: string;
   jobIds: string[];
+  shopId?: DemoShopId;
 };
 
 export type DemoCustomer = {
@@ -134,10 +151,12 @@ export type DemoCustomer = {
   contact: string;
   email: string;
   projectIds: string[];
+  shopId?: DemoShopId;
 };
 
 export type InboxItem = {
   id: string;
+  shopId?: DemoShopId;
   subject: string;
   from: string;
   suggested: {
@@ -155,12 +174,10 @@ export type InboxItem = {
 
 export const DEMO_BANNER = "FAKE DATA, DEMO ONLY";
 
-export const DEMO_SHOP = {
-  name: "Northridge Steel",
-  legal: "Northridge Steel Fabrication LLC",
-  location: "Rockford, IL",
-  brandColor: "#2f4a3c",
-};
+/** @deprecated Prefer getDemoShopBranding(session) for multi-shop demos. */
+export const DEMO_SHOP = DEMO_SHOP_NORTHRIDGE;
+
+export { HEATER_DEMO_SHOP_DISPLAY_NAME };
 
 export const DEMO_CUSTOMER: DemoCustomer = {
   id: "meridian",
@@ -178,7 +195,11 @@ export const DEMO_CUSTOMER_HARBORVIEW: DemoCustomer = {
   projectIds: ["warehouse-b"],
 };
 
-export const DEMO_CUSTOMERS: DemoCustomer[] = [DEMO_CUSTOMER, DEMO_CUSTOMER_HARBORVIEW];
+export const DEMO_CUSTOMERS: DemoCustomer[] = [
+  DEMO_CUSTOMER,
+  DEMO_CUSTOMER_HARBORVIEW,
+  DEMO_CUSTOMER_LAKESHORE,
+];
 
 export const DEMO_PROJECT: DemoProject = {
   id: "line-3",
@@ -196,7 +217,11 @@ export const DEMO_PROJECT_WAREHOUSE_B: DemoProject = {
   jobIds: ["warehouse-b-stair", "itar-mezz-guard"],
 };
 
-export const DEMO_PROJECTS: DemoProject[] = [DEMO_PROJECT, DEMO_PROJECT_WAREHOUSE_B];
+export const DEMO_PROJECTS: DemoProject[] = [
+  DEMO_PROJECT,
+  DEMO_PROJECT_WAREHOUSE_B,
+  DEMO_PROJECT_LAKESHORE_MOLD,
+];
 
 const ACCESS_SOURCES: DemoSource[] = [
   {
@@ -982,6 +1007,7 @@ export const JOBS: DemoJob[] = [
       },
     ],
   },
+  ...HEATER_JOBS,
 ];
 
 export const INBOX_ITEMS: InboxItem[] = [
@@ -1068,6 +1094,7 @@ export const INBOX_ITEMS: InboxItem[] = [
     bodyPreview: "Attached anchor bolt plan for the Warehouse B exterior stair footing.",
     attachments: ["anchor-bolt-plan.pdf"],
   },
+  ...HEATER_INBOX_ITEMS,
 ];
 
 export const DEMO_TRANSCRIPT = {
@@ -1078,6 +1105,10 @@ Jordan: We can handle install ourselves if you deliver knocked down.
 Maya: Anchors into the existing slab?
 Jordan: Yes, engineer will review anchor locations after you send a layout.`,
 };
+
+export function jobShopId(job: DemoJob): DemoShopId {
+  return job.shopId ?? "northridge";
+}
 
 export function getJob(id: string) {
   return JOBS.find((job) => job.id === id) ?? null;
@@ -1131,6 +1162,18 @@ export function inboxAttachmentPreviewHref(jobIds: string[], filename: string) {
   ) {
     return "/jobs/access-platform/sources/drawing-rev-c/preview";
   }
+  if (
+    filename === "lakeshore-mold-heater-layout.pdf" &&
+    jobIds.includes("lakeshore-cartridge-heaters")
+  ) {
+    return "/jobs/lakeshore-cartridge-heaters/sources/hc-drawing-1/preview";
+  }
+  if (
+    filename === "lakeshore-heater-rfq.xlsx" &&
+    jobIds.includes("lakeshore-cartridge-heaters")
+  ) {
+    return "/jobs/lakeshore-cartridge-heaters/sources/hc-sheet-1/preview";
+  }
   return null;
 }
 
@@ -1147,7 +1190,11 @@ export function jobOwnerRole(job: DemoJob) {
   return open?.ownerRole ?? job.workflow.at(-1)?.ownerRole ?? "Estimator";
 }
 
-export function jobStatusLabel(status: JobStatus) {
+export function jobStatusLabel(
+  status: JobStatus,
+  options?: { buyerLabel?: string; role?: "buyer" | "shop" },
+) {
+  if (options?.role === "buyer" && options.buyerLabel) return options.buyerLabel;
   switch (status) {
     case "needs-match":
       return "Needs a match";

@@ -17,6 +17,8 @@ describe("demo users", () => {
     assert.equal(findDemoUser("diana@bloomingrock.demo")?.role, "superadmin");
     assert.equal(findDemoUser("jordan@meridian.demo")?.role, "buyer");
     assert.equal(findDemoUser("alex@harborview.demo")?.role, "buyer");
+    assert.equal(findDemoUser("alex@heaterco.demo")?.shopId, "heaterco");
+    assert.equal(findDemoUser("priya@lakeshore.demo")?.role, "buyer");
     assert.equal(findDemoUser("nobody@example.com"), null);
   });
 });

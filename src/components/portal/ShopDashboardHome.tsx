@@ -12,10 +12,7 @@ import type {
   SummaryTile,
   WorkJobRow,
 } from "@/lib/portal/dashboard-data";
-import {
-  CUSTOMER_FILTER_OPTIONS,
-  groupJobsByStage,
-} from "@/lib/portal/dashboard-data";
+import { groupJobsByStage } from "@/lib/portal/dashboard-data";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 function attentionBadgeTone(tone: AttentionRow["tone"]) {
@@ -56,6 +53,7 @@ export function ShopDashboardHome({
   workJobs,
   recentActivity,
   navModules,
+  customerFilterOptions,
 }: {
   firstName: string;
   email: string;
@@ -63,6 +61,7 @@ export function ShopDashboardHome({
   summaryTiles: SummaryTile[];
   attention: AttentionRow[];
   workJobs: WorkJobRow[];
+  customerFilterOptions: { id: string; label: string }[];
   recentActivity: {
     id: string;
     at: string;
@@ -156,7 +155,7 @@ export function ShopDashboardHome({
                     value={customerFilter}
                     onChange={(e) => setCustomerFilter(e.target.value)}
                   >
-                    {CUSTOMER_FILTER_OPTIONS.map((opt) => (
+                    {customerFilterOptions.map((opt) => (
                       <option key={opt.id} value={opt.id}>
                         {opt.label}
                       </option>

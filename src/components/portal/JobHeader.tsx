@@ -52,7 +52,12 @@ export function JobHeader({
       </p>
       <div className="job-head__title-row">
         <h1 className="portal-intro__title">{job.name}</h1>
-        <StatusPill tone={jobStatusPillTone(job.status)}>{jobStatusLabel(job.status)}</StatusPill>
+        <StatusPill tone={jobStatusPillTone(job.status)}>
+          {jobStatusLabel(job.status, {
+            role: role === "buyer" ? "buyer" : undefined,
+            buyerLabel: job.buyerStatusLabel,
+          })}
+        </StatusPill>
       </div>
       <p className="job-head__summary">{job.summary}</p>
       <nav className="job-subnav" aria-label="Job sections">

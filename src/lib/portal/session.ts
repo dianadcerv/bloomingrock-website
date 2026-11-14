@@ -1,4 +1,6 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { HEATER_DEMO_SHOP_DISPLAY_NAME } from "./demo-shop-constants";
+import type { DemoShopId } from "./demo-shop-constants";
 
 export const SESSION_COOKIE = "br_portal";
 export const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;
@@ -12,6 +14,7 @@ export type PortalUser = {
   name: string;
   org: string;
   title: string;
+  shopId?: DemoShopId;
 };
 
 export type PortalSession = PortalUser & {
@@ -67,6 +70,7 @@ export const DEMO_USERS: readonly PortalUser[] = [
     name: "Maya Chen",
     org: "Northridge Steel",
     title: "Shop admin · Estimator",
+    shopId: "northridge",
   },
   {
     email: "riley@northridge.demo",
@@ -74,6 +78,15 @@ export const DEMO_USERS: readonly PortalUser[] = [
     name: "Riley Ortiz",
     org: "Northridge Steel",
     title: "Engineer",
+    shopId: "northridge",
+  },
+  {
+    email: "alex@heaterco.demo",
+    role: "shop",
+    name: "Alex Kim",
+    org: HEATER_DEMO_SHOP_DISPLAY_NAME,
+    title: "Applications engineer",
+    shopId: "heaterco",
   },
   {
     email: "jordan@meridian.demo",
@@ -88,6 +101,13 @@ export const DEMO_USERS: readonly PortalUser[] = [
     name: "Alex Rivera",
     org: "Harborview Logistics",
     title: "Facilities manager",
+  },
+  {
+    email: "priya@lakeshore.demo",
+    role: "buyer",
+    name: "Priya N. Shah",
+    org: "Lakeshore Mold Systems, Inc.",
+    title: "Purchasing",
   },
 ] as const;
 

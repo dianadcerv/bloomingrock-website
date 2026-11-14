@@ -27,6 +27,13 @@ describe("getJobSubnavLinks", () => {
     const labels = getJobSubnavLinks(stair, "buyer").map((l) => l.label);
     assert.deepEqual(labels, ["Workspace", "Workflow", "Documents"]);
   });
+
+  it("adds Handoff for CPQ demo jobs on shop nav", () => {
+    const heater = JOBS.find((j) => j.id === "lakeshore-cartridge-heaters")!;
+    const labels = getJobSubnavLinks(heater, "shop").map((l) => l.label);
+    assert.ok(labels.includes("Handoff"));
+    assert.ok(!getJobSubnavLinks(heater, "buyer").map((l) => l.label).includes("Handoff"));
+  });
 });
 
 describe("isJobDocumentsNavActive", () => {
