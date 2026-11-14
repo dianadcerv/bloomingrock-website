@@ -8,6 +8,7 @@ import {
   CHECKLIST_TITLE,
 } from "./checklist-content";
 import { ChecklistEmptyBox } from "./ChecklistEmptyBox";
+import { ChecklistRuleLine } from "./ChecklistRuleLine";
 import { ChecklistSectionNotes } from "./ChecklistSectionNotes";
 import "./checklist.css";
 
@@ -39,7 +40,9 @@ export function ChecklistInteractive({
         {CHECKLIST_META_FIELDS.map((field) => (
           <p key={field.id} className="checklist-doc__meta-row">
             <span className="checklist-doc__meta-label">{field.label}</span>
-            <span className="checklist-doc__meta-line" aria-hidden="true" />
+            <span className="checklist-doc__meta-rule" aria-hidden="true">
+              <ChecklistRuleLine />
+            </span>
           </p>
         ))}
       </div>
