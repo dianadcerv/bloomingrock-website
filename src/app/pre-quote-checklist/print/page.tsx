@@ -5,6 +5,7 @@ import {
   CHECKLIST_SECTIONS,
   CHECKLIST_TITLE,
 } from "../checklist-content";
+import { ChecklistEmptyBox } from "../ChecklistEmptyBox";
 import { ChecklistSectionNotes } from "../ChecklistSectionNotes";
 import "../checklist.css";
 import { PrintControls } from "./PrintControls";
@@ -41,8 +42,8 @@ export default function PreQuoteChecklistPrintPage() {
           <ul className="checklist-doc__items">
             {section.items.map((item) => (
               <li key={item} className="checklist-doc__item">
-                <span className="checklist-doc__box" aria-hidden="true" />
-                <span>{item}</span>
+                <ChecklistEmptyBox />
+                <span className="checklist-doc__item-text">{item}</span>
               </li>
             ))}
           </ul>

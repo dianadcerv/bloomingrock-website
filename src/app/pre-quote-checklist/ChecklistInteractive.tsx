@@ -7,6 +7,7 @@ import {
   CHECKLIST_SECTIONS,
   CHECKLIST_TITLE,
 } from "./checklist-content";
+import { ChecklistEmptyBox } from "./ChecklistEmptyBox";
 import { ChecklistSectionNotes } from "./ChecklistSectionNotes";
 import "./checklist.css";
 
@@ -64,9 +65,10 @@ export function ChecklistInteractive({
                     <label className="checklist-doc__item-label" htmlFor={inputId}>
                       <input
                         id={inputId}
-                        className="checklist-doc__checkbox"
+                        className="checklist-doc__checkbox-input"
                         type="checkbox"
                       />
+                      <ChecklistEmptyBox />
                       <span>{item}</span>
                     </label>
                   </li>

@@ -33,6 +33,12 @@
   outline-offset: 2px;
 }
 
+.checklist-print .checklist-doc__empty-box {
+  width: 0.2in;
+  height: 0.2in;
+  margin-top: 0.06in;
+}
+
 .checklist-print .checklist-doc__notes-lines {
   gap: 0;
 }
@@ -57,8 +63,20 @@
     max-width: none;
   }
 
-  .checklist-doc__checkbox {
+  .checklist-print .checklist-doc__empty-box {
+    width: 0.2in;
+    height: 0.2in;
+    -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  .checklist-print .checklist-doc__empty-box rect {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .checklist-print .checklist-doc__empty-box-check {
+    opacity: 0;
   }
 
   .checklist-print .checklist-doc__notes-line {
