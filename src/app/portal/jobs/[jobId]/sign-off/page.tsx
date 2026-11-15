@@ -141,7 +141,10 @@ export default async function SignOffPage({
           <h3>Open questions</h3>
           <OpenQuestion>{PROTOTYPE_OPEN_QUESTIONS.openQuestionsOwners}</OpenQuestion>
           <ul>
-            {job.questions.map((q) => (
+            {(buyer
+              ? job.questions.filter((q) => q.askedOf === "customer" && q.sent)
+              : job.questions
+            ).map((q) => (
               <li key={q.id}>
                 {q.prompt}
                 {q.owner ? ` (${q.owner})` : ""}

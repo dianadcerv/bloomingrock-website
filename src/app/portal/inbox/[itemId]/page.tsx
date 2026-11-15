@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { InboxDetailClient } from "@/components/portal/InboxDetailClient";
 import { OpenQuestion, PageIntro, StatusPill } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
+import { inboxForSession } from "@/lib/portal/access";
 import { requireShopStaff } from "@/lib/portal/auth";
-import { getInboxItem } from "@/lib/portal/demo-data";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "Inbox message" };
@@ -16,7 +17,8 @@ export default async function InboxDetailPage({
 }) {
   const session = await requireShopStaff();
   const { itemId } = await params;
-  const seed = getInboxItem(itemId);
+  const seed = inboxForSession(session).find((item) => item.id === itemId);
+  if (!seed) notFound();
 
   return (
     <PortalShell session={session} current="/inbox">

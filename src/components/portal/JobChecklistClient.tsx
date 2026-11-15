@@ -72,7 +72,15 @@ function ConflictChoices({
   );
 }
 
-export function JobChecklistClient({ job, who }: { job: DemoJob; who: string }) {
+export function JobChecklistClient({
+  job,
+  who,
+  allowConflictResolution = false,
+}: {
+  job: DemoJob;
+  who: string;
+  allowConflictResolution?: boolean;
+}) {
   const [resolutions, setResolutions] = useState<ConflictResolution[]>(() =>
     typeof window === "undefined" ? [] : getResolutions(job.id),
   );
@@ -122,15 +130,21 @@ export function JobChecklistClient({ job, who }: { job: DemoJob; who: string }) 
                 <strong>{item.label}</strong>
                 {item.value && !isConflict ? <p>Value: {resolution?.chosenValue ?? item.value}</p> : null}
                 {isConflict && conflict ? (
-                  <ConflictChoices
-                    job={job}
-                    itemId={item.id}
-                    fieldLabel={item.label}
-                    left={conflict.left}
-                    right={conflict.right}
-                    resolved={resolution}
-                    who={who}
-                  />
+                  allowConflictResolution ? (
+                    <ConflictChoices
+                      job={job}
+                      itemId={item.id}
+                      fieldLabel={item.label}
+                      left={conflict.left}
+                      right={conflict.right}
+                      resolved={resolution}
+                      who={who}
+                    />
+                  ) : (
+                    <p className="look-field__hint">
+                      Conflicting values — shop will pick a value or ask you before sign-off.
+                    </p>
+                  )
                 ) : null}
                 {item.provenance?.length ? (
                   <ProvenanceMarks marks={item.provenance} jobId={job.id} />

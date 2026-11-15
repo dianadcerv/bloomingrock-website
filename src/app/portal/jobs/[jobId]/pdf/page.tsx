@@ -5,11 +5,8 @@ import { PrintButton } from "@/components/portal/PrintButton";
 import { DraftNotice, OpenQuestion } from "@/components/portal/PortalUi";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { requireJob } from "@/lib/portal/auth";
-import {
-  DEMO_SHOP,
-  getCustomerForJob,
-  getProjectForJob,
-} from "@/lib/portal/demo-data";
+import { getCustomerForJob, getProjectForJob } from "@/lib/portal/demo-data";
+import { getDemoShopBranding } from "@/lib/portal/demo-shop";
 import { PROTOTYPE_OPEN_QUESTIONS } from "@/lib/portal/open-questions";
 
 export const metadata: Metadata = { title: "PDF preview" };
@@ -21,6 +18,7 @@ export default async function PdfPage({
 }) {
   const { jobId } = await params;
   const { session, job } = await requireJob(jobId);
+  const shop = getDemoShopBranding(session);
   const customer = getCustomerForJob(job);
   const project = getProjectForJob(job);
 
@@ -33,7 +31,7 @@ export default async function PdfPage({
         <PrintButton label="Print PDF preview" />
       </p>
       <article className="portal-letter portal-shop-doc">
-        <p className="portal-shop-doc__name">{DEMO_SHOP.legal}</p>
+        <p className="portal-shop-doc__name">{shop.legal}</p>
         <h2>
           {customer?.name ?? "Customer"} — {project?.name ?? "Project"} — {job.name}
         </h2>

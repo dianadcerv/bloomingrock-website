@@ -35,12 +35,19 @@ export default async function JobWorkspacePage({
 
       <JobSourcesClient job={job} showShopLinks={isShopStaff(session.role)} />
 
-      <JobChecklistClient job={job} who={session.name} />
+      <JobChecklistClient
+        job={job}
+        who={session.name}
+        allowConflictResolution={isShopStaff(session.role)}
+      />
 
       <section className="portal-section">
         <h2>Open questions (job)</h2>
         <ul className="portal-plain">
-          {job.questions.map((question) => (
+          {(isShopStaff(session.role)
+            ? job.questions
+            : job.questions.filter((question) => question.askedOf === "customer" && question.sent)
+          ).map((question) => (
             <li key={question.id}>
               {question.prompt}
               {question.owner ? (
