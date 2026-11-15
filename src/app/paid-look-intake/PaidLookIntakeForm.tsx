@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { TurnstileWidget } from "@/components/TurnstileWidget";
-import { CONTACT_EMAIL } from "@/lib/contact";
+import { CONTACT_EMAIL, LOOK_PATH } from "@/lib/contact";
 import {
   AI_TOOL_OPTIONS,
   BUILD_QUOTES_OPTIONS,
@@ -17,7 +17,7 @@ import {
   REQUEST_TO_QUOTE_OPTIONS,
   VIEW_ONLY_OPTIONS,
 } from "@/lib/paid-look-intake";
-import { PAID_LOOK_MAX_FILES } from "@/lib/paid-look-intake-upload";
+import { PAID_LOOK_MAX_FILES } from "@/lib/paid-look-upload-limits";
 import {
   submitPaidLookIntake,
   type PaidLookIntakeFormState,
@@ -98,7 +98,7 @@ export function PaidLookIntakeForm({
     return (
       <div className="look-form look-form--success" role="status">
         <p className="look-form__eyebrow">Received</p>
-        <h2 className="look-form__title">Thanks — I&apos;ll show up ready.</h2>
+        <h2 className="look-form__title">Thanks. I&apos;ll show up ready.</h2>
         <p className="look-form__lead">
           I got your intake. If anything else comes up before the walkthrough,
           email me at{" "}
@@ -119,7 +119,7 @@ export function PaidLookIntakeForm({
         value={state.formToken ?? formToken}
       />
 
-      <p className="look-form__eyebrow">Paid Look ($750 diagnostic)</p>
+      <p className="look-form__eyebrow">Paid Look diagnostic</p>
       <h2 className="look-form__title">Client intake</h2>
       <p className="look-form__lead">
         This takes about 10 minutes. It helps me show up ready so our time goes
@@ -564,7 +564,7 @@ export function PaidLookIntakeForm({
           multiple
         />
         <span className="look-field__hint">
-          Optional — up to {PAID_LOOK_MAX_FILES} files, PDF or images, 5 MB each.
+          Optional. Up to {PAID_LOOK_MAX_FILES} files, PDF or images, 5 MB each.
         </span>
       </label>
 
@@ -618,7 +618,7 @@ export function PaidLookIntakeForm({
 
       <p className="look-form__fine">
         Questions?{" "}
-        <Link className="text-link" href="/look">
+        <Link className="text-link" href={LOOK_PATH}>
           Book a look
         </Link>{" "}
         or{" "}

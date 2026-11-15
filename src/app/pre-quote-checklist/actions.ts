@@ -1,40 +1,93 @@
 "use server";
 
-import { createHash } from "node:crypto";
 import { headers } from "next/headers";
-import { Resend } from "resend";
+import { buildChecklistPlainText } from "./checklist-content";
 import { CONTACT_EMAIL } from "@/lib/contact";
+import {
+  escapeHtml,
+  intakeDeliveryNotConfigured,
+  resendIdempotencyKey,
+  resendMailer,
+  trimFormValue,
+} from "@/lib/form-server";
+import { SITE_URL } from "@/lib/site";
 import { submitInboundIntake } from "@/lib/intake-inbound";
+import {
+  consumeFormSubmitLimits,
+  FORM_SUBMIT_RATE_LIMIT_ERROR,
+} from "@/lib/form-rate-limit";
 import {
   clientIp,
   isValidEmail,
-  lookEmailLimiter,
-  lookIpLimiter,
   mintFormToken,
   sanitizeOneLine,
   validateFormToken,
   verifyTurnstile,
 } from "@/lib/look-security";
+import { genericFormErrorMessage, logServerError } from "@/lib/server-log";
 
 export type ChecklistFormState = {
   ok: boolean;
   error?: string;
   formToken?: string;
+  /** True when Resend delivered the visitor email (attachment + link). */
+  visitorEmailSent?: boolean;
 };
 
 const CHECKLIST_DETAILS = "Pre-quote checklist download";
+const CHECKLIST_PRINT_URL = `${SITE_URL}/pre-quote-checklist/print`;
+const CHECKLIST_ATTACHMENT_NAME = "bloomingrock-pre-quote-checklist.txt";
 
-function trim(value: FormDataEntryValue | null) {
-  return typeof value === "string" ? value.trim() : "";
-}
+async function sendChecklistVisitorEmail({
+  name,
+  email,
+}: {
+  name: string;
+  email: string;
+}): Promise<boolean> {
+  const mailer = resendMailer();
+  if (!mailer) return false;
 
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
+  const firstName = escapeHtml(name.split(/\s+/)[0] || name);
+  const printUrl = escapeHtml(CHECKLIST_PRINT_URL);
+
+  const { error } = await mailer.resend.emails.send(
+    {
+      from: mailer.from,
+      to: email,
+      replyTo: CONTACT_EMAIL,
+      subject: "Your pre-quote checklist",
+      html: `
+      <div style="font-family:Georgia,serif;color:#2C2A26;line-height:1.6;max-width:32em">
+        <p style="margin:0 0 16px">Hi ${firstName},</p>
+        <p style="margin:0 0 16px">
+          Here's the pre-quote checklist you asked for. I've attached a copy you can save,
+          and you can
+          <a href="${printUrl}" style="color:#243a2f">open the printable version</a>
+          anytime if you'd rather print or save a PDF from your browser.
+        </p>
+        <p style="margin:0 0 16px">
+          If something's missing for your shop, just reply and tell me.
+        </p>
+        <p style="margin:0">~Diana</p>
+      </div>
+    `,
+      attachments: [
+        {
+          filename: CHECKLIST_ATTACHMENT_NAME,
+          content: Buffer.from(buildChecklistPlainText(), "utf8"),
+        },
+      ],
+    },
+    {
+      idempotencyKey: resendIdempotencyKey(
+        "checklist-visitor",
+        email.toLowerCase(),
+      ),
+    },
+  );
+
+  return !error;
 }
 
 async function sendChecklistEmailNotification({
@@ -46,22 +99,16 @@ async function sendChecklistEmailNotification({
   email: string;
   business: string;
 }): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return false;
-
-  const domain = process.env.RESEND_EMAIL_DOMAIN?.trim();
-  const from = domain
-    ? `BloomingRock <look@${domain}>`
-    : "BloomingRock <onboarding@resend.dev>";
-  const resend = new Resend(apiKey);
+  const mailer = resendMailer();
+  if (!mailer) return false;
 
   const businessLine = business
     ? `<p style="margin:0 0 8px"><strong>Business:</strong> ${escapeHtml(business)}</p>`
     : "";
 
-  const { error } = await resend.emails.send(
+  const { error } = await mailer.resend.emails.send(
     {
-      from,
+      from: mailer.from,
       to: CONTACT_EMAIL,
       replyTo: email,
       subject: `Pre-quote checklist: ${name}`,
@@ -78,10 +125,10 @@ async function sendChecklistEmailNotification({
     `,
     },
     {
-      idempotencyKey: `checklist-request/${createHash("sha256")
-        .update(`${email}|${name}|${business}`)
-        .digest("hex")
-        .slice(0, 32)}`,
+      idempotencyKey: resendIdempotencyKey(
+        "checklist-request",
+        `${email}|${name}|${business}`,
+      ),
     },
   );
 
@@ -92,11 +139,24 @@ export async function submitChecklistRequest(
   _prev: ChecklistFormState,
   formData: FormData,
 ): Promise<ChecklistFormState> {
-  const submittedToken = trim(formData.get("form_token"));
+  try {
+    return await submitChecklistRequestInner(formData);
+  } catch (error) {
+    logServerError("pre-quote-checklist", error);
+    return {
+      ok: false,
+      formToken: await mintFormToken(),
+      error: genericFormErrorMessage,
+    };
+  }
+}
+
+async function submitChecklistRequestInner(formData: FormData): Promise<ChecklistFormState> {
+  const submittedToken = trimFormValue(formData.get("form_token"));
   const tokenStillValid = await validateFormToken(submittedToken);
   const nextToken = tokenStillValid ? submittedToken : await mintFormToken();
 
-  if (trim(formData.get("company_fax"))) {
+  if (trimFormValue(formData.get("company_fax"))) {
     return { ok: true };
   }
 
@@ -110,7 +170,7 @@ export async function submitChecklistRequest(
     };
   }
 
-  const turnstileToken = trim(formData.get("cf-turnstile-response"));
+  const turnstileToken = trimFormValue(formData.get("cf-turnstile-response"));
   if (!(await verifyTurnstile(turnstileToken, ip))) {
     return {
       ok: false,
@@ -120,9 +180,18 @@ export async function submitChecklistRequest(
     };
   }
 
-  const name = sanitizeOneLine(trim(formData.get("name")));
-  const email = sanitizeOneLine(trim(formData.get("email")));
-  const business = sanitizeOneLine(trim(formData.get("business")));
+  const rawEmail = sanitizeOneLine(trimFormValue(formData.get("email")));
+  if (!consumeFormSubmitLimits(ip, rawEmail)) {
+    return {
+      ok: false,
+      formToken: nextToken,
+      error: FORM_SUBMIT_RATE_LIMIT_ERROR,
+    };
+  }
+
+  const name = sanitizeOneLine(trimFormValue(formData.get("name")));
+  const email = sanitizeOneLine(trimFormValue(formData.get("email")));
+  const business = sanitizeOneLine(trimFormValue(formData.get("business")));
 
   if (name.length < 2 || name.length > 80) {
     return { ok: false, formToken: nextToken, error: "Please add your name." };
@@ -143,16 +212,6 @@ export async function submitChecklistRequest(
   }
 
   const emailKey = email.toLowerCase();
-  if (
-    !lookIpLimiter.consume(`ip:${ip}`) ||
-    !lookEmailLimiter.consume(`email:${emailKey}`)
-  ) {
-    return {
-      ok: false,
-      formToken: nextToken,
-      error: "Please wait a few minutes before sending another request.",
-    };
-  }
 
   const portalOk = await submitInboundIntake({
     name,
@@ -162,19 +221,24 @@ export async function submitChecklistRequest(
     source: "website-checklist",
   });
 
-  let emailOk = false;
+  let ownerEmailOk = false;
   if (!portalOk) {
-    emailOk = await sendChecklistEmailNotification({ name, email, business });
+    ownerEmailOk = await sendChecklistEmailNotification({ name, email, business });
   }
 
-  if (portalOk || emailOk) {
-    return { ok: true };
+  const leadCaptured = portalOk || ownerEmailOk;
+
+  if (leadCaptured) {
+    const visitorEmailSent = await sendChecklistVisitorEmail({ name, email });
+    if (!visitorEmailSent) {
+      console.error("[pre-quote-checklist] Visitor checklist email failed", {
+        email: emailKey,
+      });
+    }
+    return { ok: true, visitorEmailSent };
   }
 
-  if (
-    !process.env.RESEND_API_KEY &&
-    !process.env.INTAKE_INBOUND_SECRET?.trim()
-  ) {
+  if (intakeDeliveryNotConfigured()) {
     return {
       ok: false,
       formToken: nextToken,

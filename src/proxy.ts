@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { consumeEdgeFormPost, middlewareClientIp } from "@/lib/form-rate-limit";
 import {
   getAppOrigin,
   getMarketingOrigin,
@@ -8,7 +9,31 @@ import {
   toInternalPortalPath,
 } from "@/lib/portal/hosts";
 
+const FORM_RATE_LIMIT_PATHS = ["/look", "/pre-quote-checklist", "/paid-look-intake"] as const;
+
+function isFormRateLimitPath(pathname: string) {
+  return FORM_RATE_LIMIT_PATHS.some(
+    (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
+  );
+}
+
 export function proxy(request: NextRequest) {
+  if (
+    request.method === "POST" &&
+    request.headers.get("next-action") &&
+    isFormRateLimitPath(request.nextUrl.pathname)
+  ) {
+    const ip = middlewareClientIp(request.headers);
+    if (!consumeEdgeFormPost(ip)) {
+      return new NextResponse(null, {
+        status: 429,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      });
+    }
+  }
+
   const host = request.headers.get("host") ?? "";
   const appHost = isAppHost(host);
   const { pathname, search } = request.nextUrl;

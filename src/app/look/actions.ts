@@ -1,14 +1,22 @@
 "use server";
 
-import { createHash } from "node:crypto";
 import { headers } from "next/headers";
-import { Resend } from "resend";
 import { CONTACT_EMAIL } from "@/lib/contact";
+import {
+  escapeHtml,
+  intakeDeliveryNotConfigured,
+  resendIdempotencyKey,
+  resendMailer,
+  trimFormValue,
+} from "@/lib/form-server";
+import { submitInboundIntake } from "@/lib/intake-inbound";
+import {
+  consumeFormSubmitLimits,
+  FORM_SUBMIT_RATE_LIMIT_ERROR,
+} from "@/lib/form-rate-limit";
 import {
   clientIp,
   isValidEmail,
-  lookEmailLimiter,
-  lookIpLimiter,
   mintFormToken,
   normalizeWebsite,
   sanitizeMultiline,
@@ -16,27 +24,15 @@ import {
   validateFormToken,
   verifyTurnstile,
 } from "@/lib/look-security";
-import { submitInboundIntake } from "@/lib/intake-inbound";
+import { genericFormErrorMessage, logServerError } from "@/lib/server-log";
 import { HEARD_ABOUT_OPTIONS } from "./heard-about-options";
+import { lookPainTopicLabels, parseLookPainTopics } from "./look-pain-topics";
 
 export type LookFormState = {
   ok: boolean;
   error?: string;
   formToken?: string;
 };
-
-function trim(value: FormDataEntryValue | null) {
-  return typeof value === "string" ? value.trim() : "";
-}
-
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
 
 function websiteHref(url: string) {
   return escapeHtml(url);
@@ -70,9 +66,15 @@ function parseHeardAbout(
   return { heardAbout: match };
 }
 
-function buildDetails(week: string, website: string) {
-  if (!website) return week;
-  return `${week}\n\nWebsite: ${website}`;
+function buildDetails(week: string, website: string, painTopicLabels: string[]) {
+  const parts = [week];
+  if (painTopicLabels.length > 0) {
+    parts.push(`Topics: ${painTopicLabels.join(", ")}`);
+  }
+  if (website) {
+    parts.push(`Website: ${website}`);
+  }
+  return parts.join("\n\n");
 }
 
 async function sendLookEmailNotification({
@@ -82,6 +84,7 @@ async function sendLookEmailNotification({
   week,
   website,
   heardAbout,
+  painTopicLabels,
 }: {
   name: string;
   email: string;
@@ -89,23 +92,23 @@ async function sendLookEmailNotification({
   week: string;
   website: string;
   heardAbout?: string;
+  painTopicLabels: string[];
 }): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) return false;
-
-  const domain = process.env.RESEND_EMAIL_DOMAIN?.trim();
-  const from = domain
-    ? `BloomingRock <look@${domain}>`
-    : "BloomingRock <onboarding@resend.dev>";
-  const resend = new Resend(apiKey);
+  const mailer = resendMailer();
+  if (!mailer) return false;
 
   const heardBlock = heardAbout
     ? `<p style="margin:0 0 16px"><strong>How they heard about us:</strong> ${escapeHtml(heardAbout)}</p>`
     : "";
 
-  const { error } = await resend.emails.send(
+  const topicsBlock =
+    painTopicLabels.length > 0
+      ? `<p style="margin:0 0 16px"><strong>Pain topics:</strong> ${escapeHtml(painTopicLabels.join(", "))}</p>`
+      : "";
+
+  const { error } = await mailer.resend.emails.send(
     {
-      from,
+      from: mailer.from,
       to: CONTACT_EMAIL,
       replyTo: email,
       subject: `15-minute look: ${business}`,
@@ -126,16 +129,17 @@ async function sendLookEmailNotification({
             : "Not given"
         }</p>
         ${heardBlock}
+        ${topicsBlock}
         <p style="margin:0 0 6px"><strong>Where the week gets eaten up:</strong></p>
         <p style="margin:0;white-space:pre-wrap">${escapeHtml(week)}</p>
       </div>
     `,
     },
     {
-      idempotencyKey: `look-request/${createHash("sha256")
-        .update(`${email}|${business}|${week}`)
-        .digest("hex")
-        .slice(0, 32)}`,
+      idempotencyKey: resendIdempotencyKey(
+        "look-request",
+        `${email}|${business}|${week}`,
+      ),
     },
   );
 
@@ -146,11 +150,24 @@ export async function submitLookRequest(
   _prev: LookFormState,
   formData: FormData,
 ): Promise<LookFormState> {
-  const submittedToken = trim(formData.get("form_token"));
+  try {
+    return await submitLookRequestInner(formData);
+  } catch (error) {
+    logServerError("look-request", error);
+    return {
+      ok: false,
+      formToken: await mintFormToken(),
+      error: genericFormErrorMessage,
+    };
+  }
+}
+
+async function submitLookRequestInner(formData: FormData): Promise<LookFormState> {
+  const submittedToken = trimFormValue(formData.get("form_token"));
   const tokenStillValid = await validateFormToken(submittedToken);
   const nextToken = tokenStillValid ? submittedToken : await mintFormToken();
 
-  if (trim(formData.get("company_fax"))) {
+  if (trimFormValue(formData.get("company_fax"))) {
     return { ok: true };
   }
 
@@ -164,7 +181,7 @@ export async function submitLookRequest(
     };
   }
 
-  const turnstileToken = trim(formData.get("cf-turnstile-response"));
+  const turnstileToken = trimFormValue(formData.get("cf-turnstile-response"));
   if (!(await verifyTurnstile(turnstileToken, ip))) {
     return {
       ok: false,
@@ -173,15 +190,26 @@ export async function submitLookRequest(
     };
   }
 
-  const name = sanitizeOneLine(trim(formData.get("name")));
-  const email = sanitizeOneLine(trim(formData.get("email")));
-  const business = sanitizeOneLine(trim(formData.get("business")));
-  const week = sanitizeMultiline(trim(formData.get("week")));
-  const websiteResult = normalizeWebsite(trim(formData.get("website")));
+  const rawEmail = sanitizeOneLine(trimFormValue(formData.get("email")));
+  if (!consumeFormSubmitLimits(ip, rawEmail)) {
+    return {
+      ok: false,
+      formToken: nextToken,
+      error: FORM_SUBMIT_RATE_LIMIT_ERROR,
+    };
+  }
+
+  const name = sanitizeOneLine(trimFormValue(formData.get("name")));
+  const email = sanitizeOneLine(trimFormValue(formData.get("email")));
+  const business = sanitizeOneLine(trimFormValue(formData.get("business")));
+  const week = sanitizeMultiline(trimFormValue(formData.get("week")));
+  const websiteResult = normalizeWebsite(trimFormValue(formData.get("website")));
   const heardResult = parseHeardAbout(
-    trim(formData.get("heard_about")),
-    trim(formData.get("heard_about_other")),
+    trimFormValue(formData.get("heard_about")),
+    trimFormValue(formData.get("heard_about_other")),
   );
+  const painTopicIds = parseLookPainTopics(formData.getAll("pain_topics"));
+  const painTopicLabels = lookPainTopicLabels(painTopicIds);
 
   if (heardResult.error) {
     return { ok: false, formToken: nextToken, error: heardResult.error };
@@ -217,22 +245,17 @@ export async function submitLookRequest(
 
   const website = websiteResult.url;
   const heardAbout = heardResult.heardAbout;
-  const emailKey = email.toLowerCase();
-  if (!lookIpLimiter.consume(`ip:${ip}`) || !lookEmailLimiter.consume(`email:${emailKey}`)) {
-    return {
-      ok: false,
-      formToken: nextToken,
-      error: "Please wait a few minutes before sending another request.",
-    };
-  }
 
-  const details = buildDetails(week, website);
+  const details = buildDetails(week, website, painTopicLabels);
   const portalOk = await submitInboundIntake({
     name,
     email,
     business,
     details,
     ...(heardAbout ? { heardAbout } : {}),
+    ...(painTopicIds.length > 0
+      ? { inboundExtras: { painTopics: painTopicIds } }
+      : {}),
     source: "website-look",
   });
 
@@ -245,6 +268,7 @@ export async function submitLookRequest(
       week,
       website,
       heardAbout,
+      painTopicLabels,
     });
   }
 
@@ -252,7 +276,7 @@ export async function submitLookRequest(
     return { ok: true };
   }
 
-  if (!process.env.RESEND_API_KEY && !process.env.INTAKE_INBOUND_SECRET?.trim()) {
+  if (intakeDeliveryNotConfigured()) {
     return {
       ok: false,
       formToken: nextToken,

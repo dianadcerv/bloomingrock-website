@@ -1,12 +1,12 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { SlidingWindowLimiter } from "./sliding-window-limiter.ts";
 import {
   createFormToken,
   isValidEmail,
   normalizeWebsite,
   sanitizeMultiline,
   sanitizeOneLine,
-  SlidingWindowLimiter,
   verifyFormToken,
 } from "./look-security.ts";
 

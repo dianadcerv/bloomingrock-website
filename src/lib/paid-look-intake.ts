@@ -199,7 +199,7 @@ export function contactNameFromAnswers(nameAndRole: string) {
 
 export function buildPaidLookDetails(answers: PaidLookAnswers) {
   const lines = [
-    "Paid Look ($750 diagnostic) client intake",
+    "Paid Look diagnostic client intake",
     "",
     "1. About you",
     `Shop name: ${answers.shopName}`,

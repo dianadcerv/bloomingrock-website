@@ -48,6 +48,8 @@ export const PAID_LOOK_SECTIONS = {
 
 export type PaidLookUploadFile = {
   url: string;
+  /** Blob store pathname for authenticated download (private stores). */
+  pathname?: string;
   name: string;
   contentType: string;
   size?: number;
