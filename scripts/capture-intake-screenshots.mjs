@@ -67,21 +67,21 @@ await page.reload({ waitUntil: "networkidle2" });
 await shot(page, "intake-job-upload-open-1280.png", 1280);
 await shot(page, "intake-job-upload-open-375.png", 375);
 
-await page.evaluate((jobId) => {
+await page.evaluate(() => {
   const state = JSON.parse(sessionStorage.getItem("portal-intake-v1"));
   state.fileRequests[0].orderShippedAtMs = Date.now() - 10 * 86400000;
   sessionStorage.setItem("portal-intake-v1", JSON.stringify(state));
-}, job);
+});
 await page.reload({ waitUntil: "networkidle2" });
 await shot(page, "intake-job-upload-closing-ship-1280.png", 1280);
 await shot(page, "intake-job-upload-closing-ship-375.png", 375);
 
-await page.evaluate((jobId) => {
+await page.evaluate(() => {
   const state = JSON.parse(sessionStorage.getItem("portal-intake-v1"));
   state.fileRequests[0].status = "closed-job";
   state.fileRequests[0].closedAt = "Demo";
   sessionStorage.setItem("portal-intake-v1", JSON.stringify(state));
-}, job);
+});
 await page.reload({ waitUntil: "networkidle2" });
 await shot(page, "intake-job-upload-closed-job-1280.png", 1280);
 await shot(page, "intake-job-upload-closed-job-375.png", 375);

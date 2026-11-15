@@ -1,3 +1,4 @@
+import { clientIpFromHeaders } from "@/lib/client-ip";
 import { SlidingWindowLimiter } from "@/lib/sliding-window-limiter";
 
 export const LOOK_RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
@@ -5,11 +6,11 @@ export const LOOK_RATE_LIMIT_MAX_PER_IP = 5;
 export const LOOK_EMAIL_LIMIT_WINDOW_MS = 60 * 60 * 1000;
 export const LOOK_EMAIL_LIMIT_MAX = 3;
 
-export const lookIpLimiter = new SlidingWindowLimiter(
+const lookIpLimiter = new SlidingWindowLimiter(
   LOOK_RATE_LIMIT_WINDOW_MS,
   LOOK_RATE_LIMIT_MAX_PER_IP,
 );
-export const lookEmailLimiter = new SlidingWindowLimiter(
+const lookEmailLimiter = new SlidingWindowLimiter(
   LOOK_EMAIL_LIMIT_WINDOW_MS,
   LOOK_EMAIL_LIMIT_MAX,
 );
@@ -38,11 +39,7 @@ export const paidLookUploadIpLimiter = new SlidingWindowLimiter(
 );
 
 export function middlewareClientIp(headerList: Headers): string {
-  const real = headerList.get("x-real-ip")?.trim();
-  if (real) return real;
-  const forwarded = headerList.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
-  return "unknown";
+  return clientIpFromHeaders(headerList);
 }
 
 export function consumeEdgeFormPost(ip: string): boolean {
