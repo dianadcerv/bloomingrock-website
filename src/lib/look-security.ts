@@ -1,14 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { clientIpFromHeaders } from "@/lib/client-ip";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-export {
-  FORM_SUBMIT_RATE_LIMIT_ERROR,
-  LOOK_EMAIL_LIMIT_MAX,
-  LOOK_EMAIL_LIMIT_WINDOW_MS,
-  LOOK_RATE_LIMIT_MAX_PER_IP,
-  LOOK_RATE_LIMIT_WINDOW_MS,
-} from "@/lib/form-rate-limit";
 
 export const FORM_TOKEN_MIN_AGE_MS = 2_500;
 export const FORM_TOKEN_MAX_AGE_MS = 2 * 60 * 60 * 1000;
@@ -55,8 +48,6 @@ export function normalizeWebsite(value: string): { ok: true; url: string } | { o
 
   return { ok: true, url: parsed.toString() };
 }
-
-export { SlidingWindowLimiter } from "@/lib/sliding-window-limiter";
 
 let loggedMissingFormTokenSecret = false;
 
@@ -140,11 +131,7 @@ export function verifyFormToken(
 }
 
 export function clientIp(headerList: Headers) {
-  const real = headerList.get("x-real-ip")?.trim();
-  if (real) return real;
-  const forwarded = headerList.get("x-forwarded-for");
-  if (forwarded) return forwarded.split(",")[0]?.trim() || "unknown";
-  return "unknown";
+  return clientIpFromHeaders(headerList);
 }
 
 export async function verifyTurnstile(token: string, ip: string) {

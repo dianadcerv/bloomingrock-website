@@ -1,7 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { isValidEmail, SlidingWindowLimiter } from "@/lib/look-security";
+import { isValidEmail } from "@/lib/look-security";
+import { SlidingWindowLimiter } from "@/lib/sliding-window-limiter";
 import { safePortalNextPath } from "@/lib/portal/login-redirect";
 import { normalizeEmail } from "@/lib/portal/session";
 
