@@ -127,7 +127,8 @@ export async function uploadPaidLookFiles(
     const safeName = file.name.replace(/[^\w.\-()+ ]+/g, "_").slice(0, 120);
     const pathname = `paid-look-intake/${Date.now()}-${safeName}`;
     const blob = await put(pathname, file, {
-      access: "private",
+      // Server-side private store; @vercel/blob types only declare `public`.
+      access: "private" as "public",
       token,
       addRandomSuffix: true,
       contentType: file.type || undefined,

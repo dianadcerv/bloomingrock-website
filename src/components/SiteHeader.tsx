@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BrandLogo } from "@/components/BrandLogo";
 import { LOOK_PATH } from "@/lib/contact";
+import { getPublicLoginHref } from "@/lib/portal/hosts";
 
 export type NavPage =
   | "capabilities"
@@ -16,6 +17,8 @@ export function SiteHeader({
   tone?: "on-moss" | "on-stone";
   current?: NavPage;
 }) {
+  const loginHref = getPublicLoginHref();
+
   const link = (page: NavPage, href: string, label: string) => (
     <Link
       href={href}
@@ -38,6 +41,7 @@ export function SiteHeader({
           {link("product", "/product", "Product")}
           {link("make-ai-stick", "/make-ai-stick", "How I work")}
           {link("about", "/about", "About")}
+          <Link href={loginHref}>Login</Link>
           <Link className="navcta" href={LOOK_PATH}>
             Book a look
           </Link>
